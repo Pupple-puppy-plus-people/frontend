@@ -1,0 +1,52 @@
+
+### ReactNative ###
+# React Native Stack Base
+
+.expo
+__generated__
+
+### ReactNative.Xcode Stack ###
+## User settings
+xcuserdata/
+
+## Xcode 8 and earlier
+*.xcscmblueprint
+*.xccheckout
+
+### ReactNative.macOS Stack ###
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional stylelint cache
+.stylelintcache
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+### ReactNative.Node Stack ###
+# Logs
+logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Android Studio generated files and folders
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+output.json
