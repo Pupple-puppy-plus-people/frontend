@@ -140,7 +140,7 @@ function LoginScreen({navigation, handleJwtResult, handleUserInfo, user_info}) {
             <View style={{flex:0.75}}>
               <Text 
                 onPress={() => {
-                  navigation.navigate('Register');
+                  navigation.navigate('EnterType');
                 }}
                 style={styles.toRegister}
               >
@@ -158,10 +158,10 @@ function LoginScreen({navigation, handleJwtResult, handleUserInfo, user_info}) {
                     <TouchableOpacity 
                       style={styles.btn} 
                       activeOpacity={0.5}
-                      //onPress={compareAsyncLogin}
+                      onPress={() => {navigation.replace('BottomNav');}}
                       //onPress={submitPress}
                     >
-                        <Text style={[styles.Text, {color: 'white'}]}>로그인</Text>
+                        <Text style={[styles.Text, {color: 'white', fontSize:bigOne*0.02}]}>로그인</Text>
                     </TouchableOpacity>
             </View>
       
@@ -247,9 +247,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(153, 0, 255, 1.0)',
   },
   toRegister: {
-    fontSize: bigOne*0.015,
+    fontSize: bigOne*0.018,
     textDecorationLine: 'underline',
-    color:'gray',
+    color:'rgba(153, 0, 255, 0.7)',
     alignSelf:'center',
     
   },
