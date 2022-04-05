@@ -17,16 +17,6 @@ function DogList({user_info}){
             options={{
                 title: "오늘도 강아지는 당신을 기다립니다.",
             }}/>
-
-            {/* <Stack.Screen 
-            name="ReadingBook" 
-            component={ReadingBookView}
-            options={{
-                title: '읽고 있는 책',
-                
-                
-            }}
-            /> */}
             
         </Stack.Navigator>
     )

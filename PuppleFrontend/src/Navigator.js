@@ -14,6 +14,8 @@ import EnterEmail from './Login/RegisterStep/EnterEmail';
 import EnterPassword from './Login/RegisterStep/EnterPassword';
 import PasswordCheck from './Login/RegisterStep/PasswordCheck';
 import DogList from './DogList';
+import Tab2 from './Tab2'; // 인증탭 이름 추천 받아요 
+import ChattingRoom from './ChattingRoom';
 
 const Stack = createStackNavigator();
 const LogStack = createStackNavigator();
@@ -31,6 +33,35 @@ const BottomNavigation = ({navigation}) => {
                   animationEnabled: false,
                   tabBarIcon: ()=> (
                       <MaterialCommunityIcons name="bookshelf" size={25} />
+                  )
+              }}
+          >
+          </BottomTab.Screen>
+
+          <BottomTab.Screen
+              name="Tab2"
+              component={Tab2}
+              options={{
+                  tabBarLabel: '인증',
+                  headerShown: false,
+                  animationEnabled: false,
+                  tabBarIcon: ()=> (
+                      <MaterialCommunityIcons name="paw" size={25} />
+                  )
+              }}
+          >
+          </BottomTab.Screen>
+
+
+          <BottomTab.Screen
+              name="ChattingRoom"
+              component={ChattingRoom}
+              options={{
+                  tabBarLabel: '채팅',
+                  headerShown: false,
+                  animationEnabled: false,
+                  tabBarIcon: ()=> (
+                      <MaterialCommunityIcons name="message" size={25} />
                   )
               }}
           >
@@ -168,9 +199,7 @@ function Navigator() {
 
     return (
 
-        <NavigationContainer
-        
-        >
+        <NavigationContainer>
             <Stack.Navigator>
                 {/* <Stack.Screen
                 name="SplashScreen"
