@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 
 import {
   StyleSheet,
@@ -15,14 +15,14 @@ const EnrollButton = ({})=>{
             <TouchableOpacity /* 등록하기 버튼은 loginstate가 seller 일때만 보여짐 */
                 style={[styles.button, styles.buttonOpen]}
                 onPress={() => {gotoNextScreen("seller")}}
-            >
+                >
                 <View style={styles.eachView} /* color, testalign 같이 합치는 법 */> 
-                <MaterialCommunityIcons name="dog" size={50} style={{color:'#C9C9C9', textAlign:'center'}}/>
-                <MaterialCommunityIcons name="plus-circle" size={25} style={{color:'#C9C9C9', textAlign:'center', margin: '3%'}}/>
-                <Text style={{color:'#C9C9C9',fontWeight:'bold',textAlign:'center', margin: '3%'}}>
-                    등록하기
-                </Text>
-            </View>
+                    <MaterialCommunityIcons name="dog" size={50} style={{color:'#C9C9C9', textAlign:'center'}}/>
+                    <MaterialCommunityIcons name="plus-circle" size={25} style={{color:'#C9C9C9', textAlign:'center', margin: '3%'}}/>
+                    <Text style={{color:'#C9C9C9',fontWeight:'bold',textAlign:'center', margin: '3%'}}>
+                        등록하기
+                    </Text>
+                </View>
             </TouchableOpacity>
             
         </View>

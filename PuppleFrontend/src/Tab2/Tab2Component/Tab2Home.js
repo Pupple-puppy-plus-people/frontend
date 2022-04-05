@@ -17,6 +17,7 @@ import {
 import { responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
 
 import EnrollButton from './Shelter/EnrollButton'
+import EmptyDogList from './Adoptor/EmptyList';
 
 //import * as RNFS from 'react-native-fs'
 //import axios from 'axios';
@@ -45,21 +46,24 @@ function Tab2Home ({navigation}) {
       navigation.navigate('EnterName',{types: type});
     }
 
-    let USER_TYPE = 1;  // 0 이면 입양인, 1이면 입양처
+    let USER_TYPE = 0;  // 0 이면 입양인, 1이면 입양처, 로그인 정보 받아오기
 
     return (
         /* 노치 디자인에도 안전하게 화면의 콘텐츠를 확보할수 있음 */
         <SafeAreaView style={styles.container}>  
         
-          {<View>
+          {<View style={flex=1}>
               
-              {/* 만약에 입양처로 로그인한다면 -> if문 안되나?ㅠㅠ 조건문을 text로 읽어버리네 =해결=> {} 붙이기.. */}
+              {/* 만약에 입양처로 로그인한다면*/}
               {USER_TYPE === 1 ? <EnrollButton /> : null}
+
+              {/* 만약 입양인으로 로그인되었고, 리스트에 아무것도 없다면 */}
+              {USER_TYPE === 0 ? <EmptyDogList/> : null}
               
               <View style={{alignItems: 'center', width: '100%', marginTop: '3%'}}>
               
               {/*반려견 리스트는 TouchableOpacity로 구현하지 말고 Pressable로 구현해서 꾹 누르면 삭제 버튼 뜰 수 있게 한다*/}
-              
+              <Pressable></Pressable>
 
               </View>
           </View>}
@@ -73,6 +77,9 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'white',
         paddingHorizontal: 10,
+    },
+    centerView: {
+      flex: 1,
     },
     eachView: {
       flex: 1,
