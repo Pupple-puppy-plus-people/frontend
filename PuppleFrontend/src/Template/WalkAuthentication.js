@@ -14,7 +14,7 @@ class Walk extends Component{
         return(
             <View style={style.container}>
                 <Text style={style.initialTest}>
-                    Walk Authentication
+                    Walk Authentication!
                 </Text>
             </View>
         );
