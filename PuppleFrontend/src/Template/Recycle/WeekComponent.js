@@ -17,14 +17,11 @@ class DayComponent extends Component{
         return(
             <View style={styles.column}>
                 {today == this.props.dayNumber ?
-                <MaterialCommunityIcons name="chevron-down" color={'black'} size={30}/>:
-                <MaterialCommunityIcons name="chevron-down" color={'white'} size={30}/> }
+                <MaterialCommunityIcons name="chevron-down" size={30}/>:
+                <MaterialCommunityIcons name="chevron-down" color={'#eedbff'} size={30}/> }
                 <Text style={styles.daytext}>
                     {this.props.dayName}
                 </Text>
-                {/* <MaterialCommunityIcons name="check-circle-outline" color={'green'} size={20}/> */}
-                {/* <MaterialCommunityIcons name="close-circle-outline" color={'red'} size={20}/> */}
-                {/* <MaterialCommunityIcons name="progress-question" color={'green'} size={20}/> */}
             </View>
         );
     }
