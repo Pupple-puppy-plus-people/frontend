@@ -27,7 +27,7 @@ import {
 import Navigator from './Navigator';
 
 //템플릿 구현 후 삭제
-import WalkAuthentication from './Template/WalkAuthentication';
+import Walk from './Template/Walk/';
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -38,7 +38,7 @@ const App = () => {
 
   return (
     // <Navigator/>
-    <WalkAuthentication/>
+    <Walk/>
   );
 };
 

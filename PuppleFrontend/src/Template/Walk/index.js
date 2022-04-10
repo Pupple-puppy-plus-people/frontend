@@ -4,7 +4,7 @@ import {
     Text,
     View
 } from 'react-native';
-import WeekComponent from './Recycle/WeekComponent';
+import WalkAuthComponent from './WalkAuthComponent/WalkAuthentication';
 
 
 class Walk extends Component{
@@ -15,8 +15,9 @@ class Walk extends Component{
     render(){
         return(
             <View style={styles.container}>
-                <WeekComponent/>
+                <WalkAuthComponent/>
             </View>
+            // 화면 반응성(spring) && 돌아가기 추가
         );
     }
 }
@@ -24,14 +25,12 @@ class Walk extends Component{
 const styles=StyleSheet.create({
     container:{
         flex:1,
-        justifyContent:'center',
-        alignItems:'center',
-        backgroundColor:'white'
-    },
-    initialTest:{
-        color:'white',
-        textAlign:'center'
-        
+        flexDirection:'column',
+        position: 'absolute',
+        top:35,
+        left:10,
+        right:10,
+        bottom:0,
     }
 });
 

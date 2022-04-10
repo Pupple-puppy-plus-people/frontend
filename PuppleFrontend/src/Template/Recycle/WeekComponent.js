@@ -6,87 +6,25 @@ import {
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+// set today's number from 0 to 6 , 0 means Sunday and 6 means Saturday
 const today = new Date().getDay();
 
 class DayComponent extends Component{
     constructor(props){
         super(props);
-        this.state={};
     }
     render(){
         return(
-            <View style={styles.container}>
-                <View style={styles.row}>
-                    {/* Sunday */}
-                    <View style={styles.column}>
-                        {today == 0 ?
-                        <MaterialCommunityIcons name="chevron-down" color={'black'} size={30}/>:
-                        <MaterialCommunityIcons name="chevron-down" color={'white'} size={30}/> }
-                        <Text style={styles.daytext}>
-                            S
-                        </Text>
-                    </View>
-
-                    {/* Monday */}
-                    <View style={styles.column}>
-                        {today == 1 ?
-                        <MaterialCommunityIcons name="chevron-down" color={'black'} size={30}/>:
-                        <MaterialCommunityIcons name="chevron-down" color={'white'} size={30}/> }
-                        <Text style={styles.daytext}>
-                            M
-                        </Text>
-                    </View>
-
-                    {/* Tuesday */}
-                    <View style={styles.column}>
-                        {today == 2 ?
-                        <MaterialCommunityIcons name="chevron-down" color={'black'} size={30}/>:
-                        <MaterialCommunityIcons name="chevron-down" color={'white'} size={30}/> }
-                        <Text style={styles.daytext}>
-                            T
-                        </Text>
-                    </View>
-
-                    {/* Wednesday */}
-                    <View style={styles.column}>
-                        {today == 3 ?
-                        <MaterialCommunityIcons name="chevron-down" color={'black'} size={30}/>:
-                        <MaterialCommunityIcons name="chevron-down" color={'white'} size={30}/> }
-                        <Text style={styles.daytext}>
-                            W
-                        </Text>
-                    </View>
-
-                    {/* Thursday */}
-                    <View style={styles.column}>
-                        {today == 4 ?
-                        <MaterialCommunityIcons name="chevron-down" color={'black'} size={30}/>:
-                        <MaterialCommunityIcons name="chevron-down" color={'white'} size={30}/> }
-                        <Text style={styles.daytext}>
-                            T
-                        </Text>
-                    </View>
-
-                    {/* Friday */}
-                    <View style={styles.column}>
-                        {today == 5 ?
-                         <MaterialCommunityIcons name="chevron-down" color={'black'} size={30}/>:
-                         <MaterialCommunityIcons name="chevron-down" color={'white'} size={30}/> }
-                        <Text style={styles.daytext}>
-                            F
-                        </Text>
-                    </View>
-
-                    {/* Saturday */}
-                    <View style={styles.column}>
-                        {today == 6 ?
-                        <MaterialCommunityIcons name="chevron-down" color={'black'} size={30}/>:
-                        <MaterialCommunityIcons name="chevron-down" color={'white'} size={30}/> }
-                        <Text style={styles.daytext}>
-                            S
-                        </Text>
-                    </View>
-                </View>
+            <View style={styles.column}>
+                {today == this.props.dayNumber ?
+                <MaterialCommunityIcons name="chevron-down" color={'black'} size={30}/>:
+                <MaterialCommunityIcons name="chevron-down" color={'white'} size={30}/> }
+                <Text style={styles.daytext}>
+                    {this.props.dayName}
+                </Text>
+                {/* <MaterialCommunityIcons name="check-circle-outline" color={'green'} size={20}/> */}
+                {/* <MaterialCommunityIcons name="close-circle-outline" color={'red'} size={20}/> */}
+                {/* <MaterialCommunityIcons name="progress-question" color={'green'} size={20}/> */}
             </View>
         );
     }
@@ -100,32 +38,38 @@ class WeekComponent extends Component{
 
     render(){
         return(
-            <DayComponent/>
+            <View style={styles.container}>
+                <View style={styles.row}>
+                    <DayComponent dayNumber={0} dayName={'S'}/>
+                    <DayComponent dayNumber={1} dayName={'M'}/>
+                    <DayComponent dayNumber={2} dayName={'T'}/>
+                    <DayComponent dayNumber={3} dayName={'W'}/>
+                    <DayComponent dayNumber={4} dayName={'T'}/>
+                    <DayComponent dayNumber={5} dayName={'F'}/>
+                    <DayComponent dayNumber={6} dayName={'S'}/>
+                </View>
+            </View>
         );
     }
 }
 
 const styles=StyleSheet.create({
     container:{
-        flex:1,
-        alignItems:'center',
-        marginHorizontal:50
+        // backgroundColor:'orange'
     },
     column:{
-        flex:1,
         flexDirection:'column',
         alignItems:'center',
     },
     row:{
-        flex:1,
         flexDirection:'row',
-        alignItems:'center',
+        justifyContent:'space-around',
     },
     daytext:{
         color:'purple',
-        textAlign:'center',
-        fontSize:25,
-        fontWeight:'bold'
+        fontSize:30,
+        fontWeight:'bold',
+        // backgroundColor:'magenta'
     }
 });
 
