@@ -4,6 +4,8 @@ import {
     Text,
     View
 } from 'react-native';
+import WeekComponent from './Recycle/WeekComponent';
+
 
 class Walk extends Component{
     constructor(props){
@@ -12,24 +14,24 @@ class Walk extends Component{
     }
     render(){
         return(
-            <View style={style.container}>
-                <Text style={style.initialTest}>
-                    Walk Authentication!
-                </Text>
+            <View style={styles.container}>
+                <WeekComponent/>
             </View>
         );
     }
 }
 
-const style=StyleSheet.create({
+const styles=StyleSheet.create({
     container:{
         flex:1,
         justifyContent:'center',
         alignItems:'center',
-        backgroundColro:'#F5FcFF'
+        backgroundColor:'white'
     },
     initialTest:{
+        color:'white',
         textAlign:'center'
+        
     }
 });
 
