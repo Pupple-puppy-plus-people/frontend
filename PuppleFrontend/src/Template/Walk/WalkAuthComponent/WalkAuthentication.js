@@ -46,6 +46,10 @@ const Info_Item = ({dataInfo}) => (
         <Text 
         style={[styles.body,styles.body_data]}>
             {dataInfo.data}
+            {dataInfo.dataType === 0 && <Text>(일)</Text>}
+            {dataInfo.dataType === 1 && <Text>(분)</Text>}
+            {dataInfo.dataType === 2 && <Text>(m)</Text>}
+            
         </Text>
     </View>
 );
@@ -112,15 +116,18 @@ class WalkAuthComponent extends Component{
             informationName={'Pass Condition'}
             showData={[
                 {
-                    dataName:'총 횟수(일)',
+                    dataType:0,
+                    dataName:'총 횟수',
                     data:5
                 },
                 {
-                    dataName:'평균 산책(분)',
+                    dataType:1,
+                    dataName:'평균 산책',
                     data:30
                 },
                 {
-                    dataName:'평균 거리(m)',
+                    dataType:2,
+                    dataName:'평균 거리',
                     data:1000
                 },
             ]}
@@ -131,15 +138,18 @@ class WalkAuthComponent extends Component{
             informationName={'Current Total'}
             showData={[
                 {
-                    dataName:'횟수(일)',
+                    dataType:0,
+                    dataName:'횟수',
                     data:4
                 },
                 {
-                    dataName:'시간(분)',
+                    dataType:1,
+                    dataName:'시간',
                     data:120
                 },
                 {
-                    dataName:'거리(m)',
+                    dataType:2,
+                    dataName:'거리',
                     data:4000
                 }
             ]}/>
@@ -149,21 +159,23 @@ class WalkAuthComponent extends Component{
             informationName={'Daily Average'}
             showData={[
                 {
-                    dataName:'시간(분)',
+                    dataType:1,
+                    dataName:'시간',
                     data:30
                 },
                 {
-                    dataName:'거리(m)',
+                    dataType:2,
+                    dataName:'거리',
                     data:1000
                 }
             ]}/>
             
             {/* 산책 시작 버튼 */}
 
-
             </View>
             );
         };
+        var name = 'mary';
         return(
             <SafeAreaView style={styles.main_container}>
                 
