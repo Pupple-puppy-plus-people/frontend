@@ -22,6 +22,7 @@ import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import Icon2 from 'react-native-vector-icons/Feather';
 import { responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth, responsiveWidth } from 'react-native-responsive-dimensions';
 import DogDetail from './DogDetail';
+
 //import * as RNFS from 'react-native-fs'
 //import axios from 'axios';
 //import { HS_API_END_POINT } from '../../Shared/env';
@@ -203,9 +204,11 @@ const DogListHome = ({ navigation }) => {
     const [selectedDogId, setSelectedDogId] = useState({});
     const [backBoard, setBackBoard] = useState({backgroundColor:'white'})
     
+    
 
     const Item = ({ item }) => {
         // const base64Image = 'data:image/png;base64,' + item.bookCoverResource;
+        const [isHeart, setIsHeart] = useState(false);
         var genderStr="";
         if (item.gender=="f"){
             genderStr = "여";
@@ -230,7 +233,9 @@ const DogListHome = ({ navigation }) => {
                     {/* <Image source={{uri:base64Image}} resizeMode='contain' style={{flex:1, width:'100%', height:'100%'}} /> */}
                 </View>
                 <View style={{ flex: 1,marginTop:3}}>
-                <Icon name="heart-o" size={15} color="black" style={{alignSelf:'flex-end',margin:2}} />
+                {!isHeart && <Icon name="heart-o" size={15} color="black" style={{alignSelf:'center',margin:2}} />}
+                {isHeart && <Icon name="heart" size={15} color="black" style={{alignSelf:'center',margin:2}} />}
+                
                 <Text style={{ fontSize: responsiveScreenFontSize(2), textAlign: 'center',fontWeight:'bold',marginBottom:3 }}>{item.name}</Text>
                 <View style={{flexDirection:'row'}}>
                     <View style={{flex:1, marginLeft:0}}>
