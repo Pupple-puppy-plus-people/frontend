@@ -16,26 +16,60 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import WeekComponent from '../../Recycle/WeekComponent';
 
 let baseUrl = 'http:127.0.0.1:8000'
-
-const getfromserver = () => {
+function walkGet() {
     axios.get(baseUrl+'/api/walkauth/')
-    .then(function(response){
-        // handle success
-        
-        loadedData = response.data[0]
-        console.log(loadedData)
-    })
-    .catch(function (error) {
-        //handle error
-        console.log(error)
-    })
-    .then(function(){
-        //always executed
-    });
+            .then(function(response){
+                // handle success
+                
+                loadedData = response.data[0]
+                deleteData = response.data[0]
+                console.log(loadedData);
+            })
+            .catch(function (error) {
+                //handle error
+                console.log(error);
+            })
+            .then(function(){
+                //always executed
+            });
+}
+function walkDelete() {
+    axios.delete(baseUrl+'/api/walkauth/'+deleteData.id);
+
+}
+function getfromserver(method){
+    if(method == 'stop'){
+        Promise.all([walkGet(),walkDelete()])
+        .then(function (results){
+            console.log(results)
+        });
+    }
+    else {
+        if(method == 'start'){
+            axios.post(baseUrl+'/api/walkauth/',{ 
+                index : 0,
+                start_time : 0,
+                elapsed_time : 0,
+                distance : 100
+            })
+            .then(function (response){
+                console.log(response.status);
+            })
+            .then(function (error){
+                console.log(error);
+            });
+        }
+    }
+    
 }
 
 // 산책 시작시 django server에서 받아온 데이터
 let loadedData = {
+    start_time:0,
+    elapsed_time:20,
+    distance:10
+};
+let deleteData = {
     start_time:0,
     elapsed_time:20,
     distance:10
@@ -110,14 +144,26 @@ const StopWatch = () => {
     const handleStart = () => {
       setIsActive(!isActive)
       {
-        !isActive ?
-        (increment.current = setInterval(() => {
-          setTimer((timer) => timer + 1)
-        //   django로부터 거리 불러오기
-        getfromserver()
-        }, 1000))
-        :
-        (clearInterval(increment.current))
+          if (!isActive) {
+              getfromserver('start')
+              increment.current = setInterval(() => {
+                  setTimer((timer) => timer + 1)
+                  walkGet()
+              }, 1000);
+          } else {
+              getfromserver('stop')
+              clearInterval(increment.current)
+          }
+        // !isActive ?
+        // getfromserver('start')
+        // (increment.current = setInterval(() => {
+        //   setTimer((timer) => timer + 1)
+        // //   django로부터 거리 불러오기
+        // walkGet()
+        // }, 1000))
+        // :
+        // getfromserver('stop')
+        // (clearInterval(increment.current))
       }
     }
   
