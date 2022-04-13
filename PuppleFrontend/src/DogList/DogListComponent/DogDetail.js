@@ -11,21 +11,29 @@ import {
     useWindowDimensions,
     TouchableOpacity,
     TouchableWithoutFeedback,
-    ScrollView
+    ScrollView,
+    Alert
 
 } from 'react-native';
 import Modal from 'react-native-modal';
 import GestureRecognizer from 'react-native-swipe-gestures';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import { responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
+import { Chip } from 'react-native-paper';
 
 const DogDetail = ({item,id}) => {
+    const [isHeart, setIsHeart] = useState(false);
     var genderStr="";
     if (item.gender=="f"){
         genderStr = "여";
     } else{
         genderStr = "남";
     }
+    PressHeart =() => setIsHeart(!isHeart);
+    // {
+    //     // 하트누른 데이터베이스가 있다면, 속성으로는 사용자 아이디, 강아지아이디
+    //     // insert item.id, user.id
+    // }
     return (
         <View style={{backgroundColor:'#E9E0FF', width:'100%',height:'100%',borderRadius:15}}>
 
@@ -35,29 +43,25 @@ const DogDetail = ({item,id}) => {
                     {/* <Image source={{uri:base64Image}} resizeMode='contain' style={{flex:1, width:'100%', height:'100%'}} /> */}
                 </View>
             </View>
+
+            {/* 하트 버튼 위치 */}
             <View style={{flex:0.8, alignContent:'center',justifyContent:'center'}}>
-                {/* <View style={{flex:8, justifyContent:'center'}}>
-                    <Text style={{textAlign:'center',fontSize:responsiveScreenFontSize(3.5),fontWeight:'bold'}}>{item.name}</Text>
-                </View>                     */}
                 <TouchableOpacity
-                style={{alignItems:'center',justifyContent:'center'}}>
-                    <Icon name="heart-o" size={30} color="black" />
-
+                style={{alignItems:'center',justifyContent:'center'}}
+                onPress={PressHeart}
+                >
+                    
+                    {!isHeart && <Icon name="heart-o" size={30} color="red" />}
+                    {isHeart && <Icon name="heart" size={30} color="red" />}
                 </TouchableOpacity>
-                {/* 
-                <View style={{flex:0.5}}>
-                <Icon name="times-circle" size={30} color="black" />
-                </View> */}
-                
-
             </View>
             <View style={{marginHorizontal:10,borderTopColor:'gray',borderTopWidth:2}}/>
 
-            <View style={{flex:8}}>
-                <ScrollView
-                style={{flex:1}}>
-                    <View style={{margin:10}}>
+            {/* 스크롤뷰 위치 */}
+            <View style={{flex:8}}><ScrollView style={{flex:1}}>
 
+            {/* 강아지와 관련된 정보를 담아둠 */}
+                <View style={{margin:10}}>
                     <View style={{flexDirection:'row',height:responsiveScreenHeight(5),alignContent:'center',marginHorizontal:responsiveScreenWidth(10)}}>
                         <View style={{flex:1}}>
                             <Text style={{...styles.textList, fontSize:responsiveScreenFontSize(3)}}>이름</Text>
@@ -135,18 +139,24 @@ const DogDetail = ({item,id}) => {
                         <Text style={{...styles.textList,margin:5}}>이 친구는요...</Text>
                         <Text style={{margin:5}}>{item.introduction}</Text>
                     </View>
-                           
-                            
-                            
-                            
+                </View>
+{/*          */}
+                {/* 포함하는 입양 절차를 동그란 칩으로 */}
+                <View>
+                    <View style={{margin:10,marginLeft:20}}>
+                        <Text style={{fontSize:responsiveScreenFontSize(2.5),fontWeight:'bold'}}>아래의 검증과정이 추가로 필요해요!</Text>
                     </View>
-                            
-    {/*                         
-                            <Text>입양처 위치</Text>
-                            <Text>맺음비(가격)</Text> */}
+                    <View style={{flexDirection: 'row', justifyContent: 'flex-start', flexWrap:'wrap',marginBottom:20,marginHorizontal:10}}>
+                        <Chip style={styles.chip} textStyle={styles.chipText}> 산책량 측정 </Chip>
+                        <Chip style={styles.chip} textStyle={styles.chipText}>  생활패턴 검증 </Chip>
+                        <Chip style={styles.chip} textStyle={styles.chipText}>  집 바닥재질 평가 </Chip>
+                        <Chip style={styles.chip} textStyle={styles.chipText}>  반려견 생활환경 평가 </Chip>
+                    </View> 
+                </View>
 
-                </ScrollView>
-            </View>
+                
+
+            </ScrollView></View>
             
 
         </View>
@@ -165,6 +175,16 @@ const styles = StyleSheet.create({
         marginVertical:5,
 
     },
+    chip:{
+        width:'auto',
+        margin:4,
+        backgroundColor:'purple',
+    },
+    chipText:{
+        fontSize:responsiveScreenFontSize(2),
+        fontWeight:'bold',
+        color:'white'
+    }
 });
 
 export default DogDetail;
