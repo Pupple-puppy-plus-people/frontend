@@ -1,6 +1,6 @@
+import axios from 'axios';
 import React ,{Component, useState, useRef} from 'react';
 import {
-    SafeAreaView,
     StyleSheet,
     Text,
     View,
@@ -9,11 +9,30 @@ import {
     FlatList,
     TouchableWithoutFeedback,
 } from 'react-native';
-
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import WeekComponent from '../../Recycle/WeekComponent';
+
+let baseUrl = 'http:127.0.0.1:8000'
+
+const getfromserver = () => {
+    axios.get(baseUrl+'/api/walkauth/')
+    .then(function(response){
+        // handle success
+        
+        loadedData = response.data[0]
+        console.log(loadedData)
+    })
+    .catch(function (error) {
+        //handle error
+        console.log(error)
+    })
+    .then(function(){
+        //always executed
+    });
+}
 
 // 산책 시작시 django server에서 받아온 데이터
 let loadedData = {
@@ -95,6 +114,7 @@ const StopWatch = () => {
         (increment.current = setInterval(() => {
           setTimer((timer) => timer + 1)
         //   django로부터 거리 불러오기
+        getfromserver()
         }, 1000))
         :
         (clearInterval(increment.current))
