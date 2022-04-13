@@ -15,9 +15,9 @@ function DogList({user_info}){
             name="DogListHome"
             component={DogListHome}
             options={{
-                title: "오늘도 강아지는 당신을 기다립니다.",
+                title: "오늘도 강아지들은 당신을 기다립니다.",
             }}/>
-
+            
             {/* <Stack.Screen 
             name="ReadingBook" 
             component={ReadingBookView}
