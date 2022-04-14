@@ -14,7 +14,7 @@ import EnterEmail from './Login/RegisterStep/EnterEmail';
 import EnterPassword from './Login/RegisterStep/EnterPassword';
 import PasswordCheck from './Login/RegisterStep/PasswordCheck';
 import DogList from './DogList';
-import Tab2 from './Tab2'; // 인증탭 이름 추천 받아요 
+import Tab2 from './Tab2'; // 인증탭 이름 추천 받아요  -> autntication
 import ChattingRoom from './ChattingRoom';
 
 const Stack = createStackNavigator();
