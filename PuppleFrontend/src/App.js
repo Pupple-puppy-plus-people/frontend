@@ -25,6 +25,7 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import Navigator from './Navigator';
+import FilterDogList from './DogList/FilterComponent/FilterDogList';
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -35,6 +36,7 @@ const App = () => {
 
   return (
     <Navigator/>
+    // <FilterDogList/>
   );
 };
 

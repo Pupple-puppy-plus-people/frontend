@@ -310,8 +310,10 @@ const DogListHome = ({ navigation }) => {
                     <Pressable
                         style={[styles.button, styles.buttonOpen]}
                     // onPress={() => setModal(true)}
+                        onPress={() =>
+                        navigation.navigate('FilterDogList')}
                     >
-                        <Icon2 name="menu" size={30} color="black" />
+                        <Icon2 name="menu" size={30} color="red" />
                     </Pressable>
                 </View>
 
