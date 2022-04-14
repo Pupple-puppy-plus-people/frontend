@@ -25,6 +25,10 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 import Navigator from './Navigator';
+import FilterDogList from './DogList/FilterComponent/FilterDogList';
+
+//템플릿 구현 후 삭제
+import Walk from './Template/Walk/';
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -35,6 +39,8 @@ const App = () => {
 
   return (
     <Navigator/>
+    //<Walk/>
+    // <FilterDogList/>
   );
 };
 

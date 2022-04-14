@@ -2,6 +2,8 @@
 #
 .DS_Store
 
+ios/Podfile.lock
+package-lock.json
 # Xcode
 #
 build/
@@ -20,7 +22,6 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
-
 # Android/IntelliJ
 #
 build/

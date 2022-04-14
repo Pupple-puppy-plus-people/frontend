@@ -1,6 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
 import DogListHome from './DogListComponent/DogListHome';
+import FilterDogList from './FilterComponent/FilterDogList';
 // import { connect } from 'react-redux';
 const Stack = createStackNavigator();
 
@@ -15,14 +16,19 @@ function DogList({user_info}){
             name="DogListHome"
             component={DogListHome}
             options={{
-                title: "오늘도 강아지는 당신을 기다립니다.",
+                title: "오늘도 강아지들은 당신을 기다립니다.",
             }}/>
-
-            {/* <Stack.Screen 
-            name="ReadingBook" 
-            component={ReadingBookView}
+            <Stack.Screen
+            name='FilterDogList'
+            component={FilterDogList}
             options={{
-                title: '읽고 있는 책',
+                title: '찾으시는 강아지가 있으신가요?',
+            }}/>
+            {/* <Stack.Screen 
+            name="Reading" 
+            component={ReadingView}
+            options={{
+                title: '머리위에 제목',
                 
                 
             }}
@@ -35,5 +41,4 @@ function DogList({user_info}){
 //     user_info : state.userReducer.userObj
 //   });
 
-// export default connect(mapStateToProps)(BookShelf);
 export default DogList;
