@@ -132,7 +132,7 @@ const DogDetail = ({item,id}) => {
                         <Text style={styles.textList}>입양처 위치</Text>
                         </View>
                         <View style={{flex:1}}>
-                            <Text style={{...styles.textList, textAlign:'right'}}>{item.location}</Text>
+                            <Text style={{...styles.textList,fontSize:responsiveScreenFontSize(2), textAlign:'right'}}>{item.location}</Text>
                         </View>
                     </View>
                     <View style={{justifyContent:'center',margin:10, flex:1,backgroundColor:'white',borderRadius:15,padding:5}}>
