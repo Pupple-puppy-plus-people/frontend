@@ -18,6 +18,7 @@ import EnrollPage from './Tab2/Tab2Component/Shelter/EnrollPage';
 
 const Stack = createStackNavigator();
 const BottomTab = createBottomTabNavigator();
+const LogStack = createStackNavigator();
 
 const BottomNavigation = ({navigation}) => {
   return (

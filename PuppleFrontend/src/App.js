@@ -37,8 +37,8 @@ const App = () => {
   };
 
   return (
-    // <Navigator/>
-    <Walk/>
+    <Navigator/>
+    //<Walk/>
   );
 };
 
