@@ -8,6 +8,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import DogList from './DogList';
 import Login from './Login';
+import RoomCheck from './DogAuth/DogAuthComponent/RoomCheck';
 
 const Stack = createStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -15,6 +16,20 @@ const BottomTab = createBottomTabNavigator();
 const BottomNavigation = ({navigation}) => {
   return (
       <BottomTab.Navigator>
+        <BottomTab.Screen
+            name="RoomCheck"
+            component={RoomCheck}
+            options={{
+                tabBarLabel: '방체크',
+                headerShown: false,
+                animationEnabled: false,
+                tabBarIcon: ()=> (
+                    <MaterialCommunityIcons name="dog" size={25} />
+                )
+            }}
+        >
+        </BottomTab.Screen>
+
           <BottomTab.Screen
               name="DogList"
               component={DogList}
@@ -65,9 +80,7 @@ function Navigator() {
 
     return (
 
-        <NavigationContainer
-        
-        >
+        <NavigationContainer>
             <Stack.Navigator>
                 {/* <Stack.Screen
                 name="SplashScreen"

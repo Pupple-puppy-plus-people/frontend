@@ -17,7 +17,6 @@ import {
 
 } from 'react-native';
 //import Modal from 'react-native-modal';
-import GestureRecognizer from 'react-native-swipe-gestures';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import Icon2 from 'react-native-vector-icons/Feather';
 import { responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth, responsiveWidth } from 'react-native-responsive-dimensions';
@@ -235,6 +234,8 @@ const DogListHome = ({ navigation }) => {
         var imageStr = {uri: 'http://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
         if(item.image){
             imageStr = {uri: item.image};
+            imageStr = {uri: 'https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
+
         }else{
             imageStr = {uri: 'https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
         }
@@ -258,7 +259,7 @@ const DogListHome = ({ navigation }) => {
                 </View>
                 <View style={{ flex: 1,marginTop:3}}>
                 {!isHeart && <Icon name="heart-o" size={15} color="black" style={{alignSelf:'center',margin:2}} />}
-                {isHeart && <Icon name="heart" size={15} color="black" style={{alignSelf:'center',margin:2}} />}
+                {isHeart && <Icon name="heart" size={15} color="red" style={{alignSelf:'center',margin:2}} />}
                 
                 <Text style={{ fontSize: responsiveScreenFontSize(2), textAlign: 'center',fontWeight:'bold',marginBottom:3 }}>{item.name}</Text>
                 <View style={{flexDirection:'row',justifyContent:'center'}}>
