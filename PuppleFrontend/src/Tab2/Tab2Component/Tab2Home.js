@@ -145,9 +145,9 @@ function Item({item, navigation}) {
           </View>
 
           <Text style={styles.btnTitle}>{item.title}</Text>
-          <Text style={styles.btnText}>나이: {item.title}</Text>
-          <Text style={styles.btnText}>성별: {item.title} 중성화: {1} </Text>
-          <Text style={styles.btnText}>입양처: {item.title}</Text>
+          <Text style={styles.btnText}>{2022-2021}살 {5}개월</Text>
+          <Text style={styles.btnText}>{"수컷"} (중성화 {0}) </Text>
+          <Text style={styles.btnText}>{"서울시 동작구"}</Text>
 
         </Pressable> 
   )
@@ -182,7 +182,7 @@ function Authenticate ({navigation}) {
     return (
         /* 노치 디자인에도 안전하게 화면의 콘텐츠를 확보할수 있음 */
         <SafeAreaView style={styles.container}>  
-
+          
             <View style={{justifyContent: 'center', width: "100%", height: "100%"}}>
 
                 {/* 리스트에 아무것도 없다면 */}
@@ -208,7 +208,7 @@ function Authenticate ({navigation}) {
             
       
            {/* 만약에 입양처로 로그인한다면*/}
-            {USER_TYPE === 1 ? <EnrollButton /> : null}
+            {USER_TYPE === 1 ? <EnrollButton navigation={navigation}/> : null}
   
         </SafeAreaView>
 
@@ -287,9 +287,12 @@ const styles = StyleSheet.create({
       fontSize: responsiveScreenFontSize(2.5),
       margin: '2%',
       textAlign: 'center',
+      width: "50%"
     },
     btnText: {
       fontSize: responsiveScreenFontSize(1.5),
+      textAlign: 'center',
+      width: "50%"  // 텍스트 길이 제한
     },
     dogCard: { 
       //flex: 1/2, -> 이거로 하니까 리스트 개수가 홀수개일 때 마지막 리스트 사이즈가 튀어나옴

@@ -3,6 +3,8 @@ import React from 'react';
 import Tab2Home from './Tab2Component/Tab2Home';
 import EnrollPage from './Tab2Component/Shelter/EnrollPage';
 
+import "react-native-gesture-handler";
+
 // import { connect } from 'react-redux';
 const Stack = createStackNavigator();
 
@@ -25,17 +27,9 @@ function Tab2({user_info}){
                 title: "반려견 목록",
             }}/>
 
-            <Stack.Screen
-            name="EnrollPage"
-            component={EnrollPage}
-            options={{
-                title: false,
-                headerShown: true,
-                headerTransparent: true,
-                // header shadow
-                // header 반려견 삭제 버튼 (글라스모피즘 버튼)
-                
-            }}/>
+            
+
+           
             
         </Stack.Navigator>
     )

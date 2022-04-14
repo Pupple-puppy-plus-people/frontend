@@ -6,6 +6,8 @@ import {
   View,
   Text,
   Image,
+  KeyboardAvoidingView,
+  SafeAreaView,
   Keyboard,
   TouchableOpacity,
   ScrollView,
@@ -17,8 +19,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import Animation from 'lottie-react-native';
 import symbolicateStackTrace from 'react-native/Libraries/Core/Devtools/symbolicateStackTrace';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-
 // import Loader from './Components/Loader';
 
 const screenWidth = Dimensions.get('screen').width;
@@ -26,21 +26,37 @@ const screenHeight = Dimensions.get('screen').height;
 const bigOne = screenWidth > screenHeight ? screenWidth:screenHeight;
 const smallOne = screenWidth < screenHeight ? screenWidth:screenHeight;
 
-function EnrollDog({navigation}) {
-    const [type, setType] = useState("");
-    const [number, onChangeNumber] = React.useState(null);
-    const onChangeText = (type) => {
-        setName(type);
-    }
-    const gotoNextScreen = (type) => {
-        setType(type)
-        navigation.navigate('EnterName',{types: type});
-    }
+function EnrollStep1({navigation}) {
 
+    const [name, setName] = useState("");
+    const onChangeText = (name) => {
+        setName(name);
+    }
+    
+    const gotoNextScreen = () => {
+        if(name === ""){
+            Alert.alert(
+                "번호를 입력해주세요!"
+            );
+        }
+        else{
+            navigation.navigate('EnrollStep2',{});
+        }
+    }
     return (
-        <KeyboardAwareScrollView /* 스크롤 뷰에서 키보드가 화면을 가리는 것을 막아준다 */
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={{flex:1}}>
+
+        // bottom navigation 지우기
+        // 그 아래 등록하기(홈에서 보임), 저장하기 버튼 두기 
+
+        // 선택하기 (입양처 / 입양인)
+        // 사진 올리기 
+        // 견적사항 완성하기 (step 1) - 왼쪽 페이지에서
+        // 인증절차 선택하기 (step 2) - 오른쪽 페이지에서 
+        // progress bar는 어디에?
+
+        <SafeAreaView style={styles.container}>  
+
+
             <View style={{flex:9,flexDirection:'column', padding:'3%',backgroundColor:'#fff'}}>
                 <View style={{flex:0.5}}/>
                 <View style={[styles.board,{flex:9,backgroundColor:'#E1BEE7',borderRadius:20}]}>
@@ -48,37 +64,55 @@ function EnrollDog({navigation}) {
                         {/* <LottieView style={{width:'100%',height:'100%',margin:0}} source={require('../../Assets/json/42476-register.json')} autoPlay loop /> */}
                         {/* <Text style={styles.title}>Step 1.</Text> */}
                         <Text style={styles.title}>Step 1.</Text>
-                        <Text style={styles.title}>역할을 선택해주세요.</Text>
+                        <Text style={styles.title}> 동물등록 번호를 조회해주세요. </Text>
                     </View>
                     <View style={{flex:0.5, padding:10,justifyContent:'flex-start'}}>
-                        <Text style={styles.subtitle}>도서 판매자와 구매자를 고를 수 있어요.</Text>
-
+                        <Text style={styles.subtitle}> 동물등록 된 생후 2개월 이상의 반려견을 분양을 권장합니다. </Text>
                     </View>
+
+                    <>
+                    <View style={{flex:1,justifyContent:'flex-start',}}>
+                        <TextInput 
+                            style={styles.input}
+                            onChangeText={onChangeText}
+                            value={name}
+                            placeholder="ex) 00000000000 11자리"
+                        />
+                        
+                    </View>
+                    <TouchableOpacity 
+                        onPress={gotoNextScreen}
+                        style={styles.nextBtn} 
+                        //activeOpacity={0.5}
+                    >
+                        <Text style={[styles.botText, {color: 'white'}]}>다음</Text>
+                    </TouchableOpacity>
+                    </>
+
                     <View style={{flex:4, flexDirection:'column',justifyContent:'center'}}>
-                        <TouchableOpacity style={styles.card}
-                            onPress={() => {gotoNextScreen("seller")}}
-                        >
-                            {/* <LottieView style={{width:screenWidth===bigOne? bigOne*0.3:smallOne*0.6,alignSelf:'center'}} source={require('../../Assets/json/22620-store.json')} autoPlay /> */}
-                            <Text style={{fontSize:responsiveFontSize(2.5),fontWeight:'bold'}}>강아지를 다른사람에게 보낼래요!</Text>
-
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.card}
-                            onPress={() => {gotoNextScreen("customer")}}
-                        >
-                            {/* <LottieView style={{width:screenWidth===bigOne? bigOne*0.3:smallOne*0.6,alignSelf:'center'}} source={require('../../Assets/json/22620-store.json')} autoPlay /> */}
-                            <Text style={{fontSize:responsiveFontSize(2.5),fontWeight:'bold'}}>입양/분양 받고 싶어요!</Text>
-                        </TouchableOpacity>
-
                     </View>
                 </View>
 
                 <View style={{flex:1.5}}/>
             </View>
-        </KeyboardAwareScrollView>
+            
+        </SafeAreaView>
     );
 }
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'white',
+        paddingHorizontal: 10,
+        
+    },
+    scrollView: {
+        backgroundColor: 'pink',
+        marginHorizontal: 0,
+        flex: 1,
+      },
     board:{
+        marginTop: "10%", // 이거 임시방편임
         shadowColor: "#000",
         shadowOffset: {
           width: 0,
@@ -119,25 +153,25 @@ const styles = StyleSheet.create({
         fontWeight:'bold',
     },
     nextBtn: {
-        height: '100%',
-        width:'100%',
-        maxHeight:70,
-        borderRadius:10,
-        backgroundColor:'blue',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },  
-    input: {
-        height: bigOne*0.1,
-        margin: 12,
-        borderBottomWidth: 3,
-        padding: 10,
-        borderBottomColor:'blue',
-        fontSize:bigOne*0.02,
-        color:'blue',
-        
-        
-    },
+    marginTop: 50,
+    flex:1,
+    height: '100%',
+    width:'100%',
+    maxHeight:50,
+    borderRadius:10,
+    backgroundColor:'#9C27B0',
+    justifyContent: 'center',
+    //alignItems: 'center',
+},  
+input: {
+    height: bigOne*0.1,
+    margin: 12,
+    marginBottom: 15,
+    borderBottomWidth: 3,
+    padding: 10,
+    borderBottomColor:'#9C27B0',
+    fontSize:bigOne*0.02,
+},
     card: {
         backgroundColor: '#FBEDFD',
         flex: 1,
@@ -155,4 +189,4 @@ const styles = StyleSheet.create({
         elevation: 9
     },
   });
-export default EnrollDog;
+export default EnrollStep1;

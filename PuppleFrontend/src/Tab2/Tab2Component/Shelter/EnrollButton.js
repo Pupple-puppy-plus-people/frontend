@@ -11,15 +11,18 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const width = Dimensions.get("window").width - 10; // container style에 paddingHorizontal*2
 const height = Dimensions.get("window").height;
 
-const EnrollButton = ({})=>{
+const EnrollButton = ({navigation})=>{
+
+    
 
     return (
         
         //<View>
+        
             <TouchableOpacity style={[styles.button]}
                 activeOpacity={0.8} /* 등록하기 버튼은 loginstate가 seller 일때만 보여짐 */
                 underlayColor="#DDDDDD" 
-                onPress={() => {gotoNextScreen("seller")}}
+                onPress={() => {navigation.navigate("EnrollStep1")}}
             >
                 <Icon name="plus" size={35} style={{color:'white'}}/>  
             </TouchableOpacity> 
