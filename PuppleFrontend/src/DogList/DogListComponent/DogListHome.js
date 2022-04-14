@@ -234,7 +234,7 @@ const DogListHome = ({ navigation }) => {
         var imageStr = {uri: 'http://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
         if(item.image){
             imageStr = {uri: item.image};
-            imageStr = {uri: 'https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
+            //imageStr = {uri: 'https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
 
         }else{
             imageStr = {uri: 'https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
@@ -254,7 +254,7 @@ const DogListHome = ({ navigation }) => {
             >
                 <View style={{ flex: 1,alignItems:'center',justifyContent:'center'}}>
                     {/* 지금 http에 s가 다빠져있어서 오류나서 임시로 다 넣어놓음 */}
-                    <Image source={{uri: 'https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}} style={{ width:responsiveScreenHeight(12),height: responsiveScreenHeight(12),resizeMode:'cover',borderRadius:50 }}  />
+                    <Image source={imageStr} style={{ width:responsiveScreenHeight(12),height: responsiveScreenHeight(12),resizeMode:'cover',borderRadius:50 }}  />
                     {/* <Image source={imageStr} resizeMode='contain' style={{ width:responsiveScreenHeight(12),height: responsiveScreenHeight(12),resizeMode:'cover',borderRadius:50 }} /> */}
                 </View>
                 <View style={{ flex: 1,marginTop:3}}>
