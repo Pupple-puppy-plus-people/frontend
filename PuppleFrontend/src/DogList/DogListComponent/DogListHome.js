@@ -22,10 +22,11 @@ import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import Icon2 from 'react-native-vector-icons/Feather';
 import { responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth, responsiveWidth } from 'react-native-responsive-dimensions';
 import DogDetail from './DogDetail';
+import axios from 'axios';
+import { HS_API_END_POINT } from '../../Shared/env';
+import { isMessageIgnored } from 'react-native/Libraries/LogBox/Data/LogBoxData';
 
-//import * as RNFS from 'react-native-fs'
-//import axios from 'axios';
-//import { HS_API_END_POINT } from '../../Shared/env';
+// import * as RNFS from 'react-native-fs'
 //import { setJwt,setUserInfo } from '../Store/Actions';
 //import { connect } from 'react-redux';
 const dogsData = [
@@ -198,13 +199,29 @@ const dogsData = [
 
 
 const DogListHome = ({ navigation }) => {
+    
     const [detailVisible, setDetailVisible] = useState(false);
     //const [partBookPurchaseVisible, setPartBookPurchaseVisible] = useState(false);
     const [selectedDog, setSelectedDog] = useState({});
     const [selectedDogId, setSelectedDogId] = useState({});
     const [backBoard, setBackBoard] = useState({backgroundColor:'white'})
+    const [dogs, setDogs] = useState([{}])
     
-    
+    React.useEffect(()=> {
+        axios.get(`${HS_API_END_POINT}/api/dogs/`)
+            .then((res)=> {      
+                console.log("dogs Data 받음.");
+                setDogs(res.data);
+                //console.log(dogs.image);
+                // handleBookObj("allBook",res.data.data);
+                // handleBookObj("workBook", res.data.data.filter(item => item.category === '문제집'))
+                // handleBookObj("majorBook", res.data.data.filter(item => item.category === '전공도서'))
+                // handleBookObj("otherBook", res.data.data.filter(item => item.category === '기타'))
+            })
+            .catch((err)=> {
+                console.log(err);
+        })
+    },[]); 
 
     const Item = ({ item }) => {
         // const base64Image = 'data:image/png;base64,' + item.bookCoverResource;
@@ -215,6 +232,13 @@ const DogListHome = ({ navigation }) => {
         } else{
             genderStr = "남";
         }
+        var imageStr = {uri: 'http://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
+        if(item.image){
+            imageStr = {uri: item.image};
+        }else{
+            imageStr = {uri: 'https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
+        }
+        // console.log(item.image);
         return (
             <TouchableOpacity 
             style={styles.dogCard}
@@ -228,26 +252,25 @@ const DogListHome = ({ navigation }) => {
             }
             >
                 <View style={{ flex: 1,alignItems:'center',justifyContent:'center'}}>
-    
-                    <Image source={item.image} style={{ width:responsiveScreenHeight(12),height: responsiveScreenHeight(12),resizeMode:'cover',borderRadius:50 }}  />
-                    {/* <Image source={{uri:base64Image}} resizeMode='contain' style={{flex:1, width:'100%', height:'100%'}} /> */}
+                    {/* 지금 http에 s가 다빠져있어서 오류나서 임시로 다 넣어놓음 */}
+                    <Image source={{uri: 'https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}} style={{ width:responsiveScreenHeight(12),height: responsiveScreenHeight(12),resizeMode:'cover',borderRadius:50 }}  />
+                    {/* <Image source={imageStr} resizeMode='contain' style={{ width:responsiveScreenHeight(12),height: responsiveScreenHeight(12),resizeMode:'cover',borderRadius:50 }} /> */}
                 </View>
                 <View style={{ flex: 1,marginTop:3}}>
                 {!isHeart && <Icon name="heart-o" size={15} color="black" style={{alignSelf:'center',margin:2}} />}
                 {isHeart && <Icon name="heart" size={15} color="black" style={{alignSelf:'center',margin:2}} />}
                 
                 <Text style={{ fontSize: responsiveScreenFontSize(2), textAlign: 'center',fontWeight:'bold',marginBottom:3 }}>{item.name}</Text>
-                <View style={{flexDirection:'row'}}>
-                    <View style={{flex:1, marginLeft:0}}>
-                        <Text style={{ fontSize: responsiveScreenFontSize(1.8), textAlign: 'right' }}>성별 :</Text>
-                        <Text style={{ fontSize: responsiveScreenFontSize(1.8), textAlign: 'right' }}>중성화 : </Text>
-                        <Text style={{ fontSize: responsiveScreenFontSize(1.8), textAlign: 'right' }}>지역 : </Text>
+                <View style={{flexDirection:'row',justifyContent:'center'}}>
+                    <View style={{flex:1, marginLeft:0, justifyContent:'center'}}>
+                        <Text style={{ fontSize: responsiveScreenFontSize(1.8), textAlign: 'right' }}>성별   :</Text>
+                        <Text style={{ fontSize: responsiveScreenFontSize(1.8), textAlign: 'right' }}>중성화 :</Text>
+                        <Text style={{ fontSize: responsiveScreenFontSize(1.8), textAlign: 'right' }}>지역   :</Text>
                     </View>
-                    <View style={{flex:1}}>
-                        <Text style={{ fontSize: responsiveScreenFontSize(1.8), textAlign: 'center' }}>{genderStr}</Text>
-                        <Text style={{ fontSize: responsiveScreenFontSize(1.8), textAlign: 'center' }}>{item.desexing}</Text>
-                        <Text style={{ fontSize: responsiveScreenFontSize(1.8), textAlign: 'center' }}>{item.location}</Text>
-                    
+                    <View style={{flex:2.5,justifyContent:'center'}}>
+                        <Text style={{ fontSize: responsiveScreenFontSize(1.8), textAlign: 'center' }}>{genderStr} </Text>
+                        <Text style={{ fontSize: responsiveScreenFontSize(1.8), textAlign: 'center' }}>{item.desexing} </Text>
+                        <Text style={{ fontSize: responsiveScreenFontSize(1.8), textAlign: 'center' }}>{item.location} </Text>
                     </View>
                 </View>
                 </View>
@@ -328,7 +351,7 @@ const DogListHome = ({ navigation }) => {
                     <View style={{ width: '100%', borderBottomWidth: 1, borderBottomColor: 'gray' }} />
 
                     <FlatList
-                        data={dogsData}
+                        data={dogs}
                         renderItem={renderItem}
                         keyExtractor={item => item.id}
                         numColumns={2}
