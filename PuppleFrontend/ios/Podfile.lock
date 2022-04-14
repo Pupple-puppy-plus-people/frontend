@@ -278,13 +278,13 @@ PODS:
     - glog
   - react-native-pager-view (5.4.15):
     - React-Core
-  - react-native-safe-area-context (4.2.1):
+  - react-native-safe-area-context (4.2.4):
     - RCT-Folly
     - RCTRequired
     - RCTTypeSafety
     - React
     - ReactCommon/turbomodule/core
-  - react-native-webview (11.17.2):
+  - react-native-webview (11.18.1):
     - React-Core
   - React-perflogger (0.67.4)
   - React-RCTActionSheet (0.67.4):
@@ -353,9 +353,9 @@ PODS:
     - React-perflogger (= 0.67.4)
   - RNCMaskedView (0.1.11):
     - React
-  - RNGestureHandler (2.3.2):
+  - RNGestureHandler (2.4.0):
     - React-Core
-  - RNReanimated (2.5.0):
+  - RNReanimated (2.7.0):
     - DoubleConversion
     - FBLazyVector
     - FBReactNativeSpec
@@ -363,7 +363,6 @@ PODS:
     - RCT-Folly
     - RCTRequired
     - RCTTypeSafety
-    - React
     - React-callinvoker
     - React-Core
     - React-Core/DevSupport
@@ -598,8 +597,8 @@ SPEC CHECKSUMS:
   React-jsinspector: f4775ea9118cbe1f72b834f0f842baa7a99508d8
   React-logger: a1f028f6d8639a3f364ef80419e5e862e1115250
   react-native-pager-view: b1914469643f40042e65d78cbf3d3dfebd6fb0d9
-  react-native-safe-area-context: 806f8370bf9fc9db90a3413aaa1aab0d2e22fdf3
-  react-native-webview: 380c1a03ec94b7ed764dac8db1e7c9952d08c93a
+  react-native-safe-area-context: f98b0b16d1546d208fc293b4661e3f81a895afd9
+  react-native-webview: 0b7bd2bffced115aefd393e1841babd9b9a557b1
   React-perflogger: 0afaf2f01a47fd0fc368a93bfbb5bd3b26db6e7f
   React-RCTActionSheet: 59f35c4029e0b532fc42114241a06e170b7431a2
   React-RCTAnimation: aae4f4bed122e78bdab72f7118d291d70a932ce2
@@ -613,8 +612,8 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: a9d3c82ddf7ffdad9fbe6a81c6d6f8c06385464d
   ReactCommon: 07d0c460b9ba9af3eaf1b8f5abe7daaad28c9c4e
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
-  RNGestureHandler: 6e757e487a4834e7280e98e9bac66d2d9c575e9c
-  RNReanimated: 190b6930d5d94832061278e1070bbe313e50c830
+  RNGestureHandler: 50e6ffee79932d14ea747d4ea4cc99aac0f24e86
+  RNReanimated: 96ab42cfb0e5517293499e0f3f810420eb459f75
   RNScreens: 40a2cb40a02a609938137a1e0acfbf8fc9eebf19
   RNVectorIcons: 7923e585eaeb139b9f4531d25a125a1500162a0b
   VisionCamera: d4d9511c7a98126147d57d0034b0b5ff1f8afaa3
