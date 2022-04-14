@@ -15,6 +15,7 @@ const BottomTab = createBottomTabNavigator();
 const BottomNavigation = ({navigation}) => {
   return (
       <BottomTab.Navigator>
+
           <BottomTab.Screen
               name="DogList"
               component={DogList}
@@ -65,9 +66,7 @@ function Navigator() {
 
     return (
 
-        <NavigationContainer
-        
-        >
+        <NavigationContainer>
             <Stack.Navigator>
                 {/* <Stack.Screen
                 name="SplashScreen"

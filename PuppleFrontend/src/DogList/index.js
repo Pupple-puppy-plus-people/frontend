@@ -19,10 +19,10 @@ function DogList({user_info}){
             }}/>
             
             {/* <Stack.Screen 
-            name="ReadingBook" 
-            component={ReadingBookView}
+            name="Reading" 
+            component={ReadingView}
             options={{
-                title: '읽고 있는 책',
+                title: '머리위에 제목',
                 
                 
             }}
@@ -35,5 +35,4 @@ function DogList({user_info}){
 //     user_info : state.userReducer.userObj
 //   });
 
-// export default connect(mapStateToProps)(BookShelf);
 export default DogList;

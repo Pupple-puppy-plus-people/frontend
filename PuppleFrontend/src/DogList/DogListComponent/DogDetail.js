@@ -16,7 +16,6 @@ import {
 
 } from 'react-native';
 import Modal from 'react-native-modal';
-import GestureRecognizer from 'react-native-swipe-gestures';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import { responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
 import { Chip } from 'react-native-paper';
@@ -29,6 +28,14 @@ const DogDetail = ({item,id}) => {
     } else{
         genderStr = "남";
     }
+    var imageStr = {uri: 'http://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
+        if(item.image){
+            imageStr = {uri: item.image};
+            imageStr = {uri: 'https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
+
+        }else{
+            imageStr = {uri: 'https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
+        }
     PressHeart =() => setIsHeart(!isHeart);
     // {
     //     // 하트누른 데이터베이스가 있다면, 속성으로는 사용자 아이디, 강아지아이디
@@ -39,7 +46,7 @@ const DogDetail = ({item,id}) => {
 
             <View style={{ flex: 4}}>
                 <View style={{flex:1,borderTopLeftRadius:15,borderTopRightRadius:15}}>
-                    <Image source={item.image} style={{ flex: 1, width: '100%', height: '100%',resizeMode:'cover',borderRadius:15}}  />
+                    <Image source={imageStr} style={{ flex: 1, width: '100%', height: '100%',resizeMode:'cover',borderRadius:15}}  />
                     {/* <Image source={{uri:base64Image}} resizeMode='contain' style={{flex:1, width:'100%', height:'100%'}} /> */}
                 </View>
             </View>
@@ -66,7 +73,7 @@ const DogDetail = ({item,id}) => {
                         <View style={{flex:1}}>
                             <Text style={{...styles.textList, fontSize:responsiveScreenFontSize(3)}}>이름</Text>
                         </View>
-                        <View style={{flex:1}}>
+                        <View style={{flex:2}}>
                             <Text style={{...styles.textList,textAlign:'right',fontSize:responsiveScreenFontSize(3)}}>{item.name}</Text>
                         </View>
                     </View>
@@ -75,7 +82,7 @@ const DogDetail = ({item,id}) => {
                             
                             <Text style={styles.textList}>나이</Text>
                         </View>
-                        <View style={{flex:1}}>
+                        <View style={{flex:2}}>
                             <Text style={{...styles.textList, textAlign:'right'}}>{item.age} 살</Text>
                         </View>
                     </View>
@@ -83,7 +90,7 @@ const DogDetail = ({item,id}) => {
                         <View style={{flex:1,}}>
                         <Text style={styles.textList}>성별</Text>
                         </View>
-                        <View style={{flex:1}}>
+                        <View style={{flex:2}}>
                             <Text style={{...styles.textList, textAlign:'right'}}>{genderStr}</Text>
                         </View>
                     </View>
@@ -91,7 +98,7 @@ const DogDetail = ({item,id}) => {
                         <View style={{flex:1,}}>
                         <Text style={styles.textList}>중성화 여부</Text>
                         </View>
-                        <View style={{flex:1}}>
+                        <View style={{flex:2}}>
                             <Text style={{...styles.textList, textAlign:'right'}}>{item.desexing}</Text>
                         </View>
                     </View>
@@ -99,7 +106,7 @@ const DogDetail = ({item,id}) => {
                         <View style={{flex:1,}}>
                         <Text style={styles.textList}>크기</Text>
                         </View>
-                        <View style={{flex:1}}>
+                        <View style={{flex:2}}>
                             <Text style={{...styles.textList, textAlign:'right'}}>{item.size}</Text>
                         </View>
                     </View>
@@ -107,7 +114,7 @@ const DogDetail = ({item,id}) => {
                         <View style={{flex:1,}}>
                         <Text style={styles.textList}>털빠짐 정도</Text>
                         </View>
-                        <View style={{flex:1}}>
+                        <View style={{flex:2}}>
                             <Text style={{...styles.textList, textAlign:'right'}}>{item.hair_loss}</Text>
                         </View>
                     </View>
@@ -115,7 +122,7 @@ const DogDetail = ({item,id}) => {
                         <View style={{flex:1,}}>
                         <Text style={styles.textList}>짖음 정도</Text>
                         </View>
-                        <View style={{flex:1}}>
+                        <View style={{flex:2}}>
                             <Text style={{...styles.textList, textAlign:'right'}}>{item.bark_term}</Text>
                         </View>
                     </View>
@@ -123,7 +130,7 @@ const DogDetail = ({item,id}) => {
                         <View style={{flex:1,}}>
                         <Text style={styles.textList}>활동성</Text>
                         </View>
-                        <View style={{flex:1}}>
+                        <View style={{flex:2}}>
                             <Text style={{...styles.textList, textAlign:'right'}}>{item.activity}</Text>
                         </View>
                     </View>
@@ -131,7 +138,7 @@ const DogDetail = ({item,id}) => {
                         <View style={{flex:1,}}>
                         <Text style={styles.textList}>입양처 위치</Text>
                         </View>
-                        <View style={{flex:1}}>
+                        <View style={{flex:2}}>
                             <Text style={{...styles.textList,fontSize:responsiveScreenFontSize(2), textAlign:'right'}}>{item.location}</Text>
                         </View>
                     </View>
@@ -164,7 +171,7 @@ const DogDetail = ({item,id}) => {
 }
 const styles = StyleSheet.create({
     textList:{
-        fontSize:responsiveScreenFontSize(2.5),
+        fontSize:responsiveScreenFontSize(2.3),
         fontWeight:'bold',
         textAlign:'left'
     },
