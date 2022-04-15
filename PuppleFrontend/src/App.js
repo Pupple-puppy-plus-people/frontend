@@ -28,7 +28,7 @@ import Navigator from './Navigator';
 import FilterDogList from './DogList/FilterComponent/FilterDogList';
 import RoomCheck from './DogAuth/DogAuthComponent/RoomCheck'
 //템플릿 구현 후 삭제
-import Walk from './Template/Walk/';
+import TimeStamp from './Template/TimeStamp/';
 
 const App = () => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -42,6 +42,7 @@ const App = () => {
     //<Walk/>
     //<FilterDogList/>
     //<RoomCheck/>
+    //<TimeStamp/>
   );
 };
 
