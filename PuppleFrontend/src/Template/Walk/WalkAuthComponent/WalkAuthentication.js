@@ -84,10 +84,10 @@ class SummaryList extends Component{
             <View style={styles.summary_row}>
                 <MaterialCommunityIcons name="check-circle-outline" color={'green'}   size={25}/>
                 <MaterialCommunityIcons name="check-circle-outline" color={'green'}   size={25}/>
-                <MaterialCommunityIcons name="progress-question"    color={'#eedbff'} size={25}/>
                 <MaterialCommunityIcons name="close-circle-outline" color={'red'}     size={25}/>
                 <MaterialCommunityIcons name="check-circle-outline" color={'green'}   size={25}/>
                 <MaterialCommunityIcons name="check-circle-outline" color={'green'}   size={25}/>
+                <MaterialCommunityIcons name="progress-question"    color={'#eedbff'} size={25}/>
                 <MaterialCommunityIcons name="check-circle-outline" color={'green'}   size={25}/>
             </View>
         );

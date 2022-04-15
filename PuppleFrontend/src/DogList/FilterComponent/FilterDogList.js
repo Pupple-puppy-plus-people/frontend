@@ -219,13 +219,28 @@ const FilterDogList = ({navigation}) => {
                         'bark_term='+selectedFilter[6].value+'&'+
                         'activity='+selectedFilter[7].value+'&'+
                         'person_personality='+selectedFilter[8].value
+                        selectedFilter = [
+                            {filter:'gender',value : ""},
+                            {filter:'kind',value : ""},
+                            {filter:'desexing',value : ""},
+                            {filter:'age',value : ""},
+                            {filter:'size',value : ""},
+                            {filter:'hair_loss',value : ""},
+                            {filter:'bark_term',value : ""},
+                            {filter:'activity',value : ""},
+                            {filter:'person_personality',value : ""},
+                        ]
                         axios.get(baseUrl+'/api/dogs'+query)
                         .then(function (response){
                             //success
                             console.log(baseUrl+'/api/dogs'+query)
                             console.log(response.data);
-                            // navigation.navigate('DogListHome',{dogs:response.data})
-                            navigation.goBack({dogs : response.data})
+
+                            navigation.navigate({
+                                name:'DogListHome',
+                                params: { dogs: response.data},
+                                merge: true});
+                            
                         })
                         .catch(function (error){
                             //error
