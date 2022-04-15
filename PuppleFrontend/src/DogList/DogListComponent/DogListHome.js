@@ -197,7 +197,7 @@ const dogsData = [
 
 
 
-const DogListHome = ({ navigation }) => {
+const DogListHome = ({ navigation,route }) => {
     
     const [detailVisible, setDetailVisible] = useState(false);
     //const [partBookPurchaseVisible, setPartBookPurchaseVisible] = useState(false);
@@ -206,6 +206,7 @@ const DogListHome = ({ navigation }) => {
     const [backBoard, setBackBoard] = useState({backgroundColor:'white'})
     const [dogs, setDogs] = useState([{}])
     
+
     React.useEffect(()=> {
         axios.get(`${HS_API_END_POINT}/api/dogs/`)
             .then((res)=> {      
