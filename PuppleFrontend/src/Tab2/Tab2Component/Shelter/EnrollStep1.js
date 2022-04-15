@@ -212,7 +212,7 @@ function EnrollStep1({navigation}) {
                     </View>
                     <View style={{flex:0.5, justifyContent:'center', marginLeft:"3%"}}>
                     </View>
-                    {/*data.map((x) => (
+                    {data.map((x) => (
                     <Choice
                         text={x.title}
                         btnTxtStyles={styles.btnTxtStyles}
@@ -222,7 +222,7 @@ function EnrollStep1({navigation}) {
                         choicesCount={choicesName[x.filterNumber].length}
                         choicesName={choicesName[x.filterNumber]}
                     />
-                    ))*/}
+                    ))}
                       
             <View style={[styles.formArea, {width: width > height ? '40%': '75%'}]}>
                   <TextInput
