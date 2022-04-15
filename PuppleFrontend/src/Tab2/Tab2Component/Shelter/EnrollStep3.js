@@ -51,10 +51,10 @@ function EnrollStep3({navigation}) {
 
 
             <View style={{flex:1,flexDirection:'column', padding:'3%',backgroundColor:'#fff'}}>
-                <View style={{flex:0.5}}/>
-                <View style={[styles.board,{flex:9,backgroundColor:'#E1BEE7',borderRadius:20}]}>
+                <View style={{flex:1}}/>
+                <View style={[styles.board,{flex:8,backgroundColor:'#E1BEE7',borderRadius:20}]}>
                     
-                    <View style={{flex:1}}>
+                    <View style={{flex:3}}>
                         {/* <LottieView style={{width:'100%',height:'100%',margin:0}} source={require('../../Assets/json/42476-register.json')} autoPlay loop /> */}
                         {/* <Text style={styles.title}>Step 1.</Text> */}
                         <Text style={styles.title}>Step 3.</Text>
@@ -132,6 +132,7 @@ const styles = StyleSheet.create({
         elevation: 5
     },
     title: {
+        marginTop:10,
         fontSize: bigOne*0.03,
         fontWeight:'bold',
         textAlign:'left',

@@ -22,6 +22,7 @@ import { responsiveFontSize, responsiveHeight, responsiveScreenWidth, responsive
 
 import Postcode from '@actbase/react-daum-postcode';
 
+
 const EnterHouse = ({navigation,route}) => {
 
     const [isModal, setModal] = useState(false);

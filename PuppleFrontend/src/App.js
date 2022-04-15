@@ -26,7 +26,7 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 import Navigator from './Navigator';
 import FilterDogList from './DogList/FilterComponent/FilterDogList';
-
+import RoomCheck from './DogAuth/DogAuthComponent/RoomCheck'
 //템플릿 구현 후 삭제
 import Walk from './Template/Walk/';
 
@@ -41,6 +41,7 @@ const App = () => {
     <Navigator/>
     //<Walk/>
     // <FilterDogList/>
+    //<RoomCheck/>
   );
 };
 
