@@ -40,7 +40,7 @@ const App = () => {
   return (
     <Navigator/>
     //<Walk/>
-    // <FilterDogList/>
+    //<FilterDogList/>
     //<RoomCheck/>
   );
 };

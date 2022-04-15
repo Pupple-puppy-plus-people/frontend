@@ -81,7 +81,6 @@ function EnrollStep2({route, navigation}) {
           console.log('[LOG] resWeather : ' + res);
           setCurrentWeather(res);
           setError(false);
-          setIsLoading(true);
           console.log('야야야야??');
           
         //} /*catch (error) {
