@@ -20,6 +20,7 @@ import LottieView from 'lottie-react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import Animation from 'lottie-react-native';
+import axios from 'axios';
 import symbolicateStackTrace from 'react-native/Libraries/Core/Devtools/symbolicateStackTrace';
 // import Loader from './Components/Loader';
 
@@ -154,7 +155,6 @@ const choicesName=[
 ];
 
 function EnrollStep1({navigation}) {
-
     const [name, setName] = useState("");
     const onChangeText = (name) => {
         setName(name);

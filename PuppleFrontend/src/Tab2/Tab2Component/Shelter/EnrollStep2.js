@@ -60,7 +60,7 @@ function EnrollStep2({route, navigation}) {
             queryParams += '&' + encodeURIComponent('dog_reg_no') + '=' + encodeURIComponent(animal1); /* */
             queryParams += '&' + encodeURIComponent('owner_nm') + '=' + encodeURIComponent(owner1); /* */
             
-             const resWeather = await axios.get(url + queryParams).catch(function (error) {
+            const resWeather = await axios.get(url + queryParams).catch(function (error) {
                 if (error.response) {
                   console.log(error.response.data);
                   console.log(error.response.status);
