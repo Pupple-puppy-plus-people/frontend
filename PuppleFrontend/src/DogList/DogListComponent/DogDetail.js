@@ -23,7 +23,7 @@ import { Chip } from 'react-native-paper';
 const DogDetail = ({item,id}) => {
     const [isHeart, setIsHeart] = useState(false);
     var genderStr="";
-    if (item.gender=="f"){
+    if (item.gender=="암컷"){
         genderStr = "여";
     } else{
         genderStr = "남";

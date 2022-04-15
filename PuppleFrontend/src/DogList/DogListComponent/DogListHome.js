@@ -208,7 +208,11 @@ const DogListHome = ({ navigation,route }) => {
     
 
     React.useEffect(()=> {
-        axios.get(`${HS_API_END_POINT}/api/dogs/`)
+        if(route.params?.dogs){
+            setDogs(route.params?.dogs)
+        }
+        else{
+            axios.get(`${HS_API_END_POINT}/api/dogs/`)
             .then((res)=> {      
                 console.log("dogs Data 받음.");
                 setDogs(res.data);
@@ -221,13 +225,14 @@ const DogListHome = ({ navigation,route }) => {
             .catch((err)=> {
                 console.log(err);
         })
-    },[]); 
+        }
+    },[route.params?.dogs]); 
 
     const Item = ({ item }) => {
         // const base64Image = 'data:image/png;base64,' + item.bookCoverResource;
         const [isHeart, setIsHeart] = useState(false);
         var genderStr="";
-        if (item.gender=="f"){
+        if (item.gender=="암컷"){
             genderStr = "여";
         } else{
             genderStr = "남";
@@ -379,7 +384,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'white',
         paddingHorizontal: 10,
-        
     },
     item: {
         backgroundColor: '#f9c2ff',
