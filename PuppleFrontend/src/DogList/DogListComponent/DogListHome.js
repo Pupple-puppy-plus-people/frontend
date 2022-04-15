@@ -28,172 +28,7 @@ import { isMessageIgnored } from 'react-native/Libraries/LogBox/Data/LogBoxData'
 // import * as RNFS from 'react-native-fs'
 //import { setJwt,setUserInfo } from '../Store/Actions';
 //import { connect } from 'react-redux';
-const dogsData = [
-    {
-        id: 0,
-        name: '가나다',
-        image: require('../../Assets/picture/puppy-g01f417249_1280.jpg'),
-        gender: 'f',
-        desexing: 'O',
-        kind:'믹스',
-        age:'3',
-        location:'서울',
-        size:'중형',
-        activity:'높음',
-        hair_loss:'많이 빠짐',
-        bark_term:'자주 짖음',
-        person_personality:'활발함',
-        adoptation_status:'N',
-        introduction:'소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트',
-        approval:'승인'
-        
 
-    },
-    {
-        id: 1,
-        name: '홍길동',
-        image: require('../../Assets/picture/cocker-spaniel-gd0091fa9b_1280.jpg'),
-        gender: 'm',
-        desexing: 'O',
-        kind:'믹스',
-        age:'3',
-        location:'서울',
-        size:'중형',
-        activity:'높음',
-        hair_loss:'많이 빠짐',
-        bark_term:'자주 짖음',
-        person_personality:'활발함',
-        adoptation_status:'N',
-        introduction:'소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트',
-        approval:'승인'
-    },
-    {
-        id: 2,
-        name: '라마바',
-        image: require('../../Assets/picture/bulldog-ga84af5c2d_1280.jpg'),
-        gender: 'm',
-        desexing: 'O',
-        kind:'믹스',
-        age:'3',
-        location:'서울',
-        size:'중형',
-        activity:'높음',
-        hair_loss:'많이 빠짐',
-        bark_term:'자주 짖음',
-        person_personality:'활발함',
-        adoptation_status:'N',
-        introduction:'소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트',
-        approval:'승인'
-    },
-    {
-        id: 3,
-        name: '사아자',
-        image: require('../../Assets/picture/cocker-spaniel-gd0091fa9b_1280.jpg'),
-        gender: 'f',
-        desexing: 'O',
-        kind:'믹스',
-        age:'3',
-        location:'서울',
-        size:'중형',
-        activity:'높음',
-        hair_loss:'많이 빠짐',
-        bark_term:'자주 짖음',
-        person_personality:'활발함',
-        adoptation_status:'N',
-        introduction:'소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트',
-        approval:'승인'
-    },
-    {
-        id: 4,
-        name: '차카타',
-        image: require('../../Assets/picture/puppy-g01f417249_1280.jpg'),
-        gender: 'f',
-        desexing: 'O',
-        kind:'믹스',
-        age:'3',
-        location:'서울',
-        size:'중형',
-        activity:'높음',
-        hair_loss:'많이 빠짐',
-        bark_term:'자주 짖음',
-        person_personality:'활발함',
-        adoptation_status:'N',
-        introduction:'소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트',
-        approval:'승인'
-    },
-    {
-        id: 5,
-        name: '파하',
-        image: require('../../Assets/picture/bulldog-ga84af5c2d_1280.jpg'),
-        gender: 'm',
-        desexing: 'O',
-        kind:'믹스',
-        age:'3',
-        location:'서울',
-        size:'중형',
-        activity:'높음',
-        hair_loss:'많이 빠짐',
-        bark_term:'자주 짖음',
-        person_personality:'활발함',
-        adoptation_status:'N',
-        introduction:'소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트',
-        approval:'승인'
-    },
-    {
-        id: 6,
-        name: '아야어',
-        image: require('../../Assets/picture/cocker-spaniel-gd0091fa9b_1280.jpg'),
-        gender: 'f',
-        desexing: 'O',
-        kind:'믹스',
-        age:'3',
-        location:'서울',
-        size:'중형',
-        activity:'높음',
-        hair_loss:'많이 빠짐',
-        bark_term:'자주 짖음',
-        person_personality:'활발함',
-        adoptation_status:'N',
-        introduction:'소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트',
-        approval:'승인'
-    },
-    {
-        id: 7,
-        name: '여오요',
-        image: require('../../Assets/picture/puppy-g01f417249_1280.jpg'),
-        gender: 'm',
-        desexing: 'O',
-        kind:'믹스',
-        age:'3',
-        location:'서울',
-        size:'중형',
-        activity:'높음',
-        hair_loss:'많이 빠짐',
-        bark_term:'자주 짖음',
-        person_personality:'활발함',
-        adoptation_status:'N',
-        introduction:'소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트',
-        approval:'승인'
-    },
-    {
-        id: 8,
-        name: '우유으',
-        image: require('../../Assets/picture/bulldog-ga84af5c2d_1280.jpg'),
-        gender: 'f',
-        desexing: 'O',
-        kind:'믹스',
-        age:'3',
-        location:'서울',
-        size:'중형',
-        activity:'높음',
-        hair_loss:'많이 빠짐',
-        bark_term:'자주 짖음',
-        person_personality:'활발함',
-        adoptation_status:'N',
-        introduction:'소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트소개텍스트',
-        approval:'승인'
-    }
-];
 
 
 
@@ -343,23 +178,15 @@ const DogListHome = ({ navigation,route }) => {
                 </View>
 
                 <SafeAreaView style={{ alignItems: 'center', width: '100%', marginTop: '3%' }}>
-                    {/* <Text style={{
-                        textAlign: 'left',
-                        width: '90%',
-                        marginBottom: '1%',
-                        fontSize: responsiveScreenFontSize(2),
-                        fontWeight: '600',
-                        color:'gray'
-
-                    }}>강아지들은 당신을 기다리고 있습니다. </Text> */}
+                    
                     <View style={{ width: '100%', borderBottomWidth: 1, borderBottomColor: 'gray' }} />
-
+                    
                     <FlatList
                         data={dogs}
                         renderItem={renderItem}
                         keyExtractor={item => item.id}
                         numColumns={2}
-                        style={{alignSelf:'center',height:'95%'}}
+                        style={{alignSelf:'center',height:'93%'}}
                         
                     />
 
