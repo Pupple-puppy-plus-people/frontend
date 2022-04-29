@@ -15,6 +15,8 @@ import {
 
 } from 'react-native';
 import { responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
+
+import DogDetailwithoutScroll from '../../DogList/DogListComponent/DogDetailwithoutScroll';
 //import * as RNFS from 'react-native-fs'
 //import axios from 'axios';
 //import { HS_API_END_POINT } from '../../Shared/env';
@@ -25,10 +27,7 @@ const DogInfo = ({navigation,aboutDog})=>{
     return (
               
         <View style={styles.container}>
-            <Text>
-                {aboutDog.title}
-            </Text>
-
+            <DogDetailwithoutScroll item={aboutDog} id={aboutDog.id} />
         </View>
   
     );

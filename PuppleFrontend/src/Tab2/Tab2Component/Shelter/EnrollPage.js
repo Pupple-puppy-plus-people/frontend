@@ -42,7 +42,7 @@ function TopTabs({aboutDog}) {
         } }}
       independent={true}>  
         <Tab.Navigator>
-            <Tab.Screen name="DogInfo" component={()=><DogInfo aboutDog={aboutDog}/>}
+            <Tab.Screen name="DogInfo" children={()=><DogInfo aboutDog={aboutDog}/>}
                  options={{
                 // tabBarLabel: '인증',
                 // tabBarLabel: aboutDog.title,
@@ -89,38 +89,33 @@ function EnrollPage({navigation,route}) {
         <SafeAreaView style={styles.container} onLayout={onLayout}>  
              
             <ScrollView ref = {ref} style={styles.scrollView} >
+                <> 
+                    <View style={{flex:0.5,flexDirection:'column', padding:'3%',backgroundColor:'#fff'}}>
+                        <View style={{flex:0.5}}/>
+                        <View style={[styles.board,{flex:9,backgroundColor:'#E1BEE7',borderRadius:20}]}>
+                            <View style={{flex:1,justifyContent:'flex-end'}}>
+                                {/* <LottieView style={{width:'100%',height:'100%',margin:0}} source={require('../../Assets/json/42476-register.json')} autoPlay loop /> */}
+                                {/* <Text style={styles.title}>Step 1.</Text> */}
+                                <Text style={styles.title}> </Text>
+                                <Text style={styles.title}>반려견에 대한 인증절차</Text>
+                            </View>
+                            <View style={{flex:0.5, padding:10,justifyContent:'flex-start'}}>
+                                <Text style={styles.subtitle}>반려견 인증절차 수행 및 견적사항 확인</Text>
 
-             <> 
-            <View style={{flex:0.5,flexDirection:'column', padding:'3%',backgroundColor:'#fff'}}>
-                <View style={{flex:0.5}}/>
-                <View style={[styles.board,{flex:9,backgroundColor:'#E1BEE7',borderRadius:20}]}>
-                    <View style={{flex:1,justifyContent:'flex-end'}}>
-                        {/* <LottieView style={{width:'100%',height:'100%',margin:0}} source={require('../../Assets/json/42476-register.json')} autoPlay loop /> */}
-                        {/* <Text style={styles.title}>Step 1.</Text> */}
-                        <Text style={styles.title}> </Text>
-                        <Text style={styles.title}>반려견에 대한 인증절차</Text>
-                        {/* <Text>{route.params?.aboutDog.title}</Text> */}
+                            </View>
+                            <View style={{flex:4, flexDirection:'column',justifyContent:'center'}}>
+                            </View>
+                        </View>
+
+                        <View style={{flex:1.5}}/>
                     </View>
-                    <View style={{flex:0.5, padding:10,justifyContent:'flex-start'}}>
-                        <Text style={styles.subtitle}>반려견 인증절차 수행 및 견적사항 확인</Text>
-
+                    
+                    <View style={{ flex:1, 
+                        // 여기 크기 다시다시 !
+                        height: (parentHeight.height)*1.5}} /**(Dimensions.get('window').width)/(0.4) */>  
+                        <TopTabs aboutDog={route.params?.aboutDog}></TopTabs>
                     </View>
-                    <View style={{flex:4, flexDirection:'column',justifyContent:'center'}}>
-                       
-                    </View>
-                </View>
-
-                <View style={{flex:1.5}}/>
-            </View>
-            
-            <View style={{ flex:1, 
-                // 여기 크기 다시다시 !
-                height: (parentHeight.height)}} /**(Dimensions.get('window').width)/(0.4) */>  
-                <TopTabs
-                aboutDog={route.params?.aboutDog}></TopTabs>
-            </View>
-            </>
-
+                </>
             </ScrollView>
 
         </SafeAreaView>

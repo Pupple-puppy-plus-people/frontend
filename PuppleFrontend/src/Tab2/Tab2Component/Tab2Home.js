@@ -50,9 +50,27 @@ const USER = [
 // 로그인 정보 조건문: 만약 입양처로 로그인했다면, 만약 입양인으로 로그인했다면에 따라 달라짐 -> 조건부 렌더링 알아보기
 let USER_TYPE = 1;  // 0 이면 입양인, 1이면 입양처, 로그인 정보 받아오기
 
-
 // 사진 같은 경우 image url이 https 로 시작해야한다.  
 const DATA = [
+  {
+    id : 1,
+    registration_number : 9845239851386541,
+    image : 'https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1263&fileTy=ADOPTTHUMB&fileNo=1&thumbTy=L',
+    name : 'test',
+    gender : '수컷',
+    kind : '리트리버',
+    desexing : '중성',
+    age : '2(세) 3(개월)',
+    location : '종로구',
+    size : '대형',
+    hair_loss : '많이 빠짐',
+    bark_term : '안 짖음',
+    activity : '높음',
+    person_personality : '활발함',
+    adoptation_status : 'N',
+    introduction : '장난감도 좋아하고 사람을 너무 좋아하는 활발한 겨자예요~긴급구호로 센터에 입소하게 된 겨자와 까치는 한 집에서 구조된 친구들이예요.짧은 다리로 오종종~ 우다다~ 하면서 간식도 잘 받아먹고, 장난감을 보면웃음이 얼굴에서 떠나지 않아요!!!견종 특유의 활발함과 호기심이 많아요~다른 강아지들과 크게 문제없이 잘 지내고 있습니다.(관심 두지 않아요. 공격성 없습니다.)패드배변 훈련중이고 어느정도 가리고 있어요,시간이 지나면 더 잘할 것 같습니다.사람에게 친화적이다보니 분리불안 증상이 있습니다.기본 지시어인 앉아, 기다려 등 어느정도 훈련도 되어 있습니다.꾸준한 훈련으로 멋진 반려견을 만들어주세요.장난감을 보면 흥분도가 최고조로 찍은 우리 익살꾸러기 겨자!!처음 반려견을 맞이하는 가족 또는 어린 아이가 있는 가정 등 어느 가정과도 적합해요.다만, 하울링이 있어 어느정도 방음이 잘 되어 있거나, 소음에 대한 민원이 문제가 되지 않는 환경이면 좋겠습니다.매력적인 웃음을 지닌 화끈한 겨자의 평생가족이 되어주세요.겨자를 카페에서 더 볼 수있습니다. https://cafe.naver.com/seoulanimalcare/3709',
+    approval : '승인',
+  },
   {
     id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
     title: '멍뭉이',
