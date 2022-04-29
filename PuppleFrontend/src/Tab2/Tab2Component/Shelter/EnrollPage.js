@@ -33,20 +33,19 @@ const smallOne = screenWidth < screenHeight ? screenWidth:screenHeight;
 
 import "react-native-gesture-handler";
 
-
 const Tab = createMaterialTopTabNavigator();
 
-function TopTabs() {
-
+function TopTabs({aboutDog}) {
     return (
       <NavigationContainer 
          screenOptions={{ tabBarScrollEnabled: true,tabBarIndicatorStyle:{
         } }}
       independent={true}>  
         <Tab.Navigator>
-            <Tab.Screen name="DogInfo" component={DogInfo} 
+            <Tab.Screen name="DogInfo" component={()=><DogInfo aboutDog={aboutDog}/>}
                  options={{
-                //tabBarLabel: '인증',
+                // tabBarLabel: '인증',
+                // tabBarLabel: aboutDog.title,
                 //tabBarLabelPosition: 'beside-icon', -> ipad에서 전형적인 것임
                 
                 headerShown: false,
@@ -55,7 +54,7 @@ function TopTabs() {
                 tabBarIcon: ()=>(
                     
                     <Icon name = "dog" size={25}/>
-                )
+                ),
             }}/>
             <Tab.Screen name="AdoptionStep" component={AdoptionStep} 
              options={{
@@ -74,7 +73,7 @@ function TopTabs() {
   }
   
 
-function EnrollPage({navigation}) {
+function EnrollPage({navigation,route}) {
     const ref = React.useRef(null);
 
     useScrollToTop(ref);
@@ -100,6 +99,7 @@ function EnrollPage({navigation}) {
                         {/* <Text style={styles.title}>Step 1.</Text> */}
                         <Text style={styles.title}> </Text>
                         <Text style={styles.title}>반려견에 대한 인증절차</Text>
+                        {/* <Text>{route.params?.aboutDog.title}</Text> */}
                     </View>
                     <View style={{flex:0.5, padding:10,justifyContent:'flex-start'}}>
                         <Text style={styles.subtitle}>반려견 인증절차 수행 및 견적사항 확인</Text>
@@ -116,7 +116,8 @@ function EnrollPage({navigation}) {
             <View style={{ flex:1, 
                 // 여기 크기 다시다시 !
                 height: (parentHeight.height)}} /**(Dimensions.get('window').width)/(0.4) */>  
-                <TopTabs></TopTabs>
+                <TopTabs
+                aboutDog={route.params?.aboutDog}></TopTabs>
             </View>
             </>
 

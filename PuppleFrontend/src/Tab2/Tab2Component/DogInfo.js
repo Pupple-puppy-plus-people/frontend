@@ -21,13 +21,12 @@ import { responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth
 //import { setJwt,setUserInfo } from '../Store/Actions';
 //import { connect } from 'react-redux';
 
-const DogInfo = ({navigation})=>{
-      
+const DogInfo = ({navigation,aboutDog})=>{
     return (
               
         <View style={styles.container}>
             <Text>
-                헬로~~
+                {aboutDog.title}
             </Text>
 
         </View>

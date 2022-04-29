@@ -127,7 +127,11 @@ function Item({item, navigation}) {
             backgroundColor='white' // background가 필요한지 모르겠음, 이미 dogCard에 있는데 
             activeOpacity={1}
             onPress={()=>{
-            navigation.navigate('EnrollPage')
+            navigation.navigate({
+              name:'EnrollPage',
+              params: { aboutDog : item},
+              merge:true,
+            })
             }}
             // onLongPress 길게 누르면 삭제 될 수 있게 하기 
           >
