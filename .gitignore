@@ -50,3 +50,4 @@ captures/
 .cxx/
 *.apk
 output.json
+PuppleFrontend/ios
