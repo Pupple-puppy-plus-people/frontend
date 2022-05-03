@@ -10,20 +10,21 @@ import {
     TouchableWithoutFeedback,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import { HS_API_END_POINT } from '../../../Shared/env';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import WeekComponent from '../../Recycle/WeekComponent';
 
-let baseUrl = 'http:127.0.0.1:8000'
+let baseUrl = `${HS_API_END_POINT}`
+let userdog = 'dddd'
 function walkGet() {
-    axios.get(baseUrl+'/api/walkauth/')
+    axios.get(baseUrl+'/api/walkauth/'+userdog+'?day=1')
             .then(function(response){
                 // handle success
                 
                 loadedData = response.data[0]
                 deleteData = response.data[0]
-                console.log(loadedData);
             })
             .catch(function (error) {
                 //handle error
@@ -34,23 +35,27 @@ function walkGet() {
             });
 }
 function walkDelete() {
-    axios.delete(baseUrl+'/api/walkauth/'+deleteData.id);
+    axios.delete(baseUrl+'/api/walkauth/'+userdog+'/'+deleteData.userdog);
 
 }
 function getfromserver(method){
     if(method == 'stop'){
-        Promise.all([walkGet(),walkDelete()])
+        // Promise.all([walkGet(),walkDelete()])
+        Promise.all([walkGet()])
         .then(function (results){
             console.log(results)
         });
     }
     else {
         if(method == 'start'){
-            axios.post(baseUrl+'/api/walkauth/',{ 
-                index : 0,
-                start_time : 0,
+            axios.post(baseUrl+'/api/walkauth/'+userdog+'/',{
+                userdog : userdog,
+                day : 1,
+                start_time : 1,
                 elapsed_time : 0,
-                distance : 100
+                end_time : 0,
+                distance : 10,
+                evaluate : true
             })
             .then(function (response){
                 console.log(response.status);
@@ -65,14 +70,22 @@ function getfromserver(method){
 
 // 산책 시작시 django server에서 받아온 데이터
 let loadedData = {
-    start_time:0,
-    elapsed_time:20,
-    distance:10
+    userdog : userdog,
+    day : 0,
+    start_time : 0,
+    elapsed_time : 0,
+    end_time : 0,
+    distance : 16540,
+    evaluate : false
 };
 let deleteData = {
-    start_time:0,
-    elapsed_time:20,
-    distance:10
+    userdog : userdog,
+    day : 0,
+    start_time : 0,
+    elapsed_time : 0,
+    end_time : 0,
+    distance : 16540,
+    evaluate : false
 };
 
 class SummaryList extends Component{
