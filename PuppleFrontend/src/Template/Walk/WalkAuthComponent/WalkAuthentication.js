@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React ,{Component, useState, useRef} from 'react';
+import React ,{Component, useState, useEffect, useRef} from 'react';
 import {
     StyleSheet,
     Text,
@@ -8,90 +8,86 @@ import {
     Pressable,
     FlatList,
     TouchableWithoutFeedback,
+    Platform,
 } from 'react-native';
+import Geolocation from 'react-native-geolocation-service';
+import {getDistance} from 'geolib';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import { HS_API_END_POINT } from '../../../Shared/env';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import WeekComponent from '../../Recycle/WeekComponent';
-
+const today = new Date().getDay();
 let baseUrl = `${HS_API_END_POINT}`
 let userdog = 'dddd'
 function walkGet() {
-    axios.get(baseUrl+'/api/walkauth/'+userdog+'?day=1')
-            .then(function(response){
-                // handle success
-                
-                loadedData = response.data[0]
-                deleteData = response.data[0]
-            })
-            .catch(function (error) {
-                //handle error
-                console.log(error);
-            })
-            .then(function(){
-                //always executed
-            });
+    return new Promise((resolve,reject)=>{
+        axios.get(baseUrl+'/api/walkauth/'+userdog)
+        .then(function(response){
+            // handle success
+            myData = response.data
+            resolve();
+        })
+        .catch(function (error) {
+            //handle error
+            console.log(error);
+        })
+        .then(function(){
+            //always executed
+        });
+    });
 }
 function walkDelete() {
     axios.delete(baseUrl+'/api/walkauth/'+userdog+'/'+deleteData.userdog);
 
 }
-function getfromserver(method){
-    if(method == 'stop'){
-        // Promise.all([walkGet(),walkDelete()])
-        Promise.all([walkGet()])
-        .then(function (results){
-            console.log(results)
-        });
-    }
-    else {
-        if(method == 'start'){
-            axios.post(baseUrl+'/api/walkauth/'+userdog+'/',{
-                userdog : userdog,
-                day : 1,
-                start_time : 1,
-                elapsed_time : 0,
-                end_time : 0,
-                distance : 10,
-                evaluate : true
-            })
-            .then(function (response){
-                console.log(response.status);
-            })
-            .then(function (error){
-                console.log(error);
-            });
-        }
-    }
-    
+function postData2server(timer){
+    walkauthData.elapsed_time = Math.floor(timer / 60)
+    walkauthData.day = today
+    axios.post(baseUrl+'/api/walkauth/'+userdog+'/',walkauthData)
+    .then(function (response){
+        console.log(response.status);
+    })
+    .then(function (error){
+        console.log(error);
+    });
 }
 
-// 산책 시작시 django server에서 받아온 데이터
-let loadedData = {
+// 산책 시작시 django server로 보낼 데이터
+let walkauthData = {
     userdog : userdog,
     day : 0,
     start_time : 0,
     elapsed_time : 0,
     end_time : 0,
-    distance : 16540,
+    distance : 0,
     evaluate : false
-};
-let deleteData = {
-    userdog : userdog,
-    day : 0,
-    start_time : 0,
-    elapsed_time : 0,
-    end_time : 0,
-    distance : 16540,
-    evaluate : false
-};
+}
+
+let myData = {}
+
+let myTotal = {
+    count : 0,
+    time : 0,
+    distance : 0
+
+}
+
+let lastLocation = {
+    latitude : 0,
+    longitude : 10
+}
 
 class SummaryList extends Component{
     constructor(props){
         super(props);
     }
+
+    componentDidUpdate(){
+
+    }
+
     render(){
         return(
             <View style={styles.summary_row}>
@@ -106,7 +102,6 @@ class SummaryList extends Component{
         );
     }
 }
-
 // FlatList 시작
 // list에 반복적으로 보여질 item
 const Info_Item = ({dataInfo}) => (
@@ -149,7 +144,7 @@ const Information = ({informationName,showData}) => {
 }
 // FlatList 종료
 
-const StopWatch = () => {
+const StopWatch = ({changeState}) => {
     const [timer, setTimer] = useState(0)
     const [isActive, setIsActive] = useState(false)
     const increment = useRef(null)
@@ -158,25 +153,34 @@ const StopWatch = () => {
       setIsActive(!isActive)
       {
           if (!isActive) {
-              getfromserver('start')
-              increment.current = setInterval(() => {
+                Geolocation.getCurrentPosition(
+                    posision => {
+                        lastLocation = posision.coords
+                    },
+                    error => {
+                        console.log(error.code,error.messages);
+                    },
+                    {enableHighAccuracy:true,timeout:15000,maximumAge:10000},
+                );
+                increment.current = setInterval(() => {
                   setTimer((timer) => timer + 1)
-                  walkGet()
-              }, 1000);
+                  Geolocation.getCurrentPosition(
+                    posision => {
+                        walkauthData.distance += getDistance(lastLocation,posision.coords)
+                        lastLocation = posision.coords
+                    },
+                    error => {
+                        console.log(error.code,error.messages);
+                    },
+                        {enableHighAccuracy:true,timeout:15000,maximumAge:10000},
+                    );
+                }, 1000);
           } else {
-              getfromserver('stop')
+              postData2server(timer)
               clearInterval(increment.current)
+              stopAndload()
+              changeState()
           }
-        // !isActive ?
-        // getfromserver('start')
-        // (increment.current = setInterval(() => {
-        //   setTimer((timer) => timer + 1)
-        // //   django로부터 거리 불러오기
-        // walkGet()
-        // }, 1000))
-        // :
-        // getfromserver('stop')
-        // (clearInterval(increment.current))
       }
     }
   
@@ -210,7 +214,7 @@ const StopWatch = () => {
                     거리
                 </Text>
                 <Text style={[styles.body,styles.body_data]}>
-                    {loadedData.distance}{'  m'}
+                    {walkauthData.distance}{'  m'}
                 </Text>
             </View>
             <Pressable 
@@ -218,7 +222,9 @@ const StopWatch = () => {
                 backgroundColor:isActive
                 ? '#ff5959'
                 : '#55e07a'}]}
-            onPress={handleStart}>
+            onPress={()=>{
+                handleStart()
+                }}>
                 <Text style={{ fontSize: 30 ,paddingVertical:10}}>{!isActive ? "Start" : "Stop"}</Text>
             </Pressable>
             <Pressable onPress={handleReset}>
@@ -226,13 +232,52 @@ const StopWatch = () => {
             </Pressable>
         </View>
     )
-  }
-  
+}
+async function stopAndload(){
+    await walkGet();
+    extract()
+}
+function extract(){
+    let extract_elapsed_time = 0;
+    let extract_distance = 0;
+    for (let i = 0; i < myData.length; i++) {
+        const element = myData[i];
+        extract_elapsed_time += element.elapsed_time;
+        extract_distance += element.distance;
+    }
+    myTotal = {
+        count : myData.length,
+        time : extract_elapsed_time,
+        distance : extract_distance
+    }
+}
 
 class WalkAuthComponent extends Component{
     constructor(props){
         super(props);
-        this.state = { isPressed : false };
+        this.loadData();
+
+        this.state={
+            total_count : 0,
+            total_time : 0,
+            total_distance : 0
+        };
+    }
+    async loadData(){
+        await walkGet();
+        extract();
+        this.setState({
+            total_count : myData.length,
+            total_time :  myTotal.time,
+            total_distance :  myTotal.distance
+        })
+    }
+    changeState = () => {
+        this.loadData()
+    }
+    componentDidUpdate(){
+        // 값이 달라진 경우 render
+        if(this.state.total_count !== myTotal.count){}
     }
     render(){
         // const [isPressed, setPressed] = useState(false);
@@ -265,6 +310,7 @@ class WalkAuthComponent extends Component{
                     <SummaryList/>
                 </View>
             </View>
+
             {/* pass condition */}
             <Information
             informationName={'Pass Condition'}
@@ -286,52 +332,76 @@ class WalkAuthComponent extends Component{
                 },
             ]}
             />
-
-            {/* total information text about walking */}
-            <Information
-            informationName={'Current Total'}
-            showData={[
-                {
-                    dataType:0,
-                    dataName:'횟수',
-                    data:4
-                },
-                {
-                    dataType:1,
-                    dataName:'시간',
-                    data:120
-                },
-                {
-                    dataType:2,
-                    dataName:'거리',
-                    data:4000
-                }
-            ]}/>
-
-            {/* average information text about walking */}
-            <Information
-            informationName={'Daily Average'}
-            showData={[
-                {
-                    dataType:1,
-                    dataName:'시간',
-                    data:30
-                },
-                {
-                    dataType:2,
-                    dataName:'거리',
-                    data:1000
-                }
-            ]}/>
-            
+            <View style={[styles.textInformation_container,styles.container_background]}>
+                <Text
+                style={styles.subTitle}>
+                Current Total
+                </Text>
+                <View style={styles.dataInfoStyle}>
+                    <Text
+                    style={styles.body}>
+                    횟수
+                    </Text>
+                    <Text 
+                    style={[styles.body,styles.body_data]}>
+                    {this.state.total_count}{'  일'}
+                    </Text>
+                </View>
+                <View style={styles.dataInfoStyle}>
+                    <Text
+                    style={styles.body}>
+                    시간
+                    </Text>
+                    <Text 
+                    style={[styles.body,styles.body_data]}>
+                    {this.state.total_time}{'  분'}
+                    </Text>
+                </View>
+                <View style={styles.dataInfoStyle}>
+                    <Text
+                    style={styles.body}>
+                    거리
+                    </Text>
+                    <Text 
+                    style={[styles.body,styles.body_data]}>
+                    {this.state.total_distance}{'  m'}
+                    </Text>
+                </View>
+            </View>
+            <View style={[styles.textInformation_container,styles.container_background]}>
+                <Text
+                style={styles.subTitle}>
+                Daily Average
+                </Text>
+                <View style={styles.dataInfoStyle}>
+                    <Text
+                    style={styles.body}>
+                    시간
+                    </Text>
+                    {this.state.total_count ==0 && <Text style={[styles.body,styles.body_data]}>0{'  분'}</Text>}
+                    {this.state.total_count !=0 && <Text style={[styles.body,styles.body_data]}>
+                    {Math.floor(this.state.total_time / this.state.total_count)}{'  분'}
+                    </Text>}
+                </View>
+                <View style={styles.dataInfoStyle}>
+                    <Text
+                    style={styles.body}>
+                    거리
+                    </Text>
+                    {this.state.total_count ==0 && <Text style={[styles.body,styles.body_data]}>0{'  m'}</Text>}
+                    {this.state.total_count !=0 && <Text style={[styles.body,styles.body_data]}>
+                    {Math.floor(this.state.total_distance / this.state.total_count)}{'  m'}
+                    </Text>}
+                </View>
+            </View>
             {/* 산책 시작 버튼 */}
             
             <View style={[styles.container_background,styles.textInformation_container]}>
-                    <Text style={styles.subTitle}>
-                        Walk Now!
-                    </Text>
-                    <StopWatch/>
-                </View>
+                <Text style={styles.subTitle}>
+                    Walk Now!
+                </Text>
+                <StopWatch changeState={this.changeState}/>
+            </View>
                         
             </View>
             </TouchableWithoutFeedback>
