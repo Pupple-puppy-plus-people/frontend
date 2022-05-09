@@ -14,6 +14,7 @@ import EnrollStep1 from './Tab2/Tab2Component/Shelter/EnrollStep1';
 import EnrollStep2 from './Tab2/Tab2Component/Shelter/EnrollStep2';
 import EnrollStep3 from './Tab2/Tab2Component/Shelter/EnrollStep3';
 import EnrollPage from './Tab2/Tab2Component/Shelter/EnrollPage';
+import TimeStamp from './Template/TimeStamp/';
 
 
 const Stack = createStackNavigator();
@@ -55,7 +56,7 @@ const BottomNavigation = ({navigation}) => {
 
           <BottomTab.Screen
               name="ChattingRoom"
-              component={ChattingRoom}
+              component={TimeStamp} // ChattingRoom
               options={{
                   tabBarLabel: '채팅',
                   headerShown: false,
@@ -142,7 +143,7 @@ function Navigator() {
           options={{
               title: "등록정보 글쓰기",
               headerShown: true,
-              headerTransparent: true,
+              headerTransparent: false,
               headerBackTitle: "back", // x 표시로 바꾸기 
               // header shadow
               // header 반려견 삭제 버튼 (글라스모피즘 버튼)
@@ -156,7 +157,7 @@ function Navigator() {
           options={{
               title: "등록정보 글쓰기",
               headerShown: true,
-              headerTransparent: true,
+              headerTransparent: false,
               headerBackTitle: "back", // x 표시로 바꾸기 
               // header shadow
               // header 반려견 삭제 버튼 (글라스모피즘 버튼)
@@ -170,7 +171,7 @@ function Navigator() {
           options={{
               title: "등록정보 글쓰기",
               headerShown: true,
-              headerTransparent: true,
+              headerTransparent: false,
               headerBackTitle: "back", // x 표시로 바꾸기 
               // header shadow
               // header 반려견 삭제 버튼 (글라스모피즘 버튼)

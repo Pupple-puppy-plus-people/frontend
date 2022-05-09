@@ -14,66 +14,9 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import WeekComponent from '../../Recycle/WeekComponent';
-
-let baseUrl = 'http:127.0.0.1:8000'
-function walkGet() {
-    axios.get(baseUrl+'/api/walkauth/')
-            .then(function(response){
-                // handle success
-                
-                loadedData = response.data[0]
-                deleteData = response.data[0]
-                console.log(loadedData);
-            })
-            .catch(function (error) {
-                //handle error
-                console.log(error);
-            })
-            .then(function(){
-                //always executed
-            });
-}
-function walkDelete() {
-    axios.delete(baseUrl+'/api/walkauth/'+deleteData.id);
-
-}
-function getfromserver(method){
-    if(method == 'stop'){
-        Promise.all([walkGet(),walkDelete()])
-        .then(function (results){
-            console.log(results)
-        });
-    }
-    else {
-        if(method == 'start'){
-            axios.post(baseUrl+'/api/walkauth/',{ 
-                index : 0,
-                start_time : 0,
-                elapsed_time : 0,
-                distance : 100
-            })
-            .then(function (response){
-                console.log(response.status);
-            })
-            .then(function (error){
-                console.log(error);
-            });
-        }
-    }
-    
-}
-
-// 산책 시작시 django server에서 받아온 데이터
-let loadedData = {
-    start_time:0,
-    elapsed_time:20,
-    distance:10
-};
-let deleteData = {
-    start_time:0,
-    elapsed_time:20,
-    distance:10
-};
+import { HS_API_END_POINT } from '../../../Shared/env';
+import { Divider } from 'react-native-paper';
+import { ScrollView } from 'react-native-gesture-handler';
 
 class SummaryList extends Component{
     constructor(props){
@@ -105,9 +48,6 @@ const Info_Item = ({dataInfo}) => (
         <Text 
         style={[styles.body,styles.body_data]}>
             {dataInfo.data}
-            {dataInfo.dataType === 0 && <Text>{'  일'}</Text>}
-            {dataInfo.dataType === 1 && <Text>{'  분'}</Text>}
-            {dataInfo.dataType === 2 && <Text>{'  m'}</Text>}
             
         </Text>
     </View>
@@ -134,72 +74,130 @@ const Information = ({informationName,showData}) => {
         </View>
     );
 }
-// FlatList 종료
 
-const StopWatch = () => {
+
+const Item = ({ item }) => (
+    <View style={{flexDirection:'row', alignItems:'center'}}>
+    {console.log("itme:", item)}
+    <Text style={[styles.body],{flex:1}}>   {item.id}</Text>
+    <Text style={[styles.body],{flex:2}}>   {item.press_time}</Text>
+    </View>
+);
+
+const TimeStamp = () => {
     const [timer, setTimer] = useState(0)
+    const [prevTimer, setPrevTimer] = useState(0)   // 서버에서 받아온 것 중 가장 마지막  -> 누른 시각에 뜨기도 함
     const [isActive, setIsActive] = useState(false)
-    const increment = useRef(null)
-  
+    const [timelist, setTimeList] = useState([{}])
+
+    React.useEffect(()=> {
+        axios.get(`${HS_API_END_POINT}/api/timestamp/`) 
+        .then((res)=> {      
+            setTimeList(res.data);
+            console.log("TimeStamp Data 받음.", timelist, res.data); // 왜 timeList에 안들어가지 
+        })
+        .catch((err)=> {
+            console.log(err);
+        })
+    }, []); 
+    
+    function postserver(timer){
+        console.log("time:", timer)
+        axios.post(`${HS_API_END_POINT}/api/timestamp/`,{ 
+            userdog: 0,
+            day: 0,
+            press_time: timer,
+            elapsed_time: 0,
+            evaluate: true
+        })
+        .then(function (response){
+            console.log(response.status);
+        })
+        .then(function (error){
+            console.log(error);
+        });
+    }
+
     const handleStart = () => {
-      setIsActive(!isActive)
-      {
-          if (!isActive) {
-              getfromserver('start')
-              increment.current = setInterval(() => {
-                  setTimer((timer) => timer + 1)
-                  walkGet()
-              }, 1000);
-          } else {
-              getfromserver('stop')
-              clearInterval(increment.current)
-          }
-       
-      }
+        //getfromserver('start')
+        const date = new Date();
+        console.log(date);
+
+        const getSeconds = `0${date.getSeconds()}`.slice(-2)
+        const minutes = `${date.getMinutes()}`
+        const getMinutes = `0${date.getMinutes()}`.slice(-2)
+        const getHours = `0${date.getHours()}`.slice(-2)
+        setTimer((timer) => `${getHours}:${getMinutes}:${getSeconds}`)
+        postserver(`${getHours}:${getMinutes}:${getSeconds}`) //timer
+        // 누른 위치 체크 
     }
-  
-    const handleReset = () => {
-      clearInterval(increment.current)
-      setIsActive(false)
-      setTimer(0)
-    }
-  
+
     const formatTime = () => {
-      const getSeconds = `0${(timer % 60)}`.slice(-2)
-      const minutes = `${Math.floor(timer / 60)}`
-      const getMinutes = `0${minutes % 60}`.slice(-2)
-      const getHours = `0${Math.floor(timer / 3600)}`.slice(-2)
-  
-      return `${getHours}:${getMinutes}:${getSeconds}`
+        
+        if(timer==0){
+            return '00:00:00'
+        }else{
+            return timer
+        }
     }
   
-    return (
+    // 누른 시각 정보 (요일별)
+    const renderItem = ({ item }) => (
         <View>
+        <Item item={item}/>
+        <Divider style={{margin:"5%"}} color='##2089dc'/>
+        </View>
+    );
+
+    return (
+        <View style={{flex:1, justifyContent:'center'}}>
+            <View style={{flex:1, borderColor:'black', borderTopWidth:1, borderBottomWidth:1, margin:'5%', width:'80%'}}> 
+                <View style={{flexDirection:'row'}}>
+                    <View style={{flex:1}}>
+                    <Text style={[styles.smallbody]}> 번호 </Text>
+                    </View>
+                    <View style={{flex:2}}>
+                    <Text style={[styles.smallbody]}>  누른 시간 </Text>
+                    </View>
+                </View>
+                <Divider style={{margin:"5%"}} />
+                {console.log("Timelist", timelist)}
+                {
+                Object.keys(timelist).length === 0? null : 
+                <ScrollView style={{height:200,}}>
+                <FlatList
+                    data={timelist}
+                    renderItem={renderItem}
+                    keyExtractor={item => item.id} // keyExtractor tells the list to use the ids for the react keys instead of the default key property.
+                    style={styles.flatList}
+                /></ScrollView>}
+            </View>
+
             <View style={styles.dataInfoStyle}>
+                <View style={{flex:1}}/>
+                <View style={{flex:2}}>
                 <Text style={styles.body}>
                     누른 시간
                 </Text>
-                <Text style={[styles.body,styles.body_data]}>
+                </View>
+                <View style={{flex:3}}>
+                <Text style={[styles.body]}>
                 {formatTime()}
                 </Text>
+                </View>
             </View>
-            
             <Pressable 
-            style={[styles.stopwatchBtn,{
-                backgroundColor:isActive
-                ? '#ff5959'
-                : '#55e07a'}]}
-            onPress={handleStart}>
-                <Text style={{ fontSize: 30 ,paddingVertical:10}}>{!isActive ? "Press" : "Stop"}</Text>
-            </Pressable>
-            <Pressable onPress={handleReset}>
+                style={[styles.stopwatchBtn,{backgroundColor: '#55e07a'}]}
+                onPress={handleStart}>
+                <Text style={{ fontSize: 30 ,paddingVertical:10}}>{ "Press"}</Text>
             </Pressable>
         </View>
     )
   }
   
 
-class WalkAuthComponent extends Component{
+
+class TimeStampComponent extends Component{
     constructor(props){
         super(props);
         this.state = { isPressed : false };
@@ -240,12 +238,11 @@ class WalkAuthComponent extends Component{
 
             {/* average information text about walking */}
             <Information
-            informationName={'마지막 버튼을 누른 후 지난 시간'}
+            informationName={'마지막 체크 후 지난 시간'}
             showData={[
                 {
-                    dataType:1,
                     dataName:'시간',
-                    data:30
+                    data:'00:00:00'
                 },
               
             ]}/>
@@ -256,7 +253,7 @@ class WalkAuthComponent extends Component{
                     <Text style={styles.subTitle}>
                         Press Now!
                     </Text>
-                    <StopWatch/>
+                    <TimeStamp/>
                 </View>
                         
             </View>
@@ -343,6 +340,9 @@ const styles=StyleSheet.create({
     body:{
         fontSize:20,
     },
+    smallbody:{
+        fontSize:15,
+    },
     body_data:{
         marginRight:130
     },
@@ -356,7 +356,11 @@ const styles=StyleSheet.create({
         marginTop:10,
         marginRight:100,
         marginLeft:70,
+    },
+    flatList: {
+        justifyContent:'center',
+        alignItems:'stretch',
     }
 });
 
-export default WalkAuthComponent;
+export default TimeStampComponent;

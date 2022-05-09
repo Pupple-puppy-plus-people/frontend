@@ -1,5 +1,8 @@
 import React, {useState, createRef} from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
+import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+
 import {
   StyleSheet,
   TextInput,
@@ -17,134 +20,208 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import LottieView from 'lottie-react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useScrollToTop} from '@react-navigation/native';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import Animation from 'lottie-react-native';
 import axios from 'axios';
 import symbolicateStackTrace from 'react-native/Libraries/Core/Devtools/symbolicateStackTrace';
+import { Divider } from 'react-native-paper';
+import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
+//import FilterDogList from '../../../DogList/FilterComponent/FilterDogList';
+import FilterDogList from './FilterDogList';
+import { API_KEY } from '../../../../secret';
+
 // import Loader from './Components/Loader';
 
 const screenWidth = Dimensions.get('screen').width;
 const screenHeight = Dimensions.get('screen').height;
 const bigOne = screenWidth > screenHeight ? screenWidth:screenHeight;
 const smallOne = screenWidth < screenHeight ? screenWidth:screenHeight;
-const Checkbox = ({
-    id,
-    btnstyles,
-    btnstylesSelect,
-    checked,
-    selectedIndex,
-    onCheckboxChange,
-    choicesName,
-    }) => {
-    return selectedIndex !== id ? (
-        <>
-        <TouchableOpacity
-        style={btnstyles}
-        onPress={() => {
-            onCheckboxChange(id);
-        }}>
-        </TouchableOpacity>
-        
-        <Text style={styles.btnTxtStyles}>{choicesName[id]}</Text>
-        </>
 
-    ) : (
-        <>
-        <TouchableOpacity
-        style={btnstylesSelect}
-        onPress={() => {
-            onCheckboxChange(id);
-        }}>
-        </TouchableOpacity>
-        <Text style={styles.subtitle}>{choicesName[id]}</Text>
-        </>
-    );
-};
+let selectedFilter = [
+    //{filter:'gender',value : "수컷"},
+    //{filter:'kind',value : ""},
+    //{filter:'desexing',value : "중성"},
+    {filter:'age',value : ""},
+    {filter:'size',value : ""},
+    {filter:'hair_loss',value : ""},
+    {filter:'bark_term',value : ""},
+    {filter:'activity',value : ""},
+    {filter:'person_personality',value : ""},
+]
 
-const Choice = ({
-    callback,
-    text,
-    btnstyles,
-    btnTxtStyles,
-    btnstylesSelect,
-    btnTxtStylesSelect,
-    onValueChange,
-    choicesCount,
-    choicesName
-    }) => {
-    const [selectedIndex, setSelectedIndex] = useState(-1);
-    const handleCheckboxChange = (id) => {
-        setSelectedIndex(id)
-        if (onValueChange) {
-        onValueChange(text, id);
-        }
-    };
+let dogRegInfo = [
+    {filter:'dogNm',value : ""},
+    {filter:'gender',value : ""},
+    {filter:'kind',value : ""},
+    {filter:'desexing',value : ""},
+    {filter:'registration_number',value : ""},
+    {filter:'location',value : ""},
+]
 
-    const [name, setName] = useState("");
+
+
+function animalGET(urls) {
+    axios.get(urls)
+        .then(function(response){
+            // handle success
+            console.log("** LOG: Success");
+            //console.log(response);
+            console.log("------------");
+
+            dogInfo = response.data.response.body.item
+            console.log(dogInfo);
+
+            //showCheckBox(dogInfo)
+
+        })
+        .catch(function (error) {
+            //handle error
+            //console.log("** Error:", urls);
+            //showCheckBox(dogInfo)
+            dogInfo = null
+            console.log(error);
+        })
+        .then(function(){
+            //always executed
+            console.log("** Default");
+
+        });
+    
+    return dogInfo
+
+}
+
+const AnimalNumberAPI = (props) => {
+
+    /*********깃허브에 올리면 안됨*********** */
+    //const animal1 = "410097800331388";
+
+    const [animalNumber, setAnimalNumber] = useState('');
+    const [RFID, setRFID] = useState('');
+    const [ownerBirth, setOwnerBirth] = useState('');
+    const [ownerName, setOwnerName] = useState("");
+
+
+    const passwordInputRef = createRef();
+
     const onChangeText = (name) => {
         setName(name);
     }
 
-    const [RFID, setNum] = useState("");
     const onChangeNum = (RFID) => {
         setNum(RFID);
     }
 
-    const handleValueChange = (filtername, checkboxId) => {
-        // do what ever you want with this two
-      };
+    const sendDogInfo = (dogInfo) => {
+        props.onChangeDogInfo(dogInfo, animalNumber)
+        console.log("** ************************** ** ");
+    }
 
-    const gotoNextScreen = () => {
-        if(name === ""){
+    
+    const animalNumberAPI = async () => {
+        if(animalNumber === ""){
             Alert.alert(
                 "번호를 입력해주세요!"
             );
         }
         else{
-            navigation.navigate('EnrollStep2',{});
+
+            console.log("** 입력 정보: ", animalNumber, ownerName);
+
+            var url = `http://openapi.animal.go.kr/openapi/service/rest/animalInfoSrvc/animalInfo`;
+            var queryParams = `?` + encodeURIComponent('dog_reg_no') + '=' + encodeURIComponent(animalNumber); /* */
+            queryParams += `&` + encodeURIComponent('owner_nm') + '=' + encodeURIComponent(ownerName); /* */
+            queryParams += `&` + encodeURIComponent('ServiceKey') + '=' + API_KEY; /* Service Key*/
+            
+           
+            Promise.all([animalGET(url+queryParams)]) 
+            .then(dogInfo => {
+                console.log("dogInfo:",dogInfo)
+                sendDogInfo(dogInfo)
+            });
         }
     }
-    const [isModal, setModal] = useState(false);
-
 
     return (
-        <>
-        <Text style={styles.subtitle}>{text}</Text>
-        
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft:"3%"}}>
 
-            {Array.from({length: choicesCount}).map((item, index) => (
-            <Checkbox
-                id={index}
-                btnstyles={btnstyles}
-                btnstylesSelect={btnstylesSelect}
-                selectedIndex={selectedIndex}
-                onCheckboxChange={handleCheckboxChange}
-                choicesName={choicesName}
-            />
-            ))}
-        </View>        
-                    
-        </>
-        
-    );
-};
+        <View style={styles.formArea}>
+                
+                        <TextInput
+                            style={[styles.textFormTop, styles.textFrom]}
+                            onChangeText={(AnimalNumber) =>
+                                setAnimalNumber(AnimalNumber)
+                            }
+                            placeholder="동물등록번호" 
+                            placeholderTextColor="#C9C9C9"
+                            autoCapitalize="none"
+                            keyboardType="email-address"
+                            returnKeyType="next"
+                            onSubmitEditing={() =>
+                                passwordInputRef.current &&
+                                passwordInputRef.current.focus()
+                            }
+                            underlineColorAndroid="#f000"
+                            blurOnSubmit={false}
+                        />
+                        {/*<TextInput
+                            style={[styles.textFrom, styles.textFormMiddle]}
+                            onChangeText={(UserEmail) =>
+                                setUserEmail(UserEmail)
+                            }
+                            placeholder="RFID 번호" //dummy@abc.com
+                            placeholderTextColor="#8b9cb5"
+                            autoCapitalize="none"
+                            keyboardType="email-address"
+                            returnKeyType="next"
+                            onSubmitEditing={() =>
+                                passwordInputRef.current &&
+                                passwordInputRef.current.focus()
+                            }
+                            underlineColorAndroid="#f000"
+                            blurOnSubmit={false}
+                        />
+                        <TextInput
+                            style={[styles.textFrom, styles.textFormMiddle]}
+                            onChangeText={(UserEmail) =>
+                                setUserEmail(UserEmail)
+                            }
+                            placeholder="소유자 생년월일"
+                            placeholderTextColor="#8b9cb5"
+                            autoCapitalize="none"
+                            keyboardType="email-address"
+                            returnKeyType="next"
+                            onSubmitEditing={() =>
+                                passwordInputRef.current &&
+                                passwordInputRef.current.focus()
+                            }
+                            underlineColorAndroid="#f000"
+                            blurOnSubmit={false}
+                        />*/}
+                        <TextInput
+                            style={[styles.textFormBottom, styles.textFrom]}
+                            onChangeText={(OwnerName) =>
+                                setOwnerName(OwnerName)
+                            }
+                            placeholder="소유자 성명" //12345
+                            placeholderTextColor="#C9C9C9"
+                            keyboardType="default"
+                            ref={passwordInputRef}
+                            onSubmitEditing={Keyboard.dismiss}
+                            blurOnSubmit={false}
+                            secureTextEntry={false}
+                            underlineColorAndroid="#f000"
+                            returnKeyType="next"
+                        />
 
-
-/**
- * 
- * <View style={{flex:1,justifyContent:'center'}}>
-            <Pressable
-                style={[styles.button, styles.buttonOpen]}
-                onPress={() => setModal(true)}
-            >
-                <Text style={styles.textStyle}>클릭하여 주소찾기</Text>
-            </Pressable>
-        </View>
- * 
- * 
- */
+                    <TouchableOpacity 
+                        onPress={animalNumberAPI}
+                        style={styles.nextBtn}>
+                        <Text style={[styles.botText, {color: 'white'}]}>조회하기</Text>
+                    </TouchableOpacity>
+                    </View>
+    )
+}
 
 const data = [
     { title : '등록하시는 분은 누구인가요? ', filterNumber : 0},
@@ -155,37 +232,41 @@ const choicesName=[
 ];
 
 function EnrollStep1({navigation}) {
-    const [name, setName] = useState("");
-    const onChangeText = (name) => {
-        setName(name);
-    }
+    const ref = React.useRef(null);
+    const [dogInfo, setDogInfo] = useState(null);
+    const [animalNumber, setAnimalNumber] = useState(null);
 
-    const [RFID, setNum] = useState("");
-    const onChangeNum = (RFID) => {
-        setNum(RFID);
-    }
+    useScrollToTop(ref);
 
-    const handleValueChange = (filtername, checkboxId) => {
-        // do what ever you want with this two
-      };
+    const onChangeDogInfo = (dogInfo, animalNumber) => {
+        setDogInfo(dogInfo)
+        setAnimalNumber(animalNumber)
+        console.log("Changed !", dogInfo, animalNumber);
+    } // props 로 자식에서 부모로 값 전달하는 거 하던 중
 
 
     const {width, height} = useWindowDimensions();
-    const passwordInputRef = createRef();
 
-    const [userEmail, setUserEmail] = useState('');
-    const [userPassword, setUserPassword] = useState('');
-
-
-    const gotoNextScreen = () => {
-        if(userEmail === ""){
+    const gotoNextScreen = (dogInfo) => {
+        /*if(name === ""){
             Alert.alert(
-                "번호를 입력해주세요!"
+                "소개를 입력해주세요!"
             );
         }
-        else{
-            navigation.navigate('EnrollStep2',{animal: userEmail, owner: userPassword});
-        }
+        else*/
+        //if{
+
+            dogRegInfo[0].value=dogInfo.dogNm
+            dogRegInfo[1].value=dogInfo.sexNm
+            dogRegInfo[2].value=dogInfo.kindNm
+            dogRegInfo[3].value=dogInfo.neuterYn
+            dogRegInfo[4].value=animalNumber
+            dogRegInfo[5].value=dogInfo.orgNm
+
+            console.log("---navigate to EnrollStep2---> ", selectedFilter, dogRegInfo);
+
+            navigation.navigate('EnrollStep2',{selectedFilter:selectedFilter, dogRegInfo:dogRegInfo});
+        //}
     }
 
     return (
@@ -198,18 +279,196 @@ function EnrollStep1({navigation}) {
         // 견적사항 완성하기 (step 1) - 왼쪽 페이지에서
         // 인증절차 선택하기 (step 2) - 오른쪽 페이지에서 
         // progress bar는 어디에?
+       
+        <KeyboardAwareScrollView style={{ backgroundColor: "white", flex: 1 }} >   
 
-        <SafeAreaView style={styles.container}>  
+           
+        <View style={{flex:1,flexDirection:'column', padding:'3%',backgroundColor:'white'}}>
+
+            <ScrollView ref = {ref} style={[styles.scrollView]}> 
+
+                <View style={{justifyContent:'flex-start'}}>
+                    <Text style={styles.title}>Step 1. 반려견 정보 작성하기{'\n'}</Text>
+                    <Text style={[styles.subtitle]}>반려견 분양을 위해 동물등록 조회가 필요해요. </Text>
+                    
+                    <AnimalNumberAPI onChangeDogInfo={onChangeDogInfo} >  </AnimalNumberAPI>
+
+                    <Text>{dogInfo === null ? null : 
+                    
+                        (dogInfo[0] === undefined || dogInfo[0] === 'undefined') ?
+                        <Icon name='close-circle' color='red'> 조회 실패</Icon>  : 
+                    <Icon name='check-circle' color='green'> 조회 완료</Icon> }
+                    </Text>
+                   
+                <Divider style={{margin:"5%"}} />
+                
+                </View>
+                
+                <View style={[{justifyContent:'flex-start'}]}>
+                    {/*<Text style={[styles.subtitle, {marginTop: "3%"}]}> 동물등록된 반려견 분양이 가능해요. </Text>*/}
+                    
+                    {console.log("** dog: ", dogInfo)}
+                    {dogInfo == null || (dogInfo[0] === undefined || dogInfo[0] === 'undefined') ? 
+                    null : 
+
+                    <>
+
+                        <Text style={styles.subtitle}>반려견 등록 정보를 확인해주세요. </Text>
+                    
+                        <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                            <View style={styles.btnTxtStyles}>
+                                <Text>이름</Text>
+                            </View>
+
+                            <View style={[{flex:1},styles.btnTxtStyles]}>
+                                <Text>{dogInfo[0].dogNm}</Text>
+                            </View>
+                        </View>
+
+                        <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                            <View style={styles.btnTxtStyles}>
+                                <Text>성별</Text>
+                            </View>
+                            <View style={[{flex:1},styles.btnTxtStyles]}>
+                                <Text>{dogInfo[0].sexNm}</Text>
+                            </View>
+                        </View>
+
+                        <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+
+                            <View style={styles.btnTxtStyles}>
+                                <Text>품종</Text>
+                            </View>
+                        
+                            <View style={[{flex:1}, styles.btnTxtStyles]}>
+                                <Text>{dogInfo[0].kindNm}</Text>
+                            </View>
+                        </View>
+
+                        <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+
+                            <View style={styles.btnTxtStyles}>
+                                <Text>중성화</Text>
+                            </View>
+                            <View style={[{flex:1},styles.btnTxtStyles]}>
+                                <Text>{dogInfo[0].neuterYn}</Text>
+                            </View>
+                        </View>
+
+                        <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+
+                            <View style={styles.btnTxtStyles}>
+                                <Text>지역</Text>
+                            </View>
+                            <View style={[{flex:1},styles.btnTxtStyles]}>
+                                <Text>{dogInfo[0].orgNm}</Text>
+                            </View>
+                        </View>
+
+                        <Divider style={{margin:"5%"}} />
+
+                        <Text style={styles.subtitle}>반려견 정보를 체크해주세요. </Text>
+                        
+                        <FilterDogList selectedFilter={selectedFilter}>   
+                            {console.log("-&&&&& >", dogInfo[0].sexNm)}    
+                        </FilterDogList>
+
+                        <Divider style={{margin:"5%"}} />
+
+                        
+                        <View  style={{flex:3,justifyContent:'flex-end'}}>
+                            <TouchableOpacity 
+                                onPress={() => {
+                                    gotoNextScreen(dogInfo[0]);
+                                }}
+                                style={styles.nextBtn}>
+                                <Text style={[styles.botText, {color: 'white'}]}>다음</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </>
+                    
+                    }
+                   
+                </View>
+
+
+                <View style={[styles.board,{backgroundColor:'#E1BEE7',borderRadius:20}]}>
+                    
+                </View>
+        
+                    
+            </ScrollView>
+        </View>
+        </KeyboardAwareScrollView>
+    );
+}
+
+/*
+
+board 안에 있는 것
+
+{data.map((x) => (
+                    <Choice
+                        text={x.title}
+                        btnTxtStyles={styles.btnTxtStyles}
+                        btnstyles={styles.btnstyles}
+                        btnstylesSelect={styles.btnstylesSelect}
+                        onValueChange={handleValueChange}
+                        choicesCount={choicesName[x.filterNumber].length}
+                        choicesName={choicesName[x.filterNumber]}
+                    />
+                    ))}
+                      
+                    <View style={[styles.formArea, {width: width > height ? '40%': '75%'}]}>
+                        <TextInput
+                            style={[styles.textFormTop, {height: width >height ? '35%' : '25%'}]}
+                            onChangeText={(UserEmail) =>
+                                setUserEmail(UserEmail)
+                            }
+                            placeholder="동물등록번호" //dummy@abc.com
+                            placeholderTextColor="#8b9cb5"
+                            autoCapitalize="none"
+                            keyboardType="email-address"
+                            returnKeyType="next"
+                            onSubmitEditing={() =>
+                                passwordInputRef.current &&
+                                passwordInputRef.current.focus()
+                            }
+                            underlineColorAndroid="#f000"
+                            blurOnSubmit={false}
+                        />
+                        <TextInput
+                            style={[styles.textFormBottom,{height: width >height ? '35%' : '25%'}]}
+                            onChangeText={(UserPassword) =>
+                                setUserPassword(UserPassword)
+                            }
+                            placeholder="소유자 성명" //12345
+                            placeholderTextColor="#8b9cb5"
+                            keyboardType="default"
+                            ref={passwordInputRef}
+                            onSubmitEditing={Keyboard.dismiss}
+                            blurOnSubmit={false}
+                            secureTextEntry={false}
+                            underlineColorAndroid="#f000"
+                            returnKeyType="next"
+                        />
+                        </View>
+
+
+     <View style={{flex:0.5, justifyContent:'center', marginLeft:"3%"}}>
+
+                        <ScrollView ref = {ref} style={styles.scrollView}> 
+                    
+                        </ScrollView>
+                    
+                    </View>
 
 
             <View style={{flex:1,flexDirection:'column', padding:'3%',backgroundColor:'#fff'}}>
                 <View style={{flex:0.5}}/>
 
                 <View style={[styles.board,{backgroundColor:'#E1BEE7',borderRadius:20}]}>
-                    <View style={{flex:1.5,justifyContent:'flex-end'}}>
-                        <Text style={styles.title}>Step 1.</Text>
-                        <Text style={styles.title}>동물등록 번호를 조회해주세요. </Text>
-                    </View>
+                    
                     <View style={{flex:0.5, justifyContent:'center', marginLeft:"3%"}}>
                     </View>
                     {data.map((x) => (
@@ -257,8 +516,8 @@ function EnrollStep1({navigation}) {
                       underlineColorAndroid="#f000"
                       returnKeyType="next"
                   />
-                {/* <Text style={{...styles.TextValidation}}>유효하지 않은 ID입니다.</Text> */}
-            </View>
+                {/* <Text style={{...styles.TextValidation}}>유효하지 않은 ID입니다.</Text> }
+                </View>
                 </View>
             
             <TouchableOpacity 
@@ -269,10 +528,8 @@ function EnrollStep1({navigation}) {
             </TouchableOpacity>
                 <View style={{flex:0.2}}/>
             </View>
-            
-        </SafeAreaView>
-    );
-}
+
+*/ 
 
 const checkBoxBaseStyles = {
     height: 40,
@@ -293,13 +550,11 @@ const styles = StyleSheet.create({
         
     },
     scrollView: {
-        backgroundColor: 'pink',
-        marginHorizontal: 0,
         flex: 1,
-      },
+        backgroundColor: 'white',
+        padding:"2%",
+    },
     board:{
-        height:"80%",
-        marginTop: "10%", // 이거 임시방편임
         shadowColor: "#000",
         shadowOffset: {
           width: 0,
@@ -310,17 +565,23 @@ const styles = StyleSheet.create({
         elevation: 5
     },
     title: {
+        flex:1,
         fontSize: bigOne*0.03,
         fontWeight:'bold',
         textAlign:'left',
-        marginLeft: "5%"
+        //marginLeft: "5%",
+        //marginTop: "5%",
     },
     subtitle:{
         flex:1,
         fontSize: bigOne*0.02,
+        fontWeight:'bold',
         color:'rgba(0,0,0,0.7)',
         textAlign:'left',
-        marginLeft: "5%"
+        marginBottom: '3%',
+        //marginLeft: "5%",        
+        //marginTop: "3%",
+
     },
     activityIndicator: {
       alignItems: 'center',
@@ -340,12 +601,13 @@ const styles = StyleSheet.create({
         fontWeight:'bold',
     },
     nextBtn: {
-    marginTop: 50,
+    marginTop: 5,
     flex:1,
-    height: '100%',
+    //height: '100%',
+    height: 30,
     width:'100%',
-    maxHeight:50,
-    borderRadius:10,
+    //maxHeight:50,
+    borderRadius:7,
     backgroundColor:'#9C27B0',
     justifyContent: 'center',
     //alignItems: 'center',
@@ -422,29 +684,35 @@ input: {
         textAlign: "center"
       },
       formArea: {
-        justifyContent: 'center',
-        flex: 2,
-        alignSelf:'center'
+        paddingVertical:"3%",
+        flex: 1,
+      },
+      textFrom: {
+        flex: 1,
+        borderWidth: 2,
+        borderColor: '#C9C9C9',
+        width: '100%',
+        paddingLeft: 10,
+        paddingRight: 10,
       },
       textFormTop: {
-        borderWidth: 2,
-        borderBottomWidth: 1,
-        borderColor: '#C9C9C9',
         borderTopLeftRadius: 7,
         borderTopRightRadius: 7,
-        width: '100%',
-        paddingLeft: 10,
-        paddingRight: 10,
+        borderBottomWidth: 1,
+      },
+      textFormMiddle: {
+        borderBottomWidth: 1,
+        borderTopWidth: 1,
       },
       textFormBottom: {
-        borderWidth: 2,
-        borderTopWidth: 1,
-        borderColor: '#C9C9C9',
         borderBottomRightRadius: 7,
         borderBottomLeftRadius: 7,
-        width: '100%',
-        paddingLeft: 10,
-        paddingRight: 10,
+        borderTopWidth: 1,
+      },
+      btnTxtStyles: {
+        ...labelDimentions,
+        alignItems: 'center',
+        marginVertical:'3%'
       },
   });
 export default EnrollStep1;

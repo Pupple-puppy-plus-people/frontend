@@ -1,5 +1,4 @@
-
-//import resyncStorage from '@react-native-async-storage/async-storage';
+import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 import React, {useState, useEffect, Component} from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import {navigation} from '@react-navigation/native';
@@ -20,107 +19,60 @@ import {
 
 } from 'react-native';
 import { responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
-
-import EnrollButton from './Shelter/EnrollButton'
-import EmptyDogList from './EmptyList';
 import axios from 'axios';
-import { HS_API_END_POINT } from '../../Shared/env';
-import Item from './ItemComponent';
-
-//import * as RNFS from 'react-native-fs'
-//import axios from 'axios';
-//import { HS_API_END_POINT } from '../../Shared/env';
-//import { setJwt,setUserInfo } from '../Store/Actions';
-//import { connect } from 'react-redux';
 
 const width = Dimensions.get("window").width - 10; // container style에 paddingHorizontal*2
 const height = Dimensions.get("window").height;
 
 
-const Stack = createStackNavigator();
+function Item({item, navigation, icon}) {
 
-const USER = [
-  {
-    id: '0',
-    title: '입양인',
-  },
-  {
-    id: '1',
-    title: '입양처',
-  }
-];
-// 로그인 정보 조건문: 만약 입양처로 로그인했다면, 만약 입양인으로 로그인했다면에 따라 달라짐 -> 조건부 렌더링 알아보기
-let USER_TYPE = 1;  // 0 이면 입양인, 1이면 입양처, 로그인 정보 받아오기
+    console.log("item: ", item);
 
-var Listlen = 1;
-
-
-function Authenticate ({navigation}) {
-    const [type, setType] = useState(""); // 이거 다른 코드랑 많이 겹치는데 어떻게 못 합치나?
-    const {width, height} = useWindowDimensions();
-    const [dogs, setDogs] = useState([{}])
-
-    React.useEffect(()=> {
-       
-        axios.get(`${HS_API_END_POINT}/api/dogs/`)  // 코드 합칠 때 찜목록으로 바꾸기! 
-        .then((res)=> {      
-            console.log("wishlist Data 받음.");
-            setDogs(res.data);
-        })
-        .catch((err)=> {
-            console.log(err);
-        })
-    }, []); 
+    const [parentHeight, setParentHeight] = useState({height:0}); // 동적인 값 관리
+    const [imagePos, setimagePos] = useState({X:0, Y:0}); // 동적인 값 관리
   
-    // 반려견 리스트 정보
-    const renderItem = ({ item }) => (
-      // item: 아이템 배열
-      // navigation: 네비게이션
-      // icon: 표시할 아이콘 모양
-      <Item item={item} navigation={navigation} icon={'circle'}/>
-    );
-
-    
-
+    const onLayout=(event)=> {
+      const {x, y, height, width} = event.nativeEvent.layout; // position (x, y), size (height, width)
+      setParentHeight({height:height});
+    };
+  
+    const onLayoutImage=(event)=> {
+      const {x, y, height, width} = event.nativeEvent.layout; // position (x, y), size (height, width)
+      setimagePos({X:x, Y:y});
+    };
+  
     return (
-        /* 노치 디자인에도 안전하게 화면의 콘텐츠를 확보할수 있음 */
-        <SafeAreaView style={styles.container}>  
-          
-            <View style={{justifyContent: 'center', width: "100%", height: "100%"}}>
-
-                {/* 리스트에 아무것도 없다면 */}
-                {(Listlen==0)? 
-                 /* 입양인/입양처로 로그인 유무에 따른 Empty Data 내용 다름 */
-                    <EmptyDogList user={USER_TYPE} /> 
-                  : 
-                /* 반려견 리스트 */  
-                  <FlatList
-                    data={dogs}
-                    renderItem={renderItem}
-                    keyExtractor={item => item.id}
-                    numColumns={2}  // column의 개수
-                    columnWrapperStyle={{
-                      justifyContent: 'space-between',
-                      //marginBottom: 5,
-                    }}/>
-                }
-                {/*마지막 홀수번째 리스트 이상함*/ }
-            </View> 
+            <Pressable style={styles.dogCard} onLayout={onLayout} 
+              backgroundColor='white' // background가 필요한지 모르겠음, 이미 dogCard에 있는데 
+              activeOpacity={1}
+              onPress={()=>{
+              navigation.navigate('EnrollPage')
+              }}
+              // onLongPress 길게 누르면 삭제 될 수 있게 하기 
+            >
             
-      
-           {/* 만약에 입양처로 로그인한다면 */}
-            {USER_TYPE === 1 ? <EnrollButton navigation={navigation} /> : null}
+            <View style={{alignSelf:'center'}} >
+              <Image source={{uri: item.image}} onLayout={onLayoutImage} 
+                style={ {width: parentHeight.height/2,
+                height:parentHeight.height/2,
+                borderRadius:50,
+                margin: '3%'}}/>
+              {/* 입양처가 새로운 인증절차 확인할 것 있을 때 new state 나타내는 알림 표시, 크기 반응형 확인*/}
+              <View style={[styles.add, {bottom:imagePos.X, right:imagePos.Y}]}>
+                <Icon name={icon} size={25} color='lightgreen' />
+              </View>
+            </View>
   
-        </SafeAreaView>
-
-    );
-};
-
-const Tab2Home = ({ navigation }) => {
-  return (
-    <Authenticate navigation={navigation}></Authenticate>
-  );
-};
+            <Text style={styles.btnTitle}>{item.name}</Text>
+            <Text style={styles.btnText}>{item.gender} (중성화 {item.desexing=='중성'?'O':'X'}) </Text>
+            <Text style={styles.btnText}>{item.age}</Text>  
+            <Text style={styles.btnText}>{item.location}</Text>
+  
+          </Pressable> 
+    )
+  }
+// {/** 생년월일로 받는게 이상적 -> 현재 년도 월에서 빼주누는 걸로 */}
 
 // 스타일 
 const styles = StyleSheet.create({
@@ -183,15 +135,16 @@ const styles = StyleSheet.create({
     },
     
     btnTitle: {
-      fontSize: responsiveScreenFontSize(2.5),
+      fontSize: responsiveScreenFontSize(2.0),
       margin: '2%',
       textAlign: 'center',
-      width: "50%"
+      width: "50%",
+      fontWeight:'bold',
     },
     btnText: {
-      fontSize: responsiveScreenFontSize(1.5),
+      fontSize: responsiveScreenFontSize(1.7),
       textAlign: 'center',
-      width: "50%"  // 텍스트 길이 제한
+      width: "100%"  // 텍스트 길이 제한
     },
     dogCard: { 
       //flex: 1/2, -> 이거로 하니까 리스트 개수가 홀수개일 때 마지막 리스트 사이즈가 튀어나옴
@@ -205,7 +158,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center', // 세로방향
       alignItems: 'center', // 가로방향
       
-      height: height/4,
+      height: responsiveScreenHeight(26),
       width: '46%', // width/2로 하니까 더 옆으로 가서 잘림. 스크린 정의가 다른듯? %는 부모의 것을 기준으로 함
       
       // border 만 shadow: 배경색을 넣어주면 됨ㅋㅋ...
@@ -230,4 +183,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default Tab2Home;
+  export default Item;
