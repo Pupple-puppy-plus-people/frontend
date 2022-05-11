@@ -357,6 +357,8 @@ PODS:
     - React-Core
   - RNCMaskedView (0.1.11):
     - React
+  - RNCPicker (2.4.1):
+    - React-Core
   - RNGestureHandler (2.4.1):
     - React-Core
   - RNReanimated (2.8.0):
@@ -461,6 +463,7 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCCheckbox (from `../node_modules/@react-native-community/checkbox`)"
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
+  - "RNCPicker (from `../node_modules/@react-native-picker/picker`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -560,6 +563,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/checkbox"
   RNCMaskedView:
     :path: "../node_modules/@react-native-community/masked-view"
+  RNCPicker:
+    :path: "../node_modules/@react-native-picker/picker"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNReanimated:
@@ -624,6 +629,7 @@ SPEC CHECKSUMS:
   ReactCommon: 07d0c460b9ba9af3eaf1b8f5abe7daaad28c9c4e
   RNCCheckbox: ed1b4ca295475b41e7251ebae046360a703b6eb5
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
+  RNCPicker: abc646b53a3d28ccfa3232c927a0ca52e0cf024d
   RNGestureHandler: 4f4986408310a43f1606c391f38f76e0d6e790d5
   RNReanimated: 46cdb89ca59ab7181334f4ed05a70e82ddb36751
   RNScreens: 40a2cb40a02a609938137a1e0acfbf8fc9eebf19

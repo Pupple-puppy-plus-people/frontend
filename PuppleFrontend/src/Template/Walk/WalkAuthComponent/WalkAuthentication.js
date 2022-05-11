@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React ,{Component, useState, useEffect, useRef} from 'react';
+import React ,{Component, useState, useRef} from 'react';
 import {
     StyleSheet,
     Text,
@@ -8,7 +8,6 @@ import {
     Pressable,
     FlatList,
     TouchableWithoutFeedback,
-    Platform,
 } from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
 import {getDistance} from 'geolib';
@@ -27,6 +26,7 @@ function walkGet() {
         .then(function(response){
             // handle success
             myData = response.data
+            console.log('walkget')
             resolve();
         })
         .catch(function (error) {
@@ -65,7 +65,71 @@ let walkauthData = {
     evaluate : false
 }
 
-let myData = {}
+let myData = [
+    {
+        userdog : userdog,
+        day : 0,
+        start_time : 0,
+        elapsed_time : 0,
+        end_time : 0,
+        distance : 0,
+        evaluate : false
+    },
+    {
+        userdog : userdog,
+        day : 0,
+        start_time : 0,
+        elapsed_time : 0,
+        end_time : 0,
+        distance : 0,
+        evaluate : false
+    },
+    {
+        userdog : userdog,
+        day : 0,
+        start_time : 0,
+        elapsed_time : 0,
+        end_time : 0,
+        distance : 0,
+        evaluate : false
+    },
+    {
+        userdog : userdog,
+        day : 0,
+        start_time : 0,
+        elapsed_time : 0,
+        end_time : 0,
+        distance : 0,
+        evaluate : false
+    },
+    {
+        userdog : userdog,
+        day : 0,
+        start_time : 0,
+        elapsed_time : 0,
+        end_time : 0,
+        distance : 0,
+        evaluate : false
+    },
+    {
+        userdog : userdog,
+        day : 0,
+        start_time : 0,
+        elapsed_time : 0,
+        end_time : 0,
+        distance : 0,
+        evaluate : false
+    },
+    {
+        userdog : userdog,
+        day : 0,
+        start_time : 0,
+        elapsed_time : 0,
+        end_time : 0,
+        distance : 0,
+        evaluate : false
+    },
+]
 
 let myTotal = {
     count : 0,
@@ -82,22 +146,29 @@ let lastLocation = {
 class SummaryList extends Component{
     constructor(props){
         super(props);
+        this.state={
+            day_index : 0
+        }
     }
-
-    componentDidUpdate(){
-
-    }
-
     render(){
+        let day_index = 0;
+        const day_num = [0,1,2,3,4,5,6];
+        const dayEval = day_num.map((oneday)=>
+            <MaterialCommunityIcons 
+            key={oneday}
+            name={myData[oneday].day == oneday ?
+                (myData[oneday].evaluate?"check-circle-outline":"close-circle-outline")
+            :   ("progress-question")}
+            color={myData[oneday].day == oneday ?
+                (myData[oneday].evaluate?'green':'red')
+            :   ("purple")}
+            size={25}/>
+        );
+
+        // #eedbff background color
         return(
             <View style={styles.summary_row}>
-                <MaterialCommunityIcons name="check-circle-outline" color={'green'}   size={25}/>
-                <MaterialCommunityIcons name="check-circle-outline" color={'green'}   size={25}/>
-                <MaterialCommunityIcons name="close-circle-outline" color={'red'}     size={25}/>
-                <MaterialCommunityIcons name="check-circle-outline" color={'green'}   size={25}/>
-                <MaterialCommunityIcons name="check-circle-outline" color={'green'}   size={25}/>
-                <MaterialCommunityIcons name="progress-question"    color={'#eedbff'} size={25}/>
-                <MaterialCommunityIcons name="check-circle-outline" color={'green'}   size={25}/>
+                {dayEval}
             </View>
         );
     }
@@ -180,6 +251,26 @@ const StopWatch = ({changeState}) => {
               clearInterval(increment.current)
               stopAndload()
               changeState()
+              axios.post(baseUrl+'/api/passcondition/13/',{
+                dog_id : 13,
+                walk_total_count : 13,
+                min_per_walk : 13,
+                meter_per_walk : 13,
+                ts_total_count : 13,
+                ts_check_time : 13,
+              })
+        .then(function(response){
+            // handle success
+            myData = response.data
+            resolve();
+        })
+        .catch(function (error) {
+            //handle error
+            console.log(error);
+        })
+        .then(function(){
+            //always executed
+        });
           }
       }
     }
@@ -256,7 +347,6 @@ class WalkAuthComponent extends Component{
     constructor(props){
         super(props);
         this.loadData();
-
         this.state={
             total_count : 0,
             total_time : 0,
