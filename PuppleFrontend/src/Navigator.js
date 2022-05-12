@@ -47,6 +47,7 @@ const BottomNavigation = ({navigation}) => {
                   tabBarLabel: '인증',
                   headerShown: false,
                   animationEnabled: false,
+                  unmountOnBlur: true,
                   tabBarIcon: ()=> (
                       <MaterialCommunityIcons name="paw" size={25} />
                   )
