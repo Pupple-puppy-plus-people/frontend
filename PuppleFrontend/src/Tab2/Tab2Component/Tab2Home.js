@@ -24,7 +24,7 @@ import { responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth
 import EnrollButton from './Shelter/EnrollButton'
 import EmptyDogList from './EmptyList';
 import axios from 'axios';
-import { HS_API_END_POINT } from '../../Shared/env';
+import { HS_API_END_POINT, USER_INFO } from '../../Shared/env';
 import Item from './ItemComponent';
 
 //import * as RNFS from 'react-native-fs'
@@ -75,39 +75,58 @@ function Authenticate ({navigation}) {
     const [type, setType] = useState("");
     const {width, height} = useWindowDimensions();
     const [dogs, setDogs] = useState([{}]) // USER_TYPE 바뀔때마다 dogs 비워줘야하는데 언제? ->  입양인, 입양처로 바꼈을 때 dogs 데이터가 남는 현상
-    const [wishlist, setWishList] = useState([{}]) // USER_TYPE 바뀔때마다 dogs 비워줘야하는데 언제? ->  입양인, 입양처로 바꼈을 때 dogs 데이터가 남는 현상
+    const [wishlist, setWishList] = useState() // USER_TYPE 바뀔때마다 dogs 비워줘야하는데 언제? ->  입양인, 입양처로 바꼈을 때 dogs 데이터가 남는 현상
 
       // -> 근데 로딩시간이 뭔가 문제인듯? --> 
-      // 판매자면 찜목록으로,    
+      // 구매자 찜목록으로,    
       React.useEffect(()=> {   
         (async function() {
           try { 
+            //판매자
+            if (USER_TYPE) {
+              query = 
+              '?'+
+              'user_id='+USER_ID
+
+            axios.get(`${HS_API_END_POINT}/api/dogs/${query}`)  
+            .then((res)=> {      
+                console.log("판매자 등록한 Data 받음.");
+                setDogs(res.data);
+            })
+            .catch((err)=> {
+                console.log(err);
+            })
+          }
+          //구매자
             if (!USER_TYPE){                
-              axios.post(`${HS_API_END_POINT}/api/users/wishlist/`,{ 
-                email: 'testuser1@g.com',}) 
-                .then((res)=> {      
-                    console.log("wishlist Data 받음.", wishlist);
-                    setWishList(res.data);
+              await new Promise((resolve,reject)=>{
+                axios.post(`${HS_API_END_POINT}/api/users/wishlist/`,{ 
+                  email: USER_INFO.USER_EMAIL,}) 
+                  .then((res)=> {  
+                      setWishList({...res.data});
+                      console.log("promise");
+                      resolve();
+                  })
+                  .catch((err)=> {
+                      console.log(err);
                 })
-                .catch((err)=> {
-                    console.log(err);
               })
+              console.log("wishlist Data 받음.", wishlist);
             
             let wish_dog = []
             for(dog in wishlist){
-              console.log("dog indexs dog",dog, wishlist[dog].dog_id);
+              // console.log("dog indexs dog",dog, wishlist[dog].dog_id);
               // 찜 목록의 dog DB 받아오기
-              query = 
-                wishlist[dog].dog_id
+                query = wishlist[dog].dog_id;
               
-              console.log("query.",query)
+              // console.log("query.",query)
 
-              axios.get(`${HS_API_END_POINT}/api/dogs/${query}`)  
+              await axios.get(`${HS_API_END_POINT}/api/dogs/${query}`)  
               .then((res)=> {      
-                  console.log("dog indexs1 의 결과.", Object.keys(res.data).length);
-                  console.log("dog 1 의 결과.", res.data);
+                  // console.log("dog indexs1 의 결과.", Object.keys(res.data).length);
+                  // console.log("dog 1 의 결과.", res.data);
                   wish_dog.push(res.data)
-                  console.log("dogs updated",dogs)
+                  // console.log("dogs updated",dogs)
               })
               .catch((err)=> {
                   console.log(err);
@@ -121,48 +140,48 @@ function Authenticate ({navigation}) {
       }, []);
 
       
-      // 구매자면 자기가 등록한 반려견 리스트로 
-      React.useEffect(()=> {
+      // 판매자 자기가 등록한 반려견 리스트로 
+      // React.useEffect(()=> {
 
-        (async function() {
-          try {
-              if (USER_TYPE) {
-                query = 
-                '?'+
-                'user_id='+USER_ID
+      //   (async function() {
+      //     try {
+      //         if (USER_TYPE) {
+      //           query = 
+      //           '?'+
+      //           'user_id='+USER_ID
 
-              axios.get(`${HS_API_END_POINT}/api/dogs/${query}`)  
-              .then((res)=> {      
-                  console.log("판매자 등록한 Data 받음.");
-                  setDogs(res.data);
-              })
-              .catch((err)=> {
-                  console.log(err);
-              })
-            }
-          } catch (e) {
-            console.error(e);
-          }
-        })();
-      }, []); 
+      //         axios.get(`${HS_API_END_POINT}/api/dogs/${query}`)  
+      //         .then((res)=> {      
+      //             console.log("판매자 등록한 Data 받음.");
+      //             setDogs(res.data);
+      //         })
+      //         .catch((err)=> {
+      //             console.log(err);
+      //         })
+      //       }
+      //     } catch (e) {
+      //       console.error(e);
+      //     }
+      //   })();
+      // }, []); 
     
-      React.useEffect(()=> {
+    //   React.useEffect(()=> {
 
-        (async function() {
-            try {
-            axios.get(`${HS_API_END_POINT}/api/timestamp/`) 
-            .then((res)=> {      
-                setTimeList(res.data);
-                this.props.getlist(res.data)
-                console.log("TimeStamp Data 받음.", timelist, res.data); // 왜 timeList에 안들어가지 
-            })
-            .catch((err)=> {
-                console.log(err);
-            })} catch (e) {
-                console.error(e);
-            }
-        })();
-    }, []); 
+    //     (async function() {
+    //         try {
+    //         axios.get(`${HS_API_END_POINT}/api/timestamp/`) 
+    //         .then((res)=> {      
+    //             setTimeList(res.data);
+    //             this.props.getlist(res.data)
+    //             console.log("TimeStamp Data 받음.", timelist, res.data); // 왜 timeList에 안들어가지 
+    //         })
+    //         .catch((err)=> {
+    //             console.log(err);
+    //         })} catch (e) {
+    //             console.error(e);
+    //         }
+    //     })();
+    // }, []); 
 
     // 반려견 리스트 정보
     const renderItem = ({ item }) => (
