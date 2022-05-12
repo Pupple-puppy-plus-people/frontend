@@ -79,109 +79,52 @@ function Authenticate ({navigation}) {
 
       // -> 근데 로딩시간이 뭔가 문제인듯? --> 
       // 구매자 찜목록으로,    
-      React.useEffect(()=> {   
-        (async function() {
-          try { 
-            //판매자
-            if (USER_TYPE) {
-              query = 
-              '?'+
-              'user_id='+USER_ID
+      React.useEffect(()=> {
+        if (!USER_TYPE){ 
+  
+              let wish = []
+              axios.post(`${HS_API_END_POINT}/api/users/wishlist/`,{ 
+              email: USER_INFO.USER_EMAIL,}) 
+                    .then((res)=> {
+                        wish = res.data
+                        console.log("wishlist Data 받음.", wish);
+                        // setWishList(wish);
+  
+                        wish_dog = []
+  
+                        for(dog in wish){
+                          query = wish[dog].dog_id
+                          axios.get(`${HS_API_END_POINT}/api/dogs/${query}`)
+                            .then((res)=> {
+                                wish_dog.push(res.data)
+                                console.log("wish_dog: ", wish_dog.length)
+                                setDogs(wish_dog)
+                            })
+                            .catch((err)=> {
+                                console.log(err);
+                            })
+                        }
+  
+                    })
+                    .catch((err)=> {
+                        console.log(err);
+                    })
+          }else{
+            query = 
+                 '?'+
+                 'user_id='+USER_ID
 
-            axios.get(`${HS_API_END_POINT}/api/dogs/${query}`)  
-            .then((res)=> {      
-                console.log("판매자 등록한 Data 받음.");
-                setDogs(res.data);
-            })
-            .catch((err)=> {
-                console.log(err);
-            })
-          }
-          //구매자
-            if (!USER_TYPE){                
-              await new Promise((resolve,reject)=>{
-                axios.post(`${HS_API_END_POINT}/api/users/wishlist/`,{ 
-                  email: USER_INFO.USER_EMAIL,}) 
-                  .then((res)=> {  
-                      setWishList({...res.data});
-                      console.log("promise");
-                      resolve();
-                  })
-                  .catch((err)=> {
-                      console.log(err);
-                })
-              })
-              console.log("wishlist Data 받음.", wishlist);
-            
-            let wish_dog = []
-            for(dog in wishlist){
-              // console.log("dog indexs dog",dog, wishlist[dog].dog_id);
-              // 찜 목록의 dog DB 받아오기
-                query = wishlist[dog].dog_id;
-              
-              // console.log("query.",query)
-
-              await axios.get(`${HS_API_END_POINT}/api/dogs/${query}`)  
+               axios.get(`${HS_API_END_POINT}/api/dogs/${query}`)  
               .then((res)=> {      
-                  // console.log("dog indexs1 의 결과.", Object.keys(res.data).length);
-                  // console.log("dog 1 의 결과.", res.data);
-                  wish_dog.push(res.data)
-                  // console.log("dogs updated",dogs)
-              })
-              .catch((err)=> {
-                  console.log(err);
-              })
-            }
-            setDogs(wish_dog)
-            } } catch (e) {
-              console.error(e);
-            }
-          })();
-      }, []);
-
+                   console.log("판매자 등록한 Data 받음.");
+                   setDogs(res.data);
+               })
+               .catch((err)=> {
+                   console.log(err);
+               })
+          }
+    },[]);
       
-      // 판매자 자기가 등록한 반려견 리스트로 
-      // React.useEffect(()=> {
-
-      //   (async function() {
-      //     try {
-      //         if (USER_TYPE) {
-      //           query = 
-      //           '?'+
-      //           'user_id='+USER_ID
-
-      //         axios.get(`${HS_API_END_POINT}/api/dogs/${query}`)  
-      //         .then((res)=> {      
-      //             console.log("판매자 등록한 Data 받음.");
-      //             setDogs(res.data);
-      //         })
-      //         .catch((err)=> {
-      //             console.log(err);
-      //         })
-      //       }
-      //     } catch (e) {
-      //       console.error(e);
-      //     }
-      //   })();
-      // }, []); 
-    
-    //   React.useEffect(()=> {
-
-    //     (async function() {
-    //         try {
-    //         axios.get(`${HS_API_END_POINT}/api/timestamp/`) 
-    //         .then((res)=> {      
-    //             setTimeList(res.data);
-    //             this.props.getlist(res.data)
-    //             console.log("TimeStamp Data 받음.", timelist, res.data); // 왜 timeList에 안들어가지 
-    //         })
-    //         .catch((err)=> {
-    //             console.log(err);
-    //         })} catch (e) {
-    //             console.error(e);
-    //         }
-    //     })();
-    // }, []); 
 
     // 반려견 리스트 정보
     const renderItem = ({ item }) => (
