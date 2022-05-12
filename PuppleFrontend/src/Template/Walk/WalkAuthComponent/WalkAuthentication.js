@@ -454,7 +454,6 @@ class WalkAuthComponent extends Component{
                 <Text
                 style={styles.subTitle}>
                 Current Total
-                <Text>{this.state.pass_count}</Text>
                 </Text>
                 <View style={styles.dataInfoStyle}>
                     <Text

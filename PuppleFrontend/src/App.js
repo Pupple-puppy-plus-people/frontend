@@ -52,8 +52,8 @@ const App = () => {
   return (
     <>
     <StatusBar barStyle='dark-content'/>
-    <Navigator/>
-    {/* <Walk/> */}
+    {/* <Navigator/> */}
+    <Walk/>
     {/* <FilterDogList/> */}
     {/* <RoomCheck/> */}
     {/* <TimeStamp/> */}
