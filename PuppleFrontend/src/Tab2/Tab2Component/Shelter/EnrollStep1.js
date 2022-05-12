@@ -372,7 +372,7 @@ function EnrollStep1({navigation}) {
                         <FilterDogList selectedFilter={selectedFilter}>   
                             {console.log("-&&&&& >", dogInfo[0].sexNm)}    
                         </FilterDogList>
-
+                        
                         <Divider style={{margin:"5%"}} />
 
                         

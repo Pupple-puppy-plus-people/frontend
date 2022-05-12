@@ -46,6 +46,8 @@ function EnrollStep2({route, navigation}) {
 
     console.log("---navigated to EnrollStep2---> ", route.params);
     console.log("---route.pparames---> ", route.params?.selectedFilter);
+    console.log("---route.pparames---> ", route.params?.dogRegInfo);
+
 
     const [name, setName] = useState("");
     const [dogImage, setdogImage] = useState("");   // 강아지 이미지
@@ -79,43 +81,47 @@ function EnrollStep2({route, navigation}) {
         }
     }
     return (
+        <KeyboardAwareScrollView  contentContainerStyle={{flex: 1}}>   
 
-        <View style={[styles.container]}>
-            <View style={{flex:0.2}}>
+        <View  style={[styles.container]}>
+            <View style={{flex:0.5, marginBottom:'3%'}}>
                 <Text style={styles.title}>Step 2. 반려견 소개 작성하기{'\n'}</Text>
             </View>
             
-            <View style={{flex:0.7}}>
+            <View style={{flex:5}}>
                 <Text style={styles.subtitle}>반려견 사진을 등록해주세요. </Text>
                 
                 {        console.log("dogImage", dogImage)}
                 
-                <View style={{flex:1, alignItems:'center'}}>
-                {dogImage == "" ?  
-                <Icon name="file-image-plus" size={100} color='gray'
-                style={ {width: "70%",
-                 height:"70%",
-                 borderRadius:5,
-                 margin: '3%'}}></Icon>: 
-                 <Image source={{uri: dogImage}}
-                 style={ {width: "70%",
-                 height:"70%",
-                 borderRadius:5,
-                 margin: '3%'}}/> }
-                <TouchableOpacity 
-                    //onChangeDogImage={onChangeDogImage}
-                    onPress={() => {
-                        onChangeDogImage()
-                    }}
-                    style={[styles.nextBtn, {height:"70%"}]}>
-                        
-                    <Text style={[styles.botText, {color: 'white'}]}>이미지 업로드</Text>
-                </TouchableOpacity>
 
+                <View style={{flex:6, alignItems:'center'}}>
+                    {dogImage == "" ?  
+                    <Icon name="file-image-plus" size={100} color='gray'
+                    style={ {width: "70%",
+                    height:"70%",
+                    borderRadius:5,
+                    margin: '3%'}}></Icon>: 
+                    <Image source={{uri: dogImage}}
+                    style={ {width: "70%",
+                    height:"70%",
+                    borderRadius:5,
+                    margin: '3%'}}/> }
+                </View>
+
+                 <View style={{flex:1}}>
+                    <TouchableOpacity 
+                        //onChangeDogImage={onChangeDogImage}
+                        onPress={() => {
+                            onChangeDogImage()
+                        }}
+                        style={[styles.UploadBtn]}>
+                            
+                        <Text style={[styles.botText, {color: 'black'}]}>이미지 업로드</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
 
-            <View style={{flex:1}}>
+            <View style={{flex:5}}>
                 <Divider style={{margin:"5%"}} />
 
                 <Text style={styles.subtitle}>반려견에 대한 소개를 작성해주세요. </Text>
@@ -128,7 +134,7 @@ function EnrollStep2({route, navigation}) {
                     placeholder="상세한 반려견 정보는 분양에 도움이 돼요."/>
             </View> 
 
-            <View style={{height:"10%", marginBottom:"5%", justifyContent:'flex-end'}}>
+            <View style={{height:"10%", marginBottom:"5%", justifyContent:'flex-end', flex:1.5}}>
                 <Divider style={{margin:"5%"}} />
 
                 <TouchableOpacity 
@@ -138,6 +144,7 @@ function EnrollStep2({route, navigation}) {
                 </TouchableOpacity>
             </View>         
         </View>
+        </KeyboardAwareScrollView>
     );
 
     /*ImagePicker.launchImageLibrary(options, (response) => {
@@ -248,6 +255,17 @@ const styles = StyleSheet.create({
     backgroundColor:'#9C27B0',
     justifyContent: 'center',
     //alignItems: 'center',
+},  
+UploadBtn: {
+//marginTop: 300,
+flex:1,
+height: 30,
+width:'100%',
+//axHeight:50,
+borderRadius:10,
+backgroundColor:'#d3a4fc',
+justifyContent: 'center',
+//alignItems: 'center',
 },  
 input: {
     height: bigOne*0.1,

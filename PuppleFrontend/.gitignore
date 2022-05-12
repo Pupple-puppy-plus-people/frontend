@@ -62,3 +62,8 @@ buck-out/
 /ios/Pods/
 
 ./package-lock.json
+
+# API 인증키
+secret.json
+
+/src/Shared/env.js

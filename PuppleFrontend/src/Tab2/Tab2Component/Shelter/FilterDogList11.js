@@ -11,32 +11,22 @@ import {
 import { responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
 import { FlatList } from "react-native-gesture-handler";
 
-const baseUrl = 'http:127.0.0.1:8000';
-let query = '?';
-function filterRequest(){
-
-}
-
-//         selectedFilter[filterNumber].value = choicesName[filterNumber][checkboxId]
-
-
-
 const data = [
-    //{ title : '성별', filterNumber : 0},
-    //{ title : '품종', filterNumber : 1},
-    //{ title : '중성화', filterNumber : 2},
-    { title : '나이', filterNumber : 0},
-    { title : '크기', filterNumber : 1},
-    { title : '털 빠짐', filterNumber : 2},
-    { title : '짖기', filterNumber : 3},
-    { title : '활동성', filterNumber : 4},
-    { title : '잘맞는 성격', filterNumber : 5},
+    { title : '성별', filterNumber : 0},
+    { title : '품종', filterNumber : 1},
+    { title : '중성화', filterNumber : 2},
+    { title : '나이', filterNumber : 3},
+    { title : '크기', filterNumber : 4},
+    { title : '털 빠짐', filterNumber : 5},
+    { title : '짖기', filterNumber : 6},
+    { title : '활동성', filterNumber : 7},
+    { title : '잘맞는 성격', filterNumber : 8},
 ];
   
 const choicesName=[
-    //['수컷','암컷'],
-    //['리트리버','보스턴테리어','믹스','스피츠','닥스훈트','말티즈','웰시코기','푸들','포메라 니안'],
-    //['중성','미중성'],
+    ['수컷','암컷'],
+    ['리트리버','보스턴테리어','믹스','스피츠','닥스훈트','말티즈','웰시코기','푸들','포메라 니안'],
+    ['중성','미중성'],
     ['~1','2~4','5~8','9~'],
     ['소형','중형','대형'],
     ['덜 빠짐','많이 빠짐'],
@@ -133,18 +123,26 @@ const Choice = ({
             <View style={btnTxtStyles}>
                 <Text>{text}</Text>
             </View>
-            {
+            {whatFilter !== 1 &&
                Array.from({length: choicesCount}).map((item, index) => (
-                    <Checkbox
-                    id={index}
-                    btnstyles={btnstyles}
-                    btnstylesSelect={btnstylesSelect}
-                    selectedIndex={selectedIndex}
-                    onCheckboxChange={handleCheckboxChange}
-                    choicesName={choicesName}
-                    />
-                ))
+                <Checkbox
+                id={index}
+                btnstyles={btnstyles}
+                btnstylesSelect={btnstylesSelect}
+                selectedIndex={selectedIndex}
+                onCheckboxChange={handleCheckboxChange}
+                choicesName={choicesName}
+                />
+            ))
             }
+            {whatFilter ===1 &&
+            <View style={{flexDirection:'row',alignItems:'center'}}>
+                {indexRange(0)}
+                {indexRange(3)}
+                {indexRange(6)}
+            </View>
+            }
+            
            
         </View>
     );
@@ -189,7 +187,7 @@ const SelectDogInfo = ({navigation, selectedFilter}) => {
 const checkBoxBaseStyles = {
     height: responsiveScreenHeight(6),
     width: responsiveScreenHeight(6),
-    margin: 7,
+    margin: 10,
 };
 
 const labelDimentions = {

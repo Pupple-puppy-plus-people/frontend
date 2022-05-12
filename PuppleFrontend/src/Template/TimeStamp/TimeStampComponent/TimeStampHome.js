@@ -84,7 +84,7 @@ const Item = ({ item }) => (
     </View>
 );
 
-const TimeStamp = () => {
+const TimeStamp = (props) => {
     const [timer, setTimer] = useState(0)
     const [prevTimer, setPrevTimer] = useState(0)   // 서버에서 받아온 것 중 가장 마지막  -> 누른 시각에 뜨기도 함
     const [isActive, setIsActive] = useState(false)
@@ -94,6 +94,7 @@ const TimeStamp = () => {
         axios.get(`${HS_API_END_POINT}/api/timestamp/`) 
         .then((res)=> {      
             setTimeList(res.data);
+            props.getlist(res.data)
             console.log("TimeStamp Data 받음.", timelist, res.data); // 왜 timeList에 안들어가지 
         })
         .catch((err)=> {
@@ -199,8 +200,38 @@ const TimeStamp = () => {
 
 class TimeStampComponent extends Component{
     constructor(props){
-        super(props);
-        this.state = { isPressed : false };
+        super();
+        this.state = { 
+            //isPressed : false,
+            timelist : ''
+        };
+        this.getlist = this.getlist.bind(this)
+    }
+    getlist(time) {
+        const date = new Date()
+        const now = date.getTime()
+        console.log("---time :",time, now);
+
+        // 마지막으로 누른 버튼 시간
+        const times = time[Object.keys(time).length-1].press_time.split(':')
+
+        times[0] = date.getHours()-Number(times[0])
+        times[1] = date.getMinutes()-Number(times[1])
+        times[2] = date.getSeconds()-Number(times[2])
+        
+        console.log("---times :", times);
+
+        if(times[2]<0){
+            times[2] += 60
+            times[1] -= 1
+        }
+        if(times[1]<0){
+            times[1] += 60
+            times[0] -= 1
+        }
+
+        console.log("---times :", times);
+        this.setState({timelist:times});
     }
     render(){
         // const [isPressed, setPressed] = useState(false);
@@ -242,20 +273,21 @@ class TimeStampComponent extends Component{
             showData={[
                 {
                     dataName:'시간',
-                    data:'00:00:00'
+                    data:`${this.state.timelist[0]}:${this.state.timelist[1]}:${this.state.timelist[2]}`
                 },
               
             ]}/>
             
             {/* 산책 시작 버튼 */}
             
-            <View style={[styles.container_background,styles.textInformation_container]}>
+                <View style={[styles.container_background,styles.textInformation_container]}>
                     <Text style={styles.subTitle}>
                         Press Now!
                     </Text>
-                    <TimeStamp/>
-                </View>
-                        
+                    <TimeStamp parentlist={this.state.timelist} getlist={this.getlist}/>
+                    {console.log("getlist:", this.state.timelist)}
+
+                </View>   
             </View>
             </TouchableWithoutFeedback>
             );
