@@ -20,14 +20,29 @@ import WeekComponent from '../../Recycle/WeekComponent';
 const today = new Date().getDay();
 let baseUrl = `${HS_API_END_POINT}`
 let userdog = 'dddd'
+let dog_id = 13
 function walkGet() {
     return new Promise((resolve,reject)=>{
+        // axios
+        // .all([axios.get(baseUrl+'/api/walkauth/'+userdog)
+        //         ,axios.get(baseUrl+'/api/passcondition/'+dog_id)])
+        // .then(
+        //     axios.spread((res1,res2)=>{
+        //         myData = res1.data
+        //         pass_condition = res2.data
+        //         console.log('axios in')
+        //     })
+        // )
+        // .catch((error)=>console.log(error))
         axios.get(baseUrl+'/api/walkauth/'+userdog)
         .then(function(response){
             // handle success
             myData = response.data
-            console.log('walkget')
-            resolve();
+            axios.get(baseUrl+'/api/passcondition/'+dog_id)
+            .then(function(response){
+                pass_condition = response.data[0]
+                resolve();
+            })
         })
         .catch(function (error) {
             //handle error
@@ -64,7 +79,14 @@ let walkauthData = {
     distance : 0,
     evaluate : false
 }
-
+let pass_condition = {
+    dog_id : 0,
+    walk_total_count : 0,
+    min_per_walk : 0,
+    meter_per_walk : 0,
+    ts_total_count : 0,
+    ts_check_time : 0,
+}
 let myData = [
     {
         userdog : userdog,
@@ -346,12 +368,15 @@ function extract(){
 class WalkAuthComponent extends Component{
     constructor(props){
         super(props);
-        this.loadData();
         this.state={
             total_count : 0,
             total_time : 0,
-            total_distance : 0
+            total_distance : 0,
+            pass_count : 0,
+            pass_time : 0,
+            pass_distance : 0
         };
+        this.loadData();
     }
     async loadData(){
         await walkGet();
@@ -359,7 +384,10 @@ class WalkAuthComponent extends Component{
         this.setState({
             total_count : myData.length,
             total_time :  myTotal.time,
-            total_distance :  myTotal.distance
+            total_distance :  myTotal.distance,
+            pass_count : pass_condition.walk_total_count,
+            pass_time : pass_condition.min_per_walk,
+            pass_distance : pass_condition.meter_per_walk
         })
     }
     changeState = () => {
@@ -408,17 +436,17 @@ class WalkAuthComponent extends Component{
                 {
                     dataType:0,
                     dataName:'총 횟수',
-                    data:5
+                    data:this.state.pass_count
                 },
                 {
                     dataType:1,
                     dataName:'평균 산책',
-                    data:30
+                    data:this.state.pass_time
                 },
                 {
                     dataType:2,
                     dataName:'평균 거리',
-                    data:1000
+                    data:this.state.pass_distance
                 },
             ]}
             />
@@ -426,6 +454,7 @@ class WalkAuthComponent extends Component{
                 <Text
                 style={styles.subTitle}>
                 Current Total
+                <Text>{this.state.pass_count}</Text>
                 </Text>
                 <View style={styles.dataInfoStyle}>
                     <Text
