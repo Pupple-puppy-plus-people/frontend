@@ -38,7 +38,8 @@ function LoginScreen({navigation, handleJwtResult, handleUserInfo, user_info}) {
     const passwordInputRef = createRef();
 
     const submitPress = async () => {
-      navigation.replace('BottomNav');
+      
+      // navigation.replace('BottomNav');
       await axios.post(`${HS_API_END_POINT}/api/users/auth/login/`,{
         email: userEmail,
         password: userPassword
