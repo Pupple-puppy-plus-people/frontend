@@ -11,10 +11,10 @@ import {
   Dimensions
 } from 'react-native';
 import { responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth } from "react-native-responsive-dimensions";
-import {HS_API_END_POINT} from '../Shared/env';
+import {HS_API_END_POINT, USER_INFO} from '../Shared/env';
 import LottieView from 'lottie-react-native';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
-// import axios from 'axios';
+import axios from 'axios';
 // import { Button } from 'react-native-vector-icons/dist/FontAwesome';
 // import { setJwt,setUserInfo } from '../Store/Actions';
 // import { connect } from 'react-redux';
@@ -37,43 +37,47 @@ function LoginScreen({navigation, handleJwtResult, handleUserInfo, user_info}) {
 
     const passwordInputRef = createRef();
 
-    // const submitPress = async () => {
-    //   await axios.post(`${HS_API_END_POINT}/user/register/authenticate`,{
-    //     email: userEmail,
-    //     password: userPassword
-    //   })
-    //   .then(async function(res){
-    //     if(res.data === "fail"){
-    //       Alert.alert("아이디 혹은 비밀번호가 일치하지 않습니다.");
-    //     } else{
-    //       //토큰이 온다.
-    //       //토큰 async 저장
-    //       AsyncStorage.setItem('user_jwt', res.data);
+    const submitPress = async () => {
+      navigation.replace('BottomNav');
+      await axios.post(`${HS_API_END_POINT}/api/users/auth/login/`,{
+        email: userEmail,
+        password: userPassword
+      })
+      .then(async function(res){
+        console.log(res.data)
+        if(res.data.error==="fail"){
+          Alert.alert("아이디 혹은 비밀번호가 일치하지 않습니다.");
+        } else{
+          console.log("response == ",res.data.data);
+          USER_INFO.USER_EMAIL = userEmail;
+          navigation.replace('BottomNav');
+          //토큰이 온다.
+          //토큰 async 저장
+          //AsyncStorage.setItem('user_jwt', res.data);
           
-    //       //토큰으로부터 유저정보 가져오기
-    //       await axios.get(`${HS_API_END_POINT}/user/my-info`,{
-    //         headers: {
-    //           'Authorization' : "Bearer " + res.data
-    //         }
-    //       }).then(function(result){
-    //         console.log("result.data  ",result.data.username);
-    //         handleUserInfo(result.data);
-    //       })
-    //       .catch(function(error){
-    //         navigation.replace('Auth');
-    //       });
-    //       //handleJwtResult(res.data);
-    //       console.log("user INFO :::",user_info);
-    //       navigation.replace('BottomNav');
-    //     }
-    //     //console.log("res = ",res);
-    //     console.log("res data = ",res.data);
+          // //토큰으로부터 유저정보 가져오기
+          // await axios.get(`${HS_API_END_POINT}/user/my-info`,{
+          //   headers: {
+          //     'Authorization' : "Bearer " + res.data
+          //   }
+          // }).then(function(result){
+          //   console.log("result.data  ",result.data.username);
+          //   handleUserInfo(result.data);
+          // })
+          // .catch(function(error){
+          //   navigation.replace('Auth');
+          // });
+          //handleJwtResult(res.data);
+          // console.log("user INFO :::",user_info);
+        }
+        //console.log("res = ",res);
+        // console.log("res data = ",res.data);
         
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error);
-    //   });
-    // }
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    }
 
     // const compareAsyncLogin = () => {
     //   AsyncStorage.getItem('user_information', (err, result) => {
@@ -158,8 +162,8 @@ function LoginScreen({navigation, handleJwtResult, handleUserInfo, user_info}) {
                     <TouchableOpacity 
                       style={styles.btn} 
                       activeOpacity={0.5}
-                      onPress={() => {navigation.replace('BottomNav');}}
-                      //onPress={submitPress}
+                      //onPress={() => {navigation.replace('BottomNav');}}
+                      onPress={submitPress}
                     >
                         <Text style={[styles.Text, {color: 'white', fontSize:bigOne*0.02}]}>로그인</Text>
                     </TouchableOpacity>

@@ -126,6 +126,7 @@ function Navigator() {
                     name="Auth"
                     component={Login}
                     options={{headerShown: false}}
+                    
                 />
 
                 <Stack.Screen 

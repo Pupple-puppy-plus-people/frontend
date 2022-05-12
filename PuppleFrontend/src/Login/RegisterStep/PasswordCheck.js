@@ -16,8 +16,8 @@ import {
 import LottieView from 'lottie-react-native';
 import { NavigationContainer } from '@react-navigation/native';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
-// import axios from 'axios';
-// import { HS_API_END_POINT } from '../../Shared/env';
+import axios from 'axios';
+import { HS_API_END_POINT } from '../../Shared/env';
 
 // import Loader from './Components/Loader';
 
@@ -32,34 +32,34 @@ function PasswordCheck({navigation, route}) {
     const onPress = async () => {
         if(text === route.params.passwords){
             // 여기에 데이터를 async storage 로 전달
-            const dataToSend = {"userType": route.params.types, "username":route.params.names, "email":route.params.emails, "password":route.params.passwords, "address":route.params.address}
+            const dataToSend = {"user_type": route.params.types, "username":route.params.names, "email":route.params.emails, "password":route.params.passwords, "address":route.params.address}
             console.log(dataToSend);
             //----------- back end 연결하기 전
-            Alert.alert(
-                            "로그인하여 Pupple을 시작하세요.",
-                            "회원가입이 완료되었습니다.",
-                            [{
-                                text:"로그인 화면으로",
-                                onPress: () => navigation.navigate('Login')
-                            }]
-                        );
+            // Alert.alert(
+            //                 "로그인하여 Pupple을 시작하세요.",
+            //                 "회원가입이 완료되었습니다.",
+            //                 [{
+            //                     text:"로그인 화면으로",
+            //                     onPress: () => navigation.navigate('Login')
+            //                 }]
+            //             );
             // ---------- 연결하면 변경
-            // await axios.post(`${HS_API_END_POINT}/user/register/register-user`,dataToSend)
-            // .then(function(res){
-            //     if(res.data === "ok"){
-            //         Alert.alert(
-            //             "로그인하여 작두를 시작하세요.",
-            //             "회원가입이 완료되었습니다.",
-            //             [{
-            //                 text:"로그인 화면으로",
-            //                 onPress: () => navigation.navigate('Login')
-            //             }]
-            //         );
-            //     }
-            // })
-            // .catch(function(error){
-            //     console.log(error);
-            // });
+            await axios.post(`${HS_API_END_POINT}/api/users/auth/register/`,dataToSend)
+            .then(function(res){
+                if(res.data === "ok"){
+                    Alert.alert(
+                        "로그인하여 작두를 시작하세요.",
+                        "회원가입이 완료되었습니다.",
+                        [{
+                            text:"로그인 화면으로",
+                            onPress: () => navigation.navigate('Login')
+                        }]
+                    );
+                }
+            })
+            .catch(function(error){
+                console.log(error);
+            });
             
 
         } else {
