@@ -14,6 +14,8 @@ target 'PuppleFrontend' do
   permissions_path = '../node_modules/react-native-permissions/ios'
   pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
 
+  pod 'react-native-safe-area-context', :path => '../node_modules/react-native-safe-area-context'
+
   target 'PuppleFrontendTests' do
     inherit! :complete
     # Pods for testing
