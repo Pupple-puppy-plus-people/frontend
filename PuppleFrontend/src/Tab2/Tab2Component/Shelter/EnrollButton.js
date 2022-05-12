@@ -68,7 +68,7 @@ const EnrollButton = ({navigation})=>  {
                     <TouchableOpacity 
                         style={[styles.menuEntry]}
                         onPress={() => {
-                            navigation.navigate("EnrollStep1"),
+                            navigation.navigate("EnrollStep11"),
                             setModalVisible(false)}}
                     >
                         <Text style={styles.btnTitle}>
@@ -96,11 +96,10 @@ const EnrollButton = ({navigation})=>  {
                         onPress={() => 
                             setModalVisible(false)
                         }
-                        style={[styles.button, {backgroundColor:'#FBEDFD'}, {X:buttonPos.X, Y:buttonPos.Y}]}
+                        style={[styles.button, {backgroundColor:'#FBEDFD'}, {X:buttonPos.X, Y:buttonPos.Y, bottom:'11%'}]}
                     >
                         <Icon name='close' size={35} style={{color:'black'}}/>  
                     </TouchableOpacity> 
-
 
                 </View>
             </Modal>

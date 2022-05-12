@@ -29,12 +29,12 @@ const smallOne = screenWidth < screenHeight ? screenWidth:screenHeight;
 
 import axios from 'axios';
 
-const baseUrl = 'http:127.0.0.1:8000';
 
 function EnrollStep3({navigation, route}) {
-
+    // user ID 어디서 받아와야함
     console.log("---navigated to EnrollStep3---> ", route.params);
     console.log("---navigated to EnrollStep3-1---> ", route.params?.dogInfo);
+    let USER_ID = 2;  // 판매자의 아이디임
 
     let query = '?';
     let userID = '9';
@@ -73,7 +73,10 @@ function EnrollStep3({navigation, route}) {
                         person_personality:selectedFilter[5].value,
                         adoptation_status:'N',
                         introduction:dogText,
-                        approval:'승인'
+                        approval:'승인',
+                        user_id:USER_ID, // 변수 받기 -> user_user 의 PK 값을 FK 값으로 받아와야하는건가?
+                        //pproval:'F',
+                        //approval:'승인',
                     }).then(function (response) {console.log(response);})
                     .catch(error => {console.log('error : ',error.response)});
                     
@@ -81,7 +84,7 @@ function EnrollStep3({navigation, route}) {
                       // server error -> django 봐보기
 
                     alert('게시글이 등록 되었습니다.');
-                    // navigation.navigate('Tab2',{}); // Tab2Home
+                    navigation.navigate('Tab2Home',{}); // Tab2Home
 
 
             }}>완료</Text>

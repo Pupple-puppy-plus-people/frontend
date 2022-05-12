@@ -66,7 +66,7 @@ function Item({item, navigation, icon}) {
   
             <Text style={styles.btnTitle}>{item.name}</Text>
             <Text style={styles.btnText}>{item.gender} (중성화 {item.desexing=='중성'?'O':'X'}) </Text>
-            <Text style={styles.btnText}>{item.age}</Text>  
+            <Text style={styles.btnText}>{item.age} 살</Text>  
             <Text style={styles.btnText}>{item.location}</Text>
   
           </Pressable> 

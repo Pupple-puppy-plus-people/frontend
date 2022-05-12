@@ -50,3 +50,7 @@ captures/
 .cxx/
 *.apk
 output.json
+
+# API 인증키
+secret.json
+/src/Shared/env.js

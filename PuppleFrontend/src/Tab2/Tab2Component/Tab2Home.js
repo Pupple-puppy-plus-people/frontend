@@ -50,28 +50,120 @@ const USER = [
   }
 ];
 // 로그인 정보 조건문: 만약 입양처로 로그인했다면, 만약 입양인으로 로그인했다면에 따라 달라짐 -> 조건부 렌더링 알아보기
-let USER_TYPE = 1;  // 0 이면 입양인, 1이면 입양처, 로그인 정보 받아오기
+let USER_TYPE = 0;  // 0 이면 입양인, 1이면 입양처, 로그인 정보 받아오기
+let USER_ID = 2;  // 판매자의 아이디임
 
 var Listlen = 1;
 
+function findDog(dog_id) {
+  query = 
+  '?'+dog_id
+  React.useEffect(()=> {
+    
+    axios.get(`${HS_API_END_POINT}/api/dogs/${query}`)  // 코드 합칠 때 찜목록으로 바꾸기! 
+    .then((res)=> {      
+        console.log("판매자 등록한 Data 받음.");
+        setDogs(res.data);
+    })
+    .catch((err)=> {
+        console.log(err);
+    })
+  }, []); 
+}
 
 function Authenticate ({navigation}) {
-    const [type, setType] = useState(""); // 이거 다른 코드랑 많이 겹치는데 어떻게 못 합치나?
+    const [type, setType] = useState("");
     const {width, height} = useWindowDimensions();
-    const [dogs, setDogs] = useState([{}])
+    const [dogs, setDogs] = useState([{}]) // USER_TYPE 바뀔때마다 dogs 비워줘야하는데 언제? ->  입양인, 입양처로 바꼈을 때 dogs 데이터가 남는 현상
+    const [wishlist, setWishList] = useState([{}]) // USER_TYPE 바뀔때마다 dogs 비워줘야하는데 언제? ->  입양인, 입양처로 바꼈을 때 dogs 데이터가 남는 현상
 
-    React.useEffect(()=> {
-       
-        axios.get(`${HS_API_END_POINT}/api/dogs/`)  // 코드 합칠 때 찜목록으로 바꾸기! 
-        .then((res)=> {      
-            console.log("wishlist Data 받음.");
-            setDogs(res.data);
-        })
-        .catch((err)=> {
-            console.log(err);
-        })
+      // -> 근데 로딩시간이 뭔가 문제인듯? --> 
+      // 판매자면 찜목록으로,    
+      React.useEffect(()=> {   
+        (async function() {
+          try { 
+            if (!USER_TYPE){                
+              axios.post(`${HS_API_END_POINT}/api/users/wishlist/`,{ 
+                email: 'testuser1@g.com',}) 
+                .then((res)=> {      
+                    console.log("wishlist Data 받음.", wishlist);
+                    setWishList(res.data);
+                })
+                .catch((err)=> {
+                    console.log(err);
+              })
+            
+            let wish_dog = []
+            for(dog in wishlist){
+              console.log("dog indexs dog",dog, wishlist[dog].dog_id);
+              // 찜 목록의 dog DB 받아오기
+              query = 
+                wishlist[dog].dog_id
+              
+              console.log("query.",query)
+
+              axios.get(`${HS_API_END_POINT}/api/dogs/${query}`)  
+              .then((res)=> {      
+                  console.log("dog indexs1 의 결과.", Object.keys(res.data).length);
+                  console.log("dog 1 의 결과.", res.data);
+                  wish_dog.push(res.data)
+                  console.log("dogs updated",dogs)
+              })
+              .catch((err)=> {
+                  console.log(err);
+              })
+            }
+            setDogs(wish_dog)
+            } } catch (e) {
+              console.error(e);
+            }
+          })();
+      }, []);
+
+      
+      // 구매자면 자기가 등록한 반려견 리스트로 
+      React.useEffect(()=> {
+
+        (async function() {
+          try {
+              if (USER_TYPE) {
+                query = 
+                '?'+
+                'user_id='+USER_ID
+
+              axios.get(`${HS_API_END_POINT}/api/dogs/${query}`)  
+              .then((res)=> {      
+                  console.log("판매자 등록한 Data 받음.");
+                  setDogs(res.data);
+              })
+              .catch((err)=> {
+                  console.log(err);
+              })
+            }
+          } catch (e) {
+            console.error(e);
+          }
+        })();
+      }, []); 
+    
+      React.useEffect(()=> {
+
+        (async function() {
+            try {
+            axios.get(`${HS_API_END_POINT}/api/timestamp/`) 
+            .then((res)=> {      
+                setTimeList(res.data);
+                this.props.getlist(res.data)
+                console.log("TimeStamp Data 받음.", timelist, res.data); // 왜 timeList에 안들어가지 
+            })
+            .catch((err)=> {
+                console.log(err);
+            })} catch (e) {
+                console.error(e);
+            }
+        })();
     }, []); 
-  
+
     // 반려견 리스트 정보
     const renderItem = ({ item }) => (
       // item: 아이템 배열
@@ -80,16 +172,14 @@ function Authenticate ({navigation}) {
       <Item item={item} navigation={navigation} icon={'circle'}/>
     );
 
-    
-
     return (
         /* 노치 디자인에도 안전하게 화면의 콘텐츠를 확보할수 있음 */
         <SafeAreaView style={styles.container}>  
           
             <View style={{justifyContent: 'center', width: "100%", height: "100%"}}>
 
-                {/* 리스트에 아무것도 없다면 */}
-                {(Listlen==0)? 
+                {/* 리스트에 아무것도 없다면 */ console.log("dog 개수",Object.keys(dogs).length, dogs)}
+                { Object.keys(dogs).length === 0 || Object.keys(dogs[0]).length === 0 ? 
                  /* 입양인/입양처로 로그인 유무에 따른 Empty Data 내용 다름 */
                     <EmptyDogList user={USER_TYPE} /> 
                   : 
