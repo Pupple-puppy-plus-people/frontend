@@ -20,13 +20,73 @@ import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-nat
 import Animation from 'lottie-react-native';
 import symbolicateStackTrace from 'react-native/Libraries/Core/Devtools/symbolicateStackTrace';
 // import Loader from './Components/Loader';
+import { HS_API_END_POINT } from '../../../Shared/env';
 
 const screenWidth = Dimensions.get('screen').width;
 const screenHeight = Dimensions.get('screen').height;
 const bigOne = screenWidth > screenHeight ? screenWidth:screenHeight;
 const smallOne = screenWidth < screenHeight ? screenWidth:screenHeight;
 
-function EnrollStep3({navigation}) {
+import axios from 'axios';
+
+const baseUrl = 'http:127.0.0.1:8000';
+
+function EnrollStep3({navigation, route}) {
+
+    console.log("---navigated to EnrollStep3---> ", route.params);
+    console.log("---navigated to EnrollStep3-1---> ", route.params?.dogInfo);
+
+    let query = '?';
+    let userID = '9';
+
+    const selectedFilter = route.params?.dogInfo.selectedFilter;
+    const dogRegInfo = route.params?.dogInfo.dogRegInfo;
+    const dogImage = route.params?.dogImage;
+    const dogText = route.params?.dogText;
+
+    console.log("->", selectedFilter);
+    console.log("->", dogRegInfo);
+    console.log("->", dogImage);
+    console.log("->", dogText);
+
+    navigation.setOptions({
+        headerRight: () => (
+            <Text style={{margin:"7%", color:'dodgerblue', fontWeight:'bold', fontSize:smallOne*0.04}}
+                onPress={() => {
+
+                    // axios.get(baseUrl+'/api/dogs'
+                    // `${HS_API_END_POINT}/api/dogs/`
+                    axios.post(`${HS_API_END_POINT}/api/dogs/`,{
+                        id : 100,
+                        registration_number : dogRegInfo[4].value ,
+                        image :dogImage,
+                        name:dogRegInfo[0].value,
+                        gender:dogRegInfo[1].value,
+                        kind:dogRegInfo[2].value,
+                        desexing:dogRegInfo[3].value,
+                        age:selectedFilter[0].value,
+                        location:dogRegInfo[5].value,
+                        size:selectedFilter[1].value,
+                        hair_loss:selectedFilter[2].value,
+                        bark_term:selectedFilter[3].value,
+                        activity:selectedFilter[4].value,
+                        person_personality:selectedFilter[5].value,
+                        adoptation_status:'N',
+                        introduction:dogText,
+                        approval:'승인'
+                    }).then(function (response) {console.log(response);})
+                    .catch(error => {console.log('error : ',error.response)});
+                    
+                      // DEBUG = false 설정하라는 에러
+                      // server error -> django 봐보기
+
+                    alert('게시글이 등록 되었습니다.');
+                    // navigation.navigate('Tab2',{}); // Tab2Home
+
+
+            }}>완료</Text>
+        ),
+    });
 
     const [name, setName] = useState("");
     const onChangeText = (name) => {

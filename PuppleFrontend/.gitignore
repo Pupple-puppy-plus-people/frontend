@@ -1,7 +1,8 @@
 # OSX
 #
 .DS_Store
-
+secret.js
+secret2.js
 ios/Podfile.lock
 package-lock.json
 # Xcode

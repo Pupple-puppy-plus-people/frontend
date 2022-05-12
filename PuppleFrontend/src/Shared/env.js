@@ -1,4 +1,4 @@
-export const HS_API_END_POINT = 'https://20a1-221-138-33-207.jp.ngrok.io';
+export const HS_API_END_POINT = 'http://52.79.229.200:8000';
 import {useState} from 'react'
 export const USER_INFO=()=>{
     // const [USER_EMAIL,setUSER_EMAIL] = useState("");

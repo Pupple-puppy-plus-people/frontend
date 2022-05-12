@@ -123,6 +123,7 @@ function EnterEmail({navigation, route}) {
         <KeyboardAvoidingView 
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{flex:1}}>
+        
             <View style={{flex:9,flexDirection:'column', padding:'3%',backgroundColor:'white'}}>
                 <View style={{flex:1}}/>
                 <View style={[styles.board,{flex:8, backgroundColor:'#E1BEE7',borderRadius:20,padding:15}]}>
