@@ -492,7 +492,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 27Q6P9W8FP;
+				DEVELOPMENT_TEAM = XZUF9G4YLZ;
 				ENABLE_BITCODE = NO;
 				EXCLUDED_ARCHS = "";
 				"EXCLUDED_ARCHS[sdk=*]" = arm64;
@@ -506,7 +506,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.Pupple;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.PuppleT;
 				PRODUCT_NAME = PuppleFrontend;
 				SWIFT_OBJC_BRIDGING_HEADER = "PuppleFrontend-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -522,7 +522,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 27Q6P9W8FP;
+				DEVELOPMENT_TEAM = XZUF9G4YLZ;
 				INFOPLIST_FILE = PuppleFrontend/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -533,7 +533,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.Pupple;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.PuppleT;
 				PRODUCT_NAME = PuppleFrontend;
 				SWIFT_OBJC_BRIDGING_HEADER = "PuppleFrontend-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
