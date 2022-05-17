@@ -50,3 +50,5 @@ captures/
 .cxx/
 *.apk
 output.json
+PuppleFrontend/secret2.js
+PuppleFrontend/secret.js
