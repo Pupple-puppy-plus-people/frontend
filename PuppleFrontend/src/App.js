@@ -26,7 +26,7 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 import Navigator from './Navigator';
 import FilterDogList from './DogList/FilterComponent/FilterDogList';
-import RoomCheck from './DogAuth/DogAuthComponent/RoomCheck'
+import RoomCheck from './Template/RoomCheck/'
 //템플릿 구현 후 삭제
 import TimeStamp from './Template/TimeStamp/';
 import Walk from './Template/Walk';
@@ -45,19 +45,27 @@ const App = () => {
     console.log(walkDay,walkTime,walkDistance)
   });
   const isDarkMode = useColorScheme() === 'dark';
-
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
   return (
-    // <Navigator/>
+    <>
+    <StatusBar barStyle='dark-content'/>
+    <Navigator/>
+    {/* <Walk/> */}
+    {/* <FilterDogList/> */}
+    {/* <RoomCheck/> */}
+    {/* <TimeStamp/> */}
+    {/* // <Navigator/>
     // <Walk/>  
     <WalkPassCondition
     setAllData={setAllData}/>
     //<FilterDogList/>
     //<RoomCheck/>
-    //<TimeStamp/>
+    //<TimeStamp/> */}
+    </>
+    
   );
 };
 

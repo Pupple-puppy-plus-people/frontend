@@ -50,7 +50,7 @@ function EnterType({navigation}) {
                         <Text style={styles.title}>역할을 선택해주세요.</Text>
                     </View>
                     <View style={{flex:0.5, padding:10,justifyContent:'flex-start'}}>
-                        <Text style={styles.subtitle}>도서 판매자와 구매자를 고를 수 있어요.</Text>
+                        <Text style={styles.subtitle}>입양받기를 원하시나요? 보내기를 원하시나요?</Text>
 
                     </View>
                     <View style={{flex:4, flexDirection:'column',justifyContent:'center'}}>

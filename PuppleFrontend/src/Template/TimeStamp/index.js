@@ -5,6 +5,7 @@ import {
     View
 } from 'react-native';
 import TimeStampComponent from './TimeStampComponent/TimeStampHome';
+import TimeStampSet from './TimeStampComponent/TimeStampSet';
 
 
 class TimeStamp extends Component{
@@ -16,6 +17,7 @@ class TimeStamp extends Component{
         return(
             <View style={styles.container}>
                 <TimeStampComponent/>
+                {/*<TimeStampSet/>*/}
             </View>
             // 화면 반응성(spring) && 돌아가기 추가
         );
