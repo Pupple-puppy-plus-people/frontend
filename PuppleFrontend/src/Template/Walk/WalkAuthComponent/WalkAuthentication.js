@@ -545,6 +545,7 @@ const styles=StyleSheet.create({
     main_container:{
         flex:1,
         flexDirection:'column',
+        marginTop:30,
     },
     title:{
         textAlign:'left',
