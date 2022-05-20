@@ -368,6 +368,7 @@ function extract(){
 class WalkAuthComponent extends Component{
     constructor(props){
         super(props);
+        Geolocation.requestAuthorization('always');
         this.state={
             total_count : 0,
             total_time : 0,

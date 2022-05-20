@@ -27,7 +27,7 @@ const height = Dimensions.get("window").height;
 
 function Item({item, navigation, icon}) {
 
-    console.log("item: ", item);
+    // console.log("item: ", item);
 
     const [parentHeight, setParentHeight] = useState({height:0}); // 동적인 값 관리
     const [imagePos, setimagePos] = useState({X:0, Y:0}); // 동적인 값 관리

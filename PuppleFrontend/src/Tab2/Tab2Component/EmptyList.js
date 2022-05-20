@@ -20,7 +20,7 @@ const EmptyDogList = ({user})=>{
         <Icon name="dog" size={50}/>
         
         {'\n'} 등록된 반려견이 없어요. {'\n'} 
-        {(user==0)? 
+        {(user==="customer")? 
             <Text> '반려견 리스트'에서 당신의 반려견을 찾아주세요. </Text>:
             <Text> '+'를 눌러 새로운 만남을 기다리는 반려견을 등록해주세요. </Text>}
         </Text>

@@ -16,7 +16,10 @@ import EnrollStep2 from './Tab2/Tab2Component/Shelter/EnrollStep2';
 import EnrollStep3 from './Tab2/Tab2Component/Shelter/EnrollStep3';
 import EnrollPage from './Tab2/Tab2Component/Shelter/EnrollPage';
 import TimeStamp from './Template/TimeStamp/';
-
+//import WalkPassComponent from './Template/WalkPassCondition/WalkPassComponent/WalkPassCondition';
+//import WalkPassCondition from './Template/WalkPassCondition';
+import EnrollWalkAuth from './Tab2/Tab2Component/Shelter/EnrollWalkAuth';
+import EnrollTimeAuth from './Tab2/Tab2Component/Shelter/EnrollTimeAuth';
 
 const Stack = createStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -47,7 +50,7 @@ const BottomNavigation = ({navigation}) => {
                   tabBarLabel: '인증',
                   headerShown: false,
                   animationEnabled: false,
-                  unmountOnBlur: true,
+                  // unmountOnBlur: true,
                   tabBarIcon: ()=> (
                       <MaterialCommunityIcons name="paw" size={25} />
                   )
@@ -182,7 +185,35 @@ function Navigator() {
               
           }}/>
 
-      <LogStack.Screen
+        <LogStack.Screen
+            name="EnrollWalkAuth"
+            component={EnrollWalkAuth}
+            options={{
+                title: "산책량 설정",
+                headerShown: true,
+                headerTransparent: false,
+                headerBackTitle: "back", // x 표시로 바꾸기 
+                // header shadow
+                // header 반려견 삭제 버튼 
+                // bottom navigation 사라져야하나?
+                
+            }}/>
+
+        <LogStack.Screen
+            name="EnrollTimeAuth"
+            component={EnrollTimeAuth}
+            options={{
+                title: "시간량 설정",
+                headerShown: true,
+                headerTransparent: false,
+                headerBackTitle: "back", // x 표시로 바꾸기 
+                // header shadow
+                // header 반려견 삭제 버튼 
+                // bottom navigation 사라져야하나?
+                
+            }}/>
+
+        <LogStack.Screen
           name="EnrollStep3"
           component={EnrollStep3}
           options={{
@@ -209,6 +240,7 @@ function Navigator() {
                 
             }}/>
 
+         
 
             </Stack.Navigator>
         </NavigationContainer>

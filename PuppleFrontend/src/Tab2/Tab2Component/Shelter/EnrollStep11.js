@@ -80,11 +80,6 @@ function animalGET(urls) {
             //showCheckBox(careInfo)
             careInfo = null
             console.log(error);
-        })
-        .then(function(){
-            //always executed
-            console.log("** Default");
-
         });
     
     return careInfo
@@ -143,6 +138,8 @@ const AnimalNumberAPI = (props) => {
             .then(careInfo => {
                 console.log("careInfo:",careInfo) // 동물센터정보
                 sendDogInfo(careInfo)
+            }).catch(function (error) {
+                console.log(error);
             });
         }
     }

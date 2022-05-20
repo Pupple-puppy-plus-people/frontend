@@ -4,6 +4,7 @@ import {
     StyleSheet,
     View,
     Text,
+    Alert, // 디버깅 용으로 잠깐 추가
     
 } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
@@ -11,6 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView } from 'react-native-gesture-handler';
 import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
 import { HS_API_END_POINT } from '../../../Shared/env';
+
 const WalkPassComponent = ({setAllData}) => {
     const [walkDay, setWalkDay] = useState(7);
     const [walkTime, setWalkTime] = useState(30);
@@ -96,6 +98,9 @@ const WalkPassComponent = ({setAllData}) => {
                 style={[]}
                 onPress={()=>{
                     // setAllData(walkDay,walkTime,walkDistance)
+                    Alert.alert( // 디버깅 용으로 잠깐 추가
+                        "입력완료!"
+                    );
                     setAllData(walkDay,walkTime,walkDistance)
                     }}>
                     <Text style={{ fontSize: 30 ,paddingVertical:10}}>asdf</Text>

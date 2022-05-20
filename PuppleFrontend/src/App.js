@@ -52,6 +52,8 @@ const App = () => {
   return (
     <>
     <StatusBar barStyle='dark-content'/>
+    {/*<WalkPassCondition
+    setAllData={setAllData}/>*/}
     <Navigator/>
     {/* <Walk/> */}
     {/* <FilterDogList/> */}

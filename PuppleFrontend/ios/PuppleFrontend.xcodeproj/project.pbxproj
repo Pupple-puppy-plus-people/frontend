@@ -14,7 +14,7 @@
 		5369568D2821B81D000DCF1E /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5369568C2821B81D000DCF1E /* File.swift */; };
 		769494920ACA13F927B2A897 /* libPods-PuppleFrontend-PuppleFrontendTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AACB50664DFA97A5BF85651 /* libPods-PuppleFrontend-PuppleFrontendTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		B8A70792A0C24D06075D87C9 /* libPods-PuppleFrontend.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C47C8B7533B8554C9CCD7F92 /* libPods-PuppleFrontend.a */; };
+		81DB7265D9ED516D7866A976 /* libPods-PuppleFrontend.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C47C8B7533B8554C9CCD7F92 /* libPods-PuppleFrontend.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,7 +62,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B8A70792A0C24D06075D87C9 /* libPods-PuppleFrontend.a in Frameworks */,
+				81DB7265D9ED516D7866A976 /* libPods-PuppleFrontend.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -257,7 +257,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			files = (
 			);
 			inputPaths = (
@@ -271,7 +271,7 @@
 		};
 		651AEA933CAF040D2B8FBAC3 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			files = (
 			);
 			inputFileListPaths = (
@@ -286,14 +286,14 @@
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-PuppleFrontend-checkManifestLockResult.txt",
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		8DF663AAEB49B8173D62A2F5 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			files = (
 			);
 			inputFileListPaths = (
@@ -491,11 +491,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 27Q6P9W8FP;
+				DEVELOPMENT_TEAM = L27H2SJZMT;
 				ENABLE_BITCODE = NO;
 				EXCLUDED_ARCHS = "";
-				"EXCLUDED_ARCHS[sdk=*]" = arm64;
+				"EXCLUDED_ARCHS[sdk=*]" = "";
 				INFOPLIST_FILE = PuppleFrontend/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -506,7 +507,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.Pupple;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.Pupple2;
 				PRODUCT_NAME = PuppleFrontend;
 				SWIFT_OBJC_BRIDGING_HEADER = "PuppleFrontend-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -521,8 +522,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 27Q6P9W8FP;
+				DEVELOPMENT_TEAM = L27H2SJZMT;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
 				INFOPLIST_FILE = PuppleFrontend/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -533,7 +536,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.Pupple;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.Pupple2;
 				PRODUCT_NAME = PuppleFrontend;
 				SWIFT_OBJC_BRIDGING_HEADER = "PuppleFrontend-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;

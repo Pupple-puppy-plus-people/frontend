@@ -18,6 +18,7 @@ import {
   Alert,
   Pressable,
   useWindowDimensions,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import LottieView from 'lottie-react-native';
 import { NavigationContainer, useScrollToTop} from '@react-navigation/native';
@@ -81,11 +82,6 @@ function animalGET(urls) {
             //showCheckBox(dogInfo)
             dogInfo = null
             console.log(error);
-        })
-        .then(function(){
-            //always executed
-            console.log("** Default");
-
         });
     
     return dogInfo
@@ -139,6 +135,8 @@ const AnimalNumberAPI = (props) => {
             .then(dogInfo => {
                 console.log("dogInfo:",dogInfo)
                 sendDogInfo(dogInfo)
+            }).catch(function (error) {
+                console.log(error);
             });
         }
     }
@@ -368,11 +366,11 @@ function EnrollStep1({navigation}) {
                         <Divider style={{margin:"5%"}} />
 
                         <Text style={styles.subtitle}>반려견 정보를 체크해주세요. </Text>
-                        
+                        <TouchableWithoutFeedback >
                         <FilterDogList selectedFilter={selectedFilter}>   
                             {console.log("-&&&&& >", dogInfo[0].sexNm)}    
                         </FilterDogList>
-                        
+                        </TouchableWithoutFeedback>
                         <Divider style={{margin:"5%"}} />
 
                         

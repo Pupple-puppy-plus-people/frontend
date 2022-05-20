@@ -2,7 +2,7 @@
 //import resyncStorage from '@react-native-async-storage/async-storage';
 import React, {useState, useEffect, Component} from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import {navigation} from '@react-navigation/native';
+import {navigation, useIsFocused} from '@react-navigation/native';
 
 import {
     View, 
@@ -27,11 +27,6 @@ import axios from 'axios';
 import { HS_API_END_POINT, USER_INFO } from '../../Shared/env';
 import Item from './ItemComponent';
 
-//import * as RNFS from 'react-native-fs'
-//import axios from 'axios';
-//import { HS_API_END_POINT } from '../../Shared/env';
-//import { setJwt,setUserInfo } from '../Store/Actions';
-//import { connect } from 'react-redux';
 
 const width = Dimensions.get("window").width - 10; // container style에 paddingHorizontal*2
 const height = Dimensions.get("window").height;
@@ -39,98 +34,76 @@ const height = Dimensions.get("window").height;
 
 const Stack = createStackNavigator();
 
-const USER = [
-  {
-    id: '0',
-    title: '입양인',
-  },
-  {
-    id: '1',
-    title: '입양처',
-  }
-];
-// 로그인 정보 조건문: 만약 입양처로 로그인했다면, 만약 입양인으로 로그인했다면에 따라 달라짐 -> 조건부 렌더링 알아보기
-let USER_TYPE = 0;  // 0 이면 입양인, 1이면 입양처, 로그인 정보 받아오기
-let USER_ID = 2;  // 판매자의 아이디임
 
-var Listlen = 1;
+//&****************************** 로그인 정보로 받아와야함 ****************************// 
+USER_INFO.USER_TYPE = "seller"
+USER_INFO.USER_ID = "2"
 
-function findDog(dog_id) {
-  query = 
-  '?'+dog_id
-  React.useEffect(()=> {
-    
-    axios.get(`${HS_API_END_POINT}/api/dogs/${query}`)  // 코드 합칠 때 찜목록으로 바꾸기! 
-    .then((res)=> {      
-        console.log("판매자 등록한 Data 받음.");
-        setDogs(res.data);
-    })
-    .catch((err)=> {
-        console.log(err);
-    })
-  }, []); 
-}
 
 function Authenticate ({navigation}) {
+  const isFocused = useIsFocused();
     const [type, setType] = useState("");
     const {width, height} = useWindowDimensions();
-    const [dogs, setDogs] = useState([{}]) // USER_TYPE 바뀔때마다 dogs 비워줘야하는데 언제? ->  입양인, 입양처로 바꼈을 때 dogs 데이터가 남는 현상
-    const [wishlist, setWishList] = useState() // USER_TYPE 바뀔때마다 dogs 비워줘야하는데 언제? ->  입양인, 입양처로 바꼈을 때 dogs 데이터가 남는 현상
+    const [dogs, setDogs] = useState([{}]) 
 
-      // -> 근데 로딩시간이 뭔가 문제인듯? --> 
-      // 구매자 찜목록으로,    
+      // dog list 받아옴
       React.useEffect(()=> {
-        if (!USER_TYPE){ 
-  
+        // 구매자로 들어올때 
+        if (USER_INFO.USER_TYPE == "customer"){ 
               let wish = []
+
               axios.post(`${HS_API_END_POINT}/api/users/wishlist/`,{ 
               email: USER_INFO.USER_EMAIL,}) 
                     .then((res)=> {
                         wish = res.data
-                        console.log("wishlist Data 받음.", wish);
-                        // setWishList(wish);
+                        console.log("구매자 wishlist Data 받음.", wish);
   
-                        wish_dog = []
-  
+                        dog_idx = []
                         for(dog in wish){
-                          query = wish[dog].dog_id
-                          axios.get(`${HS_API_END_POINT}/api/dogs/${query}`)
-                            .then((res)=> {
-                                wish_dog.push(res.data)
-                                console.log("wish_dog: ", wish_dog.length)
-                                setDogs(wish_dog)
-                            })
-                            .catch((err)=> {
-                                console.log(err);
-                            })
+                          dog_idx.push(wish[dog].dog_id)
+                          
                         }
+                        console.log("id:", dog_idx)
+
+                        axios.all(dog_idx.map((endpoint) => 
+                        axios.get(`${HS_API_END_POINT}/api/dogs/${endpoint}`))) //id= 으로 찾으려고 하면 오류남
+                        .then(
+                          (data) => {
+                            wish_dog = []
+                            for(dog in data){
+                              wish_dog.push(data[dog].data)
+                            }
+                            setDogs(wish_dog)
+                            console.log("dog:", wish_dog)
+                          }
+                        );
   
                     })
                     .catch((err)=> {
                         console.log(err);
                     })
-          }else{
-            query = 
-                 '?'+
-                 'user_id='+USER_ID
-
+          }else{  // 판매자로 들어올떄
+              query = 
+                  '?'+
+                  'user_id='+USER_INFO.USER_ID 
+                
                axios.get(`${HS_API_END_POINT}/api/dogs/${query}`)  
               .then((res)=> {      
-                   console.log("판매자 등록한 Data 받음.");
+                   console.log("판매자 등록한 Doglist Data 받음.");
                    setDogs(res.data);
                })
                .catch((err)=> {
                    console.log(err);
                })
           }
-    },[]);
+    },[isFocused]); // isFocused로 refresh시 state 업데이트 됨
       
 
     // 반려견 리스트 정보
     const renderItem = ({ item }) => (
-      // item: 아이템 배열
-      // navigation: 네비게이션
-      // icon: 표시할 아이콘 모양
+      /* item: 아이템 배열
+       * navigation: 네비게이션
+       * icon: 표시할 아이콘 모양 */
       <Item item={item} navigation={navigation} icon={'circle'}/>
     );
 
@@ -140,12 +113,12 @@ function Authenticate ({navigation}) {
           
             <View style={{justifyContent: 'center', width: "100%", height: "100%"}}>
 
-                {/* 리스트에 아무것도 없다면 */ console.log("dog 개수",Object.keys(dogs).length, dogs)}
+                {/* dog 리스트가 빈 리스트인지 확인*/}
                 { Object.keys(dogs).length === 0 || Object.keys(dogs[0]).length === 0 ? 
-                 /* 입양인/입양처로 로그인 유무에 따른 Empty Data 내용 다름 */
-                    <EmptyDogList user={USER_TYPE} /> 
+                    /* 입양인/입양처에 따라 Empty Data 내용 다름 */
+                    <EmptyDogList user={USER_INFO.USER_TYPE} /> 
                   : 
-                /* 반려견 리스트 */  
+                  /* dog 리스트 */  
                   <FlatList
                     data={dogs}
                     renderItem={renderItem}
@@ -153,15 +126,14 @@ function Authenticate ({navigation}) {
                     numColumns={2}  // column의 개수
                     columnWrapperStyle={{
                       justifyContent: 'space-between',
-                      //marginBottom: 5,
+                      //marginBottom: 5, 
                     }}/>
                 }
-                {/*마지막 홀수번째 리스트 이상함*/ }
+                {/*마지막 홀수번째 리스트 튀어나오는 현상, 이상함 -> flex 조정으로 해결*/ }
             </View> 
-            
       
-           {/* 만약에 입양처로 로그인한다면 */}
-            {USER_TYPE === 1 ? <EnrollButton navigation={navigation} /> : null}
+           {/* 판매자로 로그인시 등록 floating button 등장 */}
+            {USER_INFO.USER_TYPE == "seller" ? <EnrollButton navigation={navigation} /> : null}
   
         </SafeAreaView>
 

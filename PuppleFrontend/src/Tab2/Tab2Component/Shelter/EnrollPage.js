@@ -64,7 +64,7 @@ function TopTabs({aboutDog}) {
                 tabBarLabel:() => {return null},
                 tabBarIcon: ()=>(
                     
-                    <Icon name = "grid" size={25}/> // 아이콘 추천 받아요
+                    <Icon name = "grid" size={25}/> 
                 )
             }}/>
         </Tab.Navigator>
@@ -111,7 +111,7 @@ function EnrollPage({navigation,route}) {
                     </View>
                     
                     <View style={{ flex:1, 
-                        // 여기 크기 다시다시 !
+                        // 여기 크기 다시 !
                         height: (parentHeight.height)*1.5}} /**(Dimensions.get('window').width)/(0.4) */>  
                         <TopTabs aboutDog={route.params?.aboutDog}></TopTabs>
                     </View>
