@@ -5,6 +5,7 @@ export const USER_INFO=()=>{
     // const [USER_EMAIL,setUSER_EMAIL] = useState("");
     var USER_EMAIL=""
     var USER_ID=""
+    var USER_TYPE=""
     // changeUserEmail=({value})=>{
     //     setUSER_EMAIL(value);
     // };

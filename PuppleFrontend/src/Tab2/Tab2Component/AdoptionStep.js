@@ -26,8 +26,13 @@ import Walk from '../../Template/Walk/';
 const AdoptionStep = ({navigation,aboutDog})=>{
     const [modalVisible, setModalVisible] = useState(false);
     const [modalVisible2, setModalVisible2] = useState(false);
+    const [parentWidth, setParentWidth] = useState({width:0});
+    const onLayout=(event)=>{
+        const {x,y,height,width} = event.nativeEvent.layout;
+        setParentWidth({width:width});
+    };
     return (
-        <View style={styles.container}>
+        <View style={styles.container} onLayout={onLayout}>
             <View style={{marginVertical:20}}>
             <Modal
             animationType='slide'
@@ -54,12 +59,20 @@ const AdoptionStep = ({navigation,aboutDog})=>{
             <Pressable
             onPress={()=>{setModalVisible(true)}}
             style={{
+                // width:parentWidth.width,
                 borderColor:'purple',
                 borderWidth:3,
                 borderRadius:40,
-                marginHorizontal:60}}>
+                marginHorizontal:60,
+                width:parentWidth.width/1.5,
+                alignSelf:'center',
+                flexDirection:'row',
+                justifyContent:'space-between'
+                }}>
                 <Text
-                style={{fontSize:25,textAlign:'center'}}>Walk</Text>
+                style={{fontSize:25}}>Walk</Text>
+                <Text
+                style={{fontSize:25}}>75%</Text>
             </Pressable>
             </View>
             <View>
