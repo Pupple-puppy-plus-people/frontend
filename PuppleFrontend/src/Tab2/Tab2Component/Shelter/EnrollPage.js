@@ -56,7 +56,7 @@ function TopTabs({aboutDog}) {
                     <Icon name = "dog" size={25}/>
                 ),
             }}/>
-            <Tab.Screen name="AdoptionStep" component={AdoptionStep} 
+            <Tab.Screen name="AdoptionStep" children={()=><AdoptionStep aboutDog={aboutDog}/>} 
              options={{
                 
                 headerShown: false,

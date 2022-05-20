@@ -50,6 +50,8 @@ captures/
 .cxx/
 *.apk
 output.json
+PuppleFrontend/secret2.js
+PuppleFrontend/secret.js
 
 # API 인증키
 secret.json

@@ -51,6 +51,8 @@ function LoginScreen({navigation, handleJwtResult, handleUserInfo, user_info}) {
         } else{
           console.log("response == ",res.data.data);
           USER_INFO.USER_EMAIL = userEmail;
+          USER_INFO.USER_ID = res.data.id;
+          USER_INFO.USER_TYPE = res.data.user_type;
           navigation.replace('BottomNav');
           //토큰이 온다.
           //토큰 async 저장
