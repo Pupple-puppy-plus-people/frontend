@@ -51,3 +51,5 @@ captures/
 *.apk
 output.json
 PuppleFrontend/ios
+PuppleFrontend/secret2.js
+PuppleFrontend/secret.js
