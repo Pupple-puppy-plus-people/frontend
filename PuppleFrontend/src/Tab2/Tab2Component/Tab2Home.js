@@ -50,8 +50,8 @@ const USER = [
   }
 ];
 // 로그인 정보 조건문: 만약 입양처로 로그인했다면, 만약 입양인으로 로그인했다면에 따라 달라짐 -> 조건부 렌더링 알아보기
-let USER_TYPE = 0;  // 0 이면 입양인, 1이면 입양처, 로그인 정보 받아오기
-let USER_ID = 2;  // 판매자의 아이디임
+let USER_TYPE = 1;  // 0 이면 입양인, 1이면 입양처, 로그인 정보 받아오기
+let USER_ID = USER_INFO.USER_ID;  // 판매자의 아이디임
 
 var Listlen = 1;
 
@@ -60,7 +60,7 @@ function findDog(dog_id) {
   '?'+dog_id
   React.useEffect(()=> {
     
-    axios.get(`${HS_API_END_POINT}/api/dogs/${query}`)  // 코드 합칠 때 찜목록으로 바꾸기! 
+    axios.get(`${HS_API_END_POINT}/api/dogs/list/${query}`)  // 코드 합칠 때 찜목록으로 바꾸기! 
     .then((res)=> {      
         console.log("판매자 등록한 Data 받음.");
         setDogs(res.data);
@@ -94,7 +94,7 @@ function Authenticate ({navigation}) {
   
                         for(dog in wish){
                           query = wish[dog].dog_id
-                          axios.get(`${HS_API_END_POINT}/api/dogs/${query}`)
+                          axios.get(`${HS_API_END_POINT}/api/dogs/list/${query}`)
                             .then((res)=> {
                                 wish_dog.push(res.data)
                                 console.log("wish_dog: ", wish_dog.length)
@@ -114,7 +114,7 @@ function Authenticate ({navigation}) {
                  '?'+
                  'user_id='+USER_ID
 
-               axios.get(`${HS_API_END_POINT}/api/dogs/${query}`)  
+               axios.get(`${HS_API_END_POINT}/api/dogs/list/${query}`)  
               .then((res)=> {      
                    console.log("판매자 등록한 Data 받음.");
                    setDogs(res.data);

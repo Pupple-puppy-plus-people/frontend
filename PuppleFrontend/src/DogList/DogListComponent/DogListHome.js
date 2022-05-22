@@ -50,7 +50,7 @@ const DogListHome = ({ navigation,route }) => {
             setDogs(route.params?.dogs)
         }
         else{
-            axios.get(`${HS_API_END_POINT}/api/dogs/`)
+            axios.get(`${HS_API_END_POINT}/api/dogs/list/`)
             .then((res)=> {      
                 console.log("dogs Data 받음.");
                 setDogs(res.data);
@@ -218,7 +218,7 @@ const DogListHome = ({ navigation,route }) => {
                         onPress={() =>
                         navigation.navigate('FilterDogList')}
                     >
-                        <Icon2 name="menu" size={30} color="red" />
+                        <Icon2 name="filter" size={30} color="red" />
                     </Pressable>
                     
                     <Pressable

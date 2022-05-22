@@ -9,9 +9,10 @@ import {
     BackHandler,
 } from 'react-native';
 import { responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
+import { HS_API_END_POINT } from '../../Shared/env';
 import { FlatList } from "react-native-gesture-handler";
 
-const baseUrl = 'http:127.0.0.1:8000';
+const baseUrl = `${HS_API_END_POINT}`;
 let query = '?';
 function filterRequest(){
 
@@ -214,6 +215,7 @@ const FilterDogList = ({navigation}) => {
                         'gender='+selectedFilter[0].value+'&'+
                         'kind='+selectedFilter[1].value+'&'+
                         'desexing='+selectedFilter[2].value+'&'+
+                        'age='+selectedFilter[3].value+'&'+
                         'size='+selectedFilter[4].value+'&'+
                         'hair_loss='+selectedFilter[5].value+'&'+
                         'bark_term='+selectedFilter[6].value+'&'+
@@ -230,10 +232,10 @@ const FilterDogList = ({navigation}) => {
                             {filter:'activity',value : ""},
                             {filter:'person_personality',value : ""},
                         ]
-                        axios.get(baseUrl+'/api/dogs'+query)
+                        axios.get(baseUrl+'/api/dogs/list'+query)
                         .then(function (response){
                             //success
-                            console.log(baseUrl+'/api/dogs'+query)
+                            console.log(baseUrl+'/api/dogs/list'+query)
                             console.log(response.data);
 
                             navigation.navigate({

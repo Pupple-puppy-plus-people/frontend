@@ -54,9 +54,9 @@ function EnrollStep3({navigation, route}) {
             <Text style={{margin:"7%", color:'dodgerblue', fontWeight:'bold', fontSize:smallOne*0.04}}
                 onPress={() => {
 
-                    // axios.get(baseUrl+'/api/dogs'
-                    // `${HS_API_END_POINT}/api/dogs/`
-                    axios.post(`${HS_API_END_POINT}/api/dogs/`,{
+                    // axios.get(baseUrl+'/api/dogs/list'
+                    // `${HS_API_END_POINT}/api/dogs//list`
+                    axios.post(`${HS_API_END_POINT}/api/dogs/list/`,{
                         id : 100,
                         registration_number : dogRegInfo[4].value ,
                         image :dogImage,
