@@ -6,6 +6,7 @@ export const USER_INFO=()=>{
     var USER_EMAIL=""
     var USER_ID=""
     var USER_TYPE=""
+    var USER_USERNAME=""
     // changeUserEmail=({value})=>{
     //     setUSER_EMAIL(value);
     // };
