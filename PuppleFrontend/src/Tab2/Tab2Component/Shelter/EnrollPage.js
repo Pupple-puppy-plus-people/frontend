@@ -26,6 +26,7 @@ import { USER_INFO } from '../../../Shared/env';
 
 import DogInfo from '../DogInfo';
 import AdoptionStep from '../AdoptionStep'
+import HandleTemplateReqeust from '../HandleTemplateRequest';
 
 const screenWidth = Dimensions.get('screen').width;
 const screenHeight = Dimensions.get('screen').height;
@@ -61,7 +62,7 @@ function TopTabs({aboutDog}) {
                 return(
                     <View style={{flex:1}}>
                     {USER_INFO.USER_TYPE==='customer'&&<AdoptionStep aboutDog={aboutDog}/>}
-                    {USER_INFO.USER_TYPE==='seller'&&<Text>ads</Text>}
+                    {USER_INFO.USER_TYPE==='seller'&&<HandleTemplateReqeust aboutDog={aboutDog}/>}
                     </View>
                 )}} 
              options={{
