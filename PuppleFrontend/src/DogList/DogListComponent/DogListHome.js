@@ -1,6 +1,6 @@
 
 //import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
     View,
     Text,
@@ -11,6 +11,7 @@ import {
     Pressable,
     useWindowDimensions,
     TouchableOpacity,
+    RefreshControl,
     TouchableWithoutFeedback,
     ScrollView,
     Modal
@@ -22,8 +23,9 @@ import Icon2 from 'react-native-vector-icons/Feather';
 import { responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth, responsiveWidth } from 'react-native-responsive-dimensions';
 import DogDetail from './DogDetail';
 import axios from 'axios';
-import { HS_API_END_POINT } from '../../Shared/env';
+import { HS_API_END_POINT, USER_INFO } from '../../Shared/env';
 import { isMessageIgnored } from 'react-native/Libraries/LogBox/Data/LogBoxData';
+import PullToRefreshViewNativeComponent from 'react-native/Libraries/Components/RefreshControl/PullToRefreshViewNativeComponent';
 
 // import * as RNFS from 'react-native-fs'
 //import { setJwt,setUserInfo } from '../Store/Actions';
@@ -38,6 +40,7 @@ const DogListHome = ({ navigation,route }) => {
     //const [partBookPurchaseVisible, setPartBookPurchaseVisible] = useState(false);
     const [selectedDog, setSelectedDog] = useState({});
     const [selectedDogId, setSelectedDogId] = useState({});
+    const [heartDogId, setHeartDogId] = useState([]);
     const [backBoard, setBackBoard] = useState({backgroundColor:'white'})
     const [dogs, setDogs] = useState([{}])
     
@@ -47,7 +50,7 @@ const DogListHome = ({ navigation,route }) => {
             setDogs(route.params?.dogs)
         }
         else{
-            axios.get(`${HS_API_END_POINT}/api/dogs/`)
+            axios.get(`${HS_API_END_POINT}/api/dogs/list/`)
             .then((res)=> {      
                 console.log("dogs Data 받음.");
                 setDogs(res.data);
@@ -59,20 +62,35 @@ const DogListHome = ({ navigation,route }) => {
             })
             .catch((err)=> {
                 console.log(err);
-        })
+            })
+            axios.post(`${HS_API_END_POINT}/api/users/wishlist/`,{"email":USER_INFO.USER_EMAIL})
+            .then((res)=>{
+                console.log(res.data);
+                var array=[];
+                for(x=0;x<res.data.length;x++){
+                    console.log("x: ",x," dog_id : ",res.data[x].dog_id);
+                    array.push(res.data[x].dog_id)
+                }
+
+                setHeartDogId(array); 
+                console.log(heartDogId);
+            })
+            .catch((err)=>{
+                console.log(err);
+            })
         }
     },[route.params?.dogs]); 
 
     const Item = ({ item }) => {
-        // const base64Image = 'data:image/png;base64,' + item.bookCoverResource;
-        const [isHeart, setIsHeart] = useState(false);
+        // const base64Image = 'data:image/jpeg;base64,' + item.bookCoverResource;
+        const [isHeart, setIsHeart] = useState((heartDogId.indexOf(item.id)<0)?false:true);
         var genderStr="";
         if (item.gender=="암컷"){
             genderStr = "여";
         } else{
             genderStr = "남";
         }
-        var imageStr = {uri: 'http://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
+        var imageStr;
         if(item.image){
             imageStr = {uri: item.image};
             //imageStr = {uri: 'https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
@@ -81,45 +99,51 @@ const DogListHome = ({ navigation,route }) => {
             imageStr = {uri: 'https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
         }
         // console.log(item.image);
-        return (
-            <TouchableOpacity 
-            style={styles.dogCard}
-            onPress={
-                ()=>{
-                    setSelectedDog(item);
-                    setSelectedDogId(item.id);
-                    setDetailVisible(true);
-                    setBackBoard({backgroundColor:'gray'});
-                }
-            }
-            >
-                <View style={{ flex: 1,alignItems:'center',justifyContent:'center'}}>
-                    {/* 지금 http에 s가 다빠져있어서 오류나서 임시로 다 넣어놓음 */}
-                    <Image source={imageStr} style={{ width:responsiveScreenHeight(12),height: responsiveScreenHeight(12),resizeMode:'cover',borderRadius:50 }}  />
-                    {/* <Image source={imageStr} resizeMode='contain' style={{ width:responsiveScreenHeight(12),height: responsiveScreenHeight(12),resizeMode:'cover',borderRadius:50 }} /> */}
-                </View>
-                <View style={{ flex: 1,marginTop:3}}>
-                {!isHeart && <Icon name="heart-o" size={15} color="black" style={{alignSelf:'center',margin:2}} />}
-                {isHeart && <Icon name="heart" size={15} color="red" style={{alignSelf:'center',margin:2}} />}
+        if(item){
+            return (
                 
-                <Text style={{ fontSize: responsiveScreenFontSize(2), textAlign: 'center',fontWeight:'bold',marginBottom:3 }}>{item.name}</Text>
-                <View style={{flexDirection:'row',justifyContent:'center'}}>
-                    <View style={{flex:1, marginLeft:0, justifyContent:'center'}}>
-                        <Text style={{ fontSize: responsiveScreenFontSize(1.8), textAlign: 'right' }}>성별   :</Text>
-                        <Text style={{ fontSize: responsiveScreenFontSize(1.8), textAlign: 'right' }}>중성화 :</Text>
-                        <Text style={{ fontSize: responsiveScreenFontSize(1.8), textAlign: 'right' }}>지역   :</Text>
+                <TouchableOpacity 
+                style={styles.dogCard}
+                onPress={
+                    ()=>{
+                        setSelectedDog(item);
+                        setSelectedDogId(item.id);
+                        setDetailVisible(true);
+                        setBackBoard({backgroundColor:'gray'});
+                    }
+                }
+                >
+                    <View style={{ flex: 1,alignItems:'center',justifyContent:'center'}}>
+                        {/* 지금 http에 s가 다빠져있어서 오류나서 임시로 다 넣어놓음 */}
+                        {imageStr && <Image source={imageStr} style={{ width:responsiveScreenHeight(12),height: responsiveScreenHeight(12),resizeMode:'cover',borderRadius:50 }}  />}
                     </View>
-                    <View style={{flex:2.5,justifyContent:'center'}}>
-                        <Text style={{ fontSize: responsiveScreenFontSize(1.8), textAlign: 'center' }}>{genderStr} </Text>
-                        <Text style={{ fontSize: responsiveScreenFontSize(1.8), textAlign: 'center' }}>{item.desexing} </Text>
-                        <Text style={{ fontSize: responsiveScreenFontSize(1.8), textAlign: 'center' }}>{item.location} </Text>
+                    <View style={{ flex: 1,marginTop:3}}>
+                    {!isHeart && <Icon name="heart-o" size={15} color="black" style={{alignSelf:'center',margin:2}} />}
+                    {isHeart && <Icon name="heart" size={15} color="red" style={{alignSelf:'center',margin:2}} />}
+                    
+                    <Text style={{ fontSize: responsiveScreenFontSize(2), textAlign: 'center',fontWeight:'bold',marginBottom:3 }}>{item.name}</Text>
+                    <View style={{flexDirection:'row',justifyContent:'center'}}>
+                        <View style={{flex:1, marginLeft:0, justifyContent:'center'}}>
+                            <Text style={{ fontSize: responsiveScreenFontSize(1.8), textAlign: 'right' }}>성별   :</Text>
+                            <Text style={{ fontSize: responsiveScreenFontSize(1.8), textAlign: 'right' }}>중성화 :</Text>
+                            <Text style={{ fontSize: responsiveScreenFontSize(1.8), textAlign: 'right' }}>지역   :</Text>
+                        </View>
+                        <View style={{flex:2.5,justifyContent:'center'}}>
+                            <Text style={{ fontSize: responsiveScreenFontSize(1.8), textAlign: 'center' }}>{genderStr} </Text>
+                            <Text style={{ fontSize: responsiveScreenFontSize(1.8), textAlign: 'center' }}>{item.desexing} </Text>
+                            <Text style={{ fontSize: responsiveScreenFontSize(1.8), textAlign: 'center' }}>{item.location} </Text>
+                        </View>
                     </View>
-                </View>
-                </View>
-    
-    
-            </TouchableOpacity>
-        );
+                    </View>
+        
+        
+                </TouchableOpacity>
+            );
+        }
+        else{
+            return ;
+        }
+
     }
     
     // const onRefresh = () => {
@@ -138,7 +162,26 @@ const DogListHome = ({ navigation,route }) => {
     //               setRefreshing(false);
     //       })
     // }
+    const exitDogDetail = useCallback(() =>{
+        setDetailVisible(false);
+        setBackBoard({backgroundColor:'white'});
+        axios.post(`${HS_API_END_POINT}/api/users/wishlist/`,{"email":USER_INFO.USER_EMAIL})
+        .then((res)=>{
+            console.log(res.data);
+            var array=[];
+            for(x=0;x<res.data.length;x++){
+                console.log("x: ",x," dog_id : ",res.data[x].dog_id);
+                array.push(res.data[x].dog_id)
+            }
 
+            setHeartDogId(array); 
+            console.log(heartDogId);
+        })
+        .catch((err)=>{
+            console.log(err);
+        })
+
+    },[detailVisible]);
     const renderItem = ({ item }) => (
         <Item item={item} />
     );
@@ -156,12 +199,9 @@ const DogListHome = ({ navigation,route }) => {
                 // hideModalContentWhileAnimating={true} 
             >   
                 <View style={styles.modalView}>
-                <DogDetail item={selectedDog} id={selectedDogId} />
+                <DogDetail item={selectedDog} id={selectedDogId} heart={heartDogId} />
                 <TouchableOpacity 
-                        onPress={() => {
-                            setDetailVisible(false); 
-                            setBackBoard({backgroundColor:'white'});
-                            }} style={{alignContent:'flex-end'}}>
+                        onPress={exitDogDetail} style={{alignContent:'flex-end'}}>
                         <Icon name="window-close" size={40} color="purple" />
                 </TouchableOpacity>
                 </View>
@@ -171,14 +211,37 @@ const DogListHome = ({ navigation,route }) => {
             //style={backBoard}
             >
 
-                <View>
+                <View style={{flexDirection:'row'}}>
                     <Pressable
                         style={[styles.button, styles.buttonOpen]}
                     // onPress={() => setModal(true)}
                         onPress={() =>
                         navigation.navigate('FilterDogList')}
                     >
-                        <Icon2 name="menu" size={30} color="red" />
+                        <Icon2 name="filter" size={30} color="red" />
+                    </Pressable>
+                    
+                    <Pressable
+                    style={[styles.button, styles.buttonOpen]}
+                    onPress={() => 
+                    navigation.navigate('RoomCheck')}
+                    > 
+                       <Icon2 name="camera" size={30} color="purple" />
+                    </Pressable>
+
+                    <Pressable
+                    style={[styles.button, styles.buttonOpen]}
+                    onPress={() => 
+                    navigation.navigate('Survey')}
+                    > 
+                       <Icon2 name="file-text" size={30} color="purple" />
+                    </Pressable>
+                    <Pressable
+                    style={[styles.button, styles.buttonOpen]}
+                    onPress={() => 
+                    navigation.navigate('Agreement')}
+                    > 
+                       <Icon2 name="file" size={30} color="purple" />
                     </Pressable>
                 </View>
 
@@ -258,6 +321,7 @@ const styles = StyleSheet.create({
         zIndex: 10
     },
     button: {
+        flex:1,
         marginHorizontal: 5,
         borderRadius: 15,
         padding: 10,

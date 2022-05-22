@@ -49,18 +49,6 @@ const DogDetail = ({item,id}) => {
                     <Image source={imageStr} style={{ width: '100%', height: '100%',resizeMode:'cover',borderRadius:15}}  />
                 </View>
             </View>
-
-            {/* 하트 버튼 위치 */}
-            <View style={{ alignContent:'center',justifyContent:'center'}}>
-                <TouchableOpacity
-                style={{alignItems:'center',justifyContent:'center'}}
-                onPress={PressHeart}
-                >
-                    
-                    {!isHeart && <Icon name="heart-o" size={30} color="red" />}
-                    {isHeart && <Icon name="heart" size={30} color="red" />}
-                </TouchableOpacity>
-            </View>
             <View style={{marginTop:10,marginHorizontal:10,borderTopColor:'gray',borderTopWidth:2}}/>
 
             <View style={{margin:10,}}>

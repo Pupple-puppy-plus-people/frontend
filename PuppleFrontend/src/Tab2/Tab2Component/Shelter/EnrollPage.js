@@ -21,10 +21,12 @@ import LottieView from 'lottie-react-native';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import Animation from 'lottie-react-native';
 import symbolicateStackTrace from 'react-native/Libraries/Core/Devtools/symbolicateStackTrace';
+import { USER_INFO } from '../../../Shared/env';
 // import Loader from './Components/Loader';
 
 import DogInfo from '../DogInfo';
 import AdoptionStep from '../AdoptionStep'
+import HandleTemplateReqeust from '../HandleTemplateRequest';
 
 const screenWidth = Dimensions.get('screen').width;
 const screenHeight = Dimensions.get('screen').height;
@@ -56,7 +58,13 @@ function TopTabs({aboutDog}) {
                     <Icon name = "dog" size={25}/>
                 ),
             }}/>
-            <Tab.Screen name="AdoptionStep" component={AdoptionStep} 
+            <Tab.Screen name="AdoptionStep" children={()=>{
+                return(
+                    <View style={{flex:1}}>
+                    {USER_INFO.USER_TYPE==='customer'&&<AdoptionStep aboutDog={aboutDog}/>}
+                    {USER_INFO.USER_TYPE==='seller'&&<HandleTemplateReqeust aboutDog={aboutDog}/>}
+                    </View>
+                )}} 
              options={{
                 
                 headerShown: false,

@@ -53,3 +53,8 @@ output.json
 PuppleFrontend/ios
 PuppleFrontend/secret2.js
 PuppleFrontend/secret.js
+
+# API 인증키
+secret.json
+/src/Shared/env.js
+/ios/Pods/

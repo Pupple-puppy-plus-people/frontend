@@ -9,91 +9,239 @@ import {
     FlatList,
     TouchableWithoutFeedback,
 } from 'react-native';
+import Geolocation from 'react-native-geolocation-service';
+import {getDistance} from 'geolib';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import { HS_API_END_POINT } from '../../../Shared/env';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import WeekComponent from '../../Recycle/WeekComponent';
-
-let baseUrl = 'http:127.0.0.1:8000'
+const today = new Date().getDay();
+let baseUrl = `${HS_API_END_POINT}`
+let userdog = 'dddd'
+let dog_id = 13
 function walkGet() {
-    axios.get(baseUrl+'/api/walkauth/')
+    return new Promise((resolve,reject)=>{
+        // axios
+        // .all([axios.get(baseUrl+'/api/walkauth/'+userdog)
+        //         ,axios.get(baseUrl+'/api/passcondition/'+dog_id)])
+        // .then(
+        //     axios.spread((res1,res2)=>{
+        //         myData = res1.data
+        //         pass_condition = res2.data
+        //         console.log('axios in')
+        //     })
+        // )
+        // .catch((error)=>console.log(error))
+        axios.get(baseUrl+'/api/walkauth/'+userdog)
+        .then(function(response){
+            // handle success
+            myData = response.data
+            axios.get(baseUrl+'/api/passcondition/'+dog_id)
             .then(function(response){
-                // handle success
-                
-                loadedData = response.data[0]
-                deleteData = response.data[0]
-                console.log(loadedData);
+                pass_condition = response.data[0]
+                resolve();
             })
-            .catch(function (error) {
-                //handle error
-                console.log(error);
-            })
-            .then(function(){
-                //always executed
-            });
+        })
+        .catch(function (error) {
+            //handle error
+            console.log(error);
+        })
+        .then(function(){
+            //always executed
+        });
+    });
 }
 function walkDelete() {
-    axios.delete(baseUrl+'/api/walkauth/'+deleteData.id);
+    axios.delete(baseUrl+'/api/walkauth/'+userdog+'/'+deleteData.userdog);
 
 }
-function getfromserver(method){
-    if(method == 'stop'){
-        Promise.all([walkGet(),walkDelete()])
-        .then(function (results){
-            console.log(results)
-        });
-    }
-    else {
-        if(method == 'start'){
-            axios.post(baseUrl+'/api/walkauth/',{ 
-                index : 0,
-                start_time : 0,
-                elapsed_time : 0,
-                distance : 100
-            })
-            .then(function (response){
-                console.log(response.status);
-            })
-            .then(function (error){
-                console.log(error);
-            });
-        }
-    }
-    
+function postData2server(timer){
+    walkauthData.elapsed_time = Math.floor(timer / 60)
+    walkauthData.day = today
+    axios.post(baseUrl+'/api/walkauth/'+userdog+'/',walkauthData)
+    .then(function (response){
+        console.log(response.status);
+    })
+    .then(function (error){
+        console.log(error);
+    });
 }
 
-// 산책 시작시 django server에서 받아온 데이터
-let loadedData = {
-    start_time:0,
-    elapsed_time:20,
-    distance:10
-};
-let deleteData = {
-    start_time:0,
-    elapsed_time:20,
-    distance:10
-};
+// 산책 시작시 django server로 보낼 데이터
+let walkauthData = {
+    userdog : userdog,
+    day : 0,
+    start_time : 0,
+    elapsed_time : 0,
+    end_time : 0,
+    distance : 0,
+    evaluate : false
+}
+let pass_condition = {
+    dog_id : 0,
+    walk_total_count : 0,
+    min_per_walk : 0,
+    meter_per_walk : 0,
+    ts_total_count : 0,
+    ts_check_time : 0,
+}
+let myData = [
+    {
+        userdog : userdog,
+        day : 0,
+        start_time : 0,
+        elapsed_time : 0,
+        end_time : 0,
+        distance : 0,
+        evaluate : false
+    },
+    {
+        userdog : userdog,
+        day : 0,
+        start_time : 0,
+        elapsed_time : 0,
+        end_time : 0,
+        distance : 0,
+        evaluate : false
+    },
+    {
+        userdog : userdog,
+        day : 0,
+        start_time : 0,
+        elapsed_time : 0,
+        end_time : 0,
+        distance : 0,
+        evaluate : false
+    },
+    {
+        userdog : userdog,
+        day : 0,
+        start_time : 0,
+        elapsed_time : 0,
+        end_time : 0,
+        distance : 0,
+        evaluate : false
+    },
+    {
+        userdog : userdog,
+        day : 0,
+        start_time : 0,
+        elapsed_time : 0,
+        end_time : 0,
+        distance : 0,
+        evaluate : false
+    },
+    {
+        userdog : userdog,
+        day : 0,
+        start_time : 0,
+        elapsed_time : 0,
+        end_time : 0,
+        distance : 0,
+        evaluate : false
+    },
+    {
+        userdog : userdog,
+        day : 0,
+        start_time : 0,
+        elapsed_time : 0,
+        end_time : 0,
+        distance : 0,
+        evaluate : false
+    },
+]
+
+let myTotal = {
+    count : 0,
+    time : 0,
+    distance : 0
+
+}
+
+let lastLocation = {
+    latitude : 0,
+    longitude : 10
+}
 
 class SummaryList extends Component{
     constructor(props){
         super(props);
+        this.state={
+            dayIndex : 0
+        }
+    }
+    setDayIndex(newIndex) {
+        this.setState({dayIndex:newIndex})    
     }
     render(){
+        let day_index = 0;
+        // const [dayIndex, setDayIndex] = useState(0);
+        const day_num = [0,1,2,3,4,5,6];
+        const dayEval = day_num.map((oneday)=>
+            <MaterialCommunityIcons 
+            key={oneday}
+            name={myData[oneday].day == oneday ?
+                (myData[oneday].evaluate?"check-circle-outline":"close-circle-outline")
+            :   ("progress-question")}
+            color={myData[oneday].day == oneday ?
+                (myData[oneday].evaluate?'green':'red')
+            :   ("purple")}
+            size={25}/>
+        );
+
+        const timeEval = day_num.map((oneday)=>
+            <View>
+                <Text>{day_index}</Text>
+                {
+                    myData[day_index].day == oneday&&
+                    myData[oneday].elapsed_time>=pass_condition.min_per_walk&&
+                    <MaterialCommunityIcons
+                    key={'time'+oneday}
+                    name='check-circle-outline'
+                    color={'green'}
+                    size={25}/>
+                }
+                {
+                    myData[day_index].day == oneday&&
+                    myData[oneday].elapsed_time<pass_condition.min_per_walk&&
+                    <MaterialCommunityIcons
+                    key={'time'+oneday}
+                    name='close-circle-outline'
+                    color={'red'}
+                    size={25}/>
+                }
+                {/* {myData[day_index].day == oneday && this.setDayIndex(this.state.dayIndex+1)} */}
+            </View>    
+        );
+        const distanceEval = day_num.map((oneday)=>
+            <View>
+                {myData[oneday].distance>=pass_condition.meter_per_walk&&
+                    <MaterialCommunityIcons
+                    key={'distance'+oneday}
+                    name='check-circle-outline'
+                    color={'green'}
+                    size={25}/>
+                }
+                {myData[oneday].distance<pass_condition.meter_per_walk&&
+                    <MaterialCommunityIcons
+                    key={'distance'+oneday}
+                    name='close-circle-outline'
+                    color={'red'}
+                    size={25}/>
+                }
+            </View>
+        );
+        // #eedbff background color
         return(
             <View style={styles.summary_row}>
-                <MaterialCommunityIcons name="check-circle-outline" color={'green'}   size={25}/>
-                <MaterialCommunityIcons name="check-circle-outline" color={'green'}   size={25}/>
-                <MaterialCommunityIcons name="close-circle-outline" color={'red'}     size={25}/>
-                <MaterialCommunityIcons name="check-circle-outline" color={'green'}   size={25}/>
-                <MaterialCommunityIcons name="check-circle-outline" color={'green'}   size={25}/>
-                <MaterialCommunityIcons name="progress-question"    color={'#eedbff'} size={25}/>
-                <MaterialCommunityIcons name="check-circle-outline" color={'green'}   size={25}/>
+                {this.props.evalType==='time'&&timeEval}
+                {this.props.evalType==='distance'&&distanceEval}
             </View>
         );
     }
 }
-
 // FlatList 시작
 // list에 반복적으로 보여질 item
 const Info_Item = ({dataInfo}) => (
@@ -136,7 +284,7 @@ const Information = ({informationName,showData}) => {
 }
 // FlatList 종료
 
-const StopWatch = () => {
+const StopWatch = ({changeState}) => {
     const [timer, setTimer] = useState(0)
     const [isActive, setIsActive] = useState(false)
     const increment = useRef(null)
@@ -145,25 +293,46 @@ const StopWatch = () => {
       setIsActive(!isActive)
       {
           if (!isActive) {
-              getfromserver('start')
-              increment.current = setInterval(() => {
+                Geolocation.getCurrentPosition(
+                    posision => {
+                        lastLocation = posision.coords
+                    },
+                    error => {
+                        console.log(error.code,error.messages);
+                    },
+                    {enableHighAccuracy:true,timeout:15000,maximumAge:10000},
+                );
+                increment.current = setInterval(() => {
                   setTimer((timer) => timer + 1)
-                  walkGet()
-              }, 1000);
+                  Geolocation.getCurrentPosition(
+                    posision => {
+                        walkauthData.distance += getDistance(lastLocation,posision.coords)
+                        lastLocation = posision.coords
+                    },
+                    error => {
+                        console.log(error.code,error.messages);
+                    },
+                        {enableHighAccuracy:true,timeout:15000,maximumAge:10000},
+                    );
+                }, 1000);
           } else {
-              getfromserver('stop')
+              postData2server(timer)
               clearInterval(increment.current)
+              stopAndload()
+              changeState()
+        .then(function(response){
+            // handle success
+            myData = response.data
+            resolve();
+        })
+        .catch(function (error) {
+            //handle error
+            console.log(error);
+        })
+        .then(function(){
+            //always executed
+        });
           }
-        // !isActive ?
-        // getfromserver('start')
-        // (increment.current = setInterval(() => {
-        //   setTimer((timer) => timer + 1)
-        // //   django로부터 거리 불러오기
-        // walkGet()
-        // }, 1000))
-        // :
-        // getfromserver('stop')
-        // (clearInterval(increment.current))
       }
     }
   
@@ -197,7 +366,7 @@ const StopWatch = () => {
                     거리
                 </Text>
                 <Text style={[styles.body,styles.body_data]}>
-                    {loadedData.distance}{'  m'}
+                    {walkauthData.distance}{'  m'}
                 </Text>
             </View>
             <Pressable 
@@ -205,7 +374,9 @@ const StopWatch = () => {
                 backgroundColor:isActive
                 ? '#ff5959'
                 : '#55e07a'}]}
-            onPress={handleStart}>
+            onPress={()=>{
+                handleStart()
+                }}>
                 <Text style={{ fontSize: 30 ,paddingVertical:10}}>{!isActive ? "Start" : "Stop"}</Text>
             </Pressable>
             <Pressable onPress={handleReset}>
@@ -213,13 +384,57 @@ const StopWatch = () => {
             </Pressable>
         </View>
     )
-  }
-  
+}
+async function stopAndload(){
+    await walkGet();
+    extract()
+}
+function extract(){
+    let extract_elapsed_time = 0;
+    let extract_distance = 0;
+    for (let i = 0; i < myData.length; i++) {
+        const element = myData[i];
+        extract_elapsed_time += element.elapsed_time;
+        extract_distance += element.distance;
+    }
+    myTotal = {
+        count : myData.length,
+        time : extract_elapsed_time,
+        distance : extract_distance
+    }
+}
 
 class WalkAuthComponent extends Component{
     constructor(props){
         super(props);
-        this.state = { isPressed : false };
+        this.state={
+            total_count : 0,
+            total_time : 0,
+            total_distance : 0,
+            pass_count : 0,
+            pass_time : 0,
+            pass_distance : 0
+        };
+        this.loadData();
+    }
+    async loadData(){
+        await walkGet();
+        extract();
+        this.setState({
+            total_count : myData.length,
+            total_time :  myTotal.time,
+            total_distance :  myTotal.distance,
+            pass_count : pass_condition.walk_total_count,
+            pass_time : pass_condition.min_per_walk,
+            pass_distance : pass_condition.meter_per_walk
+        })
+    }
+    changeState = () => {
+        this.loadData()
+    }
+    componentDidUpdate(){
+        // 값이 달라진 경우 render
+        if(this.state.total_count !== myTotal.count){}
     }
     render(){
         // const [isPressed, setPressed] = useState(false);
@@ -248,10 +463,11 @@ class WalkAuthComponent extends Component{
                 <View style={styles.summary_column}>
                     <WeekComponent/>
                     {/* status */}
-                    <SummaryList/>
-                    <SummaryList/>
+                    <SummaryList evalType={'time'}/>
+                    <SummaryList evalType={'distance'}/>
                 </View>
             </View>
+
             {/* pass condition */}
             <Information
             informationName={'Pass Condition'}
@@ -259,66 +475,90 @@ class WalkAuthComponent extends Component{
                 {
                     dataType:0,
                     dataName:'총 횟수',
-                    data:5
+                    data:this.state.pass_count
                 },
                 {
                     dataType:1,
                     dataName:'평균 산책',
-                    data:30
+                    data:this.state.pass_time
                 },
                 {
                     dataType:2,
                     dataName:'평균 거리',
-                    data:1000
+                    data:this.state.pass_distance
                 },
             ]}
             />
-
-            {/* total information text about walking */}
-            <Information
-            informationName={'Current Total'}
-            showData={[
-                {
-                    dataType:0,
-                    dataName:'횟수',
-                    data:4
-                },
-                {
-                    dataType:1,
-                    dataName:'시간',
-                    data:120
-                },
-                {
-                    dataType:2,
-                    dataName:'거리',
-                    data:4000
-                }
-            ]}/>
-
-            {/* average information text about walking */}
-            <Information
-            informationName={'Daily Average'}
-            showData={[
-                {
-                    dataType:1,
-                    dataName:'시간',
-                    data:30
-                },
-                {
-                    dataType:2,
-                    dataName:'거리',
-                    data:1000
-                }
-            ]}/>
-            
+            <View style={[styles.textInformation_container,styles.container_background]}>
+                <Text
+                style={styles.subTitle}>
+                Current Total
+                </Text>
+                <View style={styles.dataInfoStyle}>
+                    <Text
+                    style={styles.body}>
+                    횟수
+                    </Text>
+                    <Text 
+                    style={[styles.body,styles.body_data]}>
+                    {this.state.total_count}{'  일'}
+                    </Text>
+                </View>
+                <View style={styles.dataInfoStyle}>
+                    <Text
+                    style={styles.body}>
+                    시간
+                    </Text>
+                    <Text 
+                    style={[styles.body,styles.body_data]}>
+                    {this.state.total_time}{'  분'}
+                    </Text>
+                </View>
+                <View style={styles.dataInfoStyle}>
+                    <Text
+                    style={styles.body}>
+                    거리
+                    </Text>
+                    <Text 
+                    style={[styles.body,styles.body_data]}>
+                    {this.state.total_distance}{'  m'}
+                    </Text>
+                </View>
+            </View>
+            <View style={[styles.textInformation_container,styles.container_background]}>
+                <Text
+                style={styles.subTitle}>
+                Daily Average
+                </Text>
+                <View style={styles.dataInfoStyle}>
+                    <Text
+                    style={styles.body}>
+                    시간
+                    </Text>
+                    {this.state.total_count ==0 && <Text style={[styles.body,styles.body_data]}>0{'  분'}</Text>}
+                    {this.state.total_count !=0 && <Text style={[styles.body,styles.body_data]}>
+                    {Math.floor(this.state.total_time / this.state.total_count)}{'  분'}
+                    </Text>}
+                </View>
+                <View style={styles.dataInfoStyle}>
+                    <Text
+                    style={styles.body}>
+                    거리
+                    </Text>
+                    {this.state.total_count ==0 && <Text style={[styles.body,styles.body_data]}>0{'  m'}</Text>}
+                    {this.state.total_count !=0 && <Text style={[styles.body,styles.body_data]}>
+                    {Math.floor(this.state.total_distance / this.state.total_count)}{'  m'}
+                    </Text>}
+                </View>
+            </View>
             {/* 산책 시작 버튼 */}
             
             <View style={[styles.container_background,styles.textInformation_container]}>
-                    <Text style={styles.subTitle}>
-                        Walk Now!
-                    </Text>
-                    <StopWatch/>
-                </View>
+                <Text style={styles.subTitle}>
+                    Walk Now!
+                </Text>
+                <StopWatch changeState={this.changeState}/>
+            </View>
                         
             </View>
             </TouchableWithoutFeedback>
@@ -344,6 +584,7 @@ const styles=StyleSheet.create({
     main_container:{
         flex:1,
         flexDirection:'column',
+        marginTop:30,
     },
     title:{
         textAlign:'left',

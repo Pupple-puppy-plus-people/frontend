@@ -28,8 +28,8 @@ import symbolicateStackTrace from 'react-native/Libraries/Core/Devtools/symbolic
 import { Divider } from 'react-native-paper';
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 //import FilterDogList from '../../../DogList/FilterComponent/FilterDogList';
-import FilterDogList from './FilterDogList';
-import { API_KEY } from '../../../../secret';
+import FilterDogList from './FilterDogList11';
+import { API_KEY2 } from '../../../../secret2';
 
 // import Loader from './Components/Loader';
 
@@ -39,9 +39,9 @@ const bigOne = screenWidth > screenHeight ? screenWidth:screenHeight;
 const smallOne = screenWidth < screenHeight ? screenWidth:screenHeight;
 
 let selectedFilter = [
-    //{filter:'gender',value : "수컷"},
-    //{filter:'kind',value : ""},
-    //{filter:'desexing',value : "중성"},
+    {filter:'gender',value : ""}, //
+    {filter:'kind',value : ""},  //
+    {filter:'desexing',value : ""}, //
     {filter:'age',value : ""},
     {filter:'size',value : ""},
     {filter:'hair_loss',value : ""},
@@ -51,14 +51,13 @@ let selectedFilter = [
 ]
 
 let dogRegInfo = [
-    {filter:'dogNm',value : ""},
-    {filter:'gender',value : ""},
-    {filter:'kind',value : ""},
+    {filter:'dogNm',value : ""}, //
+    {filter:'gender',value : ""}, //
+    {filter:'kind',value : ""}, //
     {filter:'desexing',value : ""},
     {filter:'registration_number',value : ""},
     {filter:'location',value : ""},
 ]
-
 
 
 function animalGET(urls) {
@@ -69,17 +68,17 @@ function animalGET(urls) {
             //console.log(response);
             console.log("------------");
 
-            dogInfo = response.data.response.body.item
-            console.log(dogInfo);
+            careInfo = response.data.response.body.items.item
+            console.log(careInfo);
 
-            //showCheckBox(dogInfo)
+            //showCheckBox(careInfo)
 
         })
         .catch(function (error) {
             //handle error
             //console.log("** Error:", urls);
-            //showCheckBox(dogInfo)
-            dogInfo = null
+            //showCheckBox(careInfo)
+            careInfo = null
             console.log(error);
         })
         .then(function(){
@@ -88,7 +87,7 @@ function animalGET(urls) {
 
         });
     
-    return dogInfo
+    return careInfo
 
 }
 
@@ -113,8 +112,8 @@ const AnimalNumberAPI = (props) => {
         setNum(RFID);
     }
 
-    const sendDogInfo = (dogInfo) => {
-        props.onChangeDogInfo(dogInfo, animalNumber)
+    const sendDogInfo = (careInfo) => {
+        props.onChangeDogInfo(careInfo, animalNumber)
         console.log("** ************************** ** ");
     }
 
@@ -129,16 +128,21 @@ const AnimalNumberAPI = (props) => {
 
             console.log("** 입력 정보: ", animalNumber, ownerName);
 
-            var url = `http://openapi.animal.go.kr/openapi/service/rest/animalInfoSrvc/animalInfo`;
-            var queryParams = `?` + encodeURIComponent('dog_reg_no') + '=' + encodeURIComponent(animalNumber); /* */
-            queryParams += `&` + encodeURIComponent('owner_nm') + '=' + encodeURIComponent(ownerName); /* */
-            queryParams += `&` + encodeURIComponent('ServiceKey') + '=' + API_KEY; /* Service Key*/
+            var url = `http://openapi.animal.go.kr/openapi/service/rest/animalShelterSrvc/shelterInfo`;
             
-           
+            // 원래 이 쿼리를 써야하지만, demo를 위해서 - 동물센터 번호가 없기 때문에 이름으로만 검색
+            // var queryParams = `?` + encodeURIComponent('care_reg_no') + '=' + encodeURIComponent(animalNumber); /* */
+            // queryParams += `&` + encodeURIComponent('care_nm') + '=' + encodeURIComponent(ownerName); /* */
+            // queryParams += `&` + encodeURIComponent('ServiceKey') + '=' + API_KEY2; /* Service Key*/
+            
+            var queryParams = `?` + encodeURIComponent('serviceKey') + '=' + API_KEY2; /* Service Key*/
+            queryParams += `&` + encodeURIComponent('care_nm') + '=' + encodeURIComponent(ownerName); /* */
+            
+            console.log('url:', url+queryParams)
             Promise.all([animalGET(url+queryParams)]) 
-            .then(dogInfo => {
-                console.log("dogInfo:",dogInfo)
-                sendDogInfo(dogInfo)
+            .then(careInfo => {
+                console.log("careInfo:",careInfo) // 동물센터정보
+                sendDogInfo(careInfo)
             });
         }
     }
@@ -152,7 +156,7 @@ const AnimalNumberAPI = (props) => {
                             onChangeText={(AnimalNumber) =>
                                 setAnimalNumber(AnimalNumber)
                             }
-                            placeholder="동물등록번호" 
+                            placeholder="보호센터등록번호(필수)" 
                             placeholderTextColor="#C9C9C9"
                             autoCapitalize="none"
                             keyboardType="email-address"
@@ -164,46 +168,12 @@ const AnimalNumberAPI = (props) => {
                             underlineColorAndroid="#f000"
                             blurOnSubmit={false}
                         />
-                        {/*<TextInput
-                            style={[styles.textFrom, styles.textFormMiddle]}
-                            onChangeText={(UserEmail) =>
-                                setUserEmail(UserEmail)
-                            }
-                            placeholder="RFID 번호" //dummy@abc.com
-                            placeholderTextColor="#8b9cb5"
-                            autoCapitalize="none"
-                            keyboardType="email-address"
-                            returnKeyType="next"
-                            onSubmitEditing={() =>
-                                passwordInputRef.current &&
-                                passwordInputRef.current.focus()
-                            }
-                            underlineColorAndroid="#f000"
-                            blurOnSubmit={false}
-                        />
-                        <TextInput
-                            style={[styles.textFrom, styles.textFormMiddle]}
-                            onChangeText={(UserEmail) =>
-                                setUserEmail(UserEmail)
-                            }
-                            placeholder="소유자 생년월일"
-                            placeholderTextColor="#8b9cb5"
-                            autoCapitalize="none"
-                            keyboardType="email-address"
-                            returnKeyType="next"
-                            onSubmitEditing={() =>
-                                passwordInputRef.current &&
-                                passwordInputRef.current.focus()
-                            }
-                            underlineColorAndroid="#f000"
-                            blurOnSubmit={false}
-                        />*/}
                         <TextInput
                             style={[styles.textFormBottom, styles.textFrom]}
                             onChangeText={(OwnerName) =>
                                 setOwnerName(OwnerName)
                             }
-                            placeholder="소유자 성명" //12345
+                            placeholder="동물보호센터명(선택)" //12345
                             placeholderTextColor="#C9C9C9"
                             keyboardType="default"
                             ref={passwordInputRef}
@@ -233,21 +203,22 @@ const choicesName=[
 
 function EnrollStep1({navigation}) {
     const ref = React.useRef(null);
-    const [dogInfo, setDogInfo] = useState(null);
+    const [careInfo, setDogInfo] = useState(null);
     const [animalNumber, setAnimalNumber] = useState(null);
+    const [animalName, setAnimalName] = useState(null);
 
     useScrollToTop(ref);
 
-    const onChangeDogInfo = (dogInfo, animalNumber) => {
-        setDogInfo(dogInfo)
+    const onChangeDogInfo = (careInfo, animalNumber) => {
+        setDogInfo(careInfo)
         setAnimalNumber(animalNumber)
-        console.log("Changed !", dogInfo, animalNumber);
+        console.log("Changed !", careInfo, animalNumber);
     } // props 로 자식에서 부모로 값 전달하는 거 하던 중
 
 
     const {width, height} = useWindowDimensions();
 
-    const gotoNextScreen = (dogInfo) => {
+    const gotoNextScreen = (careInfo) => {
         /*if(name === ""){
             Alert.alert(
                 "소개를 입력해주세요!"
@@ -255,30 +226,21 @@ function EnrollStep1({navigation}) {
         }
         else*/
         //if{
-
-            dogRegInfo[0].value=dogInfo.dogNm
-            dogRegInfo[1].value=dogInfo.sexNm
-            dogRegInfo[2].value=dogInfo.kindNm
-            dogRegInfo[3].value=dogInfo.neuterYn
-            dogRegInfo[4].value=animalNumber
-            dogRegInfo[5].value=dogInfo.orgNm
+            
+            dogRegInfo[0].value=animalName
+            dogRegInfo[1].value=selectedFilter[0].value
+            dogRegInfo[2].value=selectedFilter[1].value
+            dogRegInfo[3].value=selectedFilter[2].value
+            dogRegInfo[4].value=""
+            dogRegInfo[5].value=careInfo.orgNm
 
             console.log("---navigate to EnrollStep2---> ", selectedFilter, dogRegInfo);
 
-            navigation.navigate('EnrollStep2',{selectedFilter:selectedFilter, dogRegInfo:dogRegInfo});
+            navigation.navigate('EnrollStep2',{selectedFilter:selectedFilter.slice(3,), dogRegInfo:dogRegInfo});
         //}
     }
 
     return (
-
-        // bottom navigation 지우기
-        // 그 아래 등록하기(홈에서 보임), 저장하기 버튼 두기 
-
-        // 선택하기 (입양처 / 입양인)
-        // 사진 올리기 
-        // 견적사항 완성하기 (step 1) - 왼쪽 페이지에서
-        // 인증절차 선택하기 (step 2) - 오른쪽 페이지에서 
-        // progress bar는 어디에?
        
         <KeyboardAwareScrollView style={{ backgroundColor: "white", flex: 1 }} >   
 
@@ -289,13 +251,13 @@ function EnrollStep1({navigation}) {
 
                 <View style={{justifyContent:'flex-start'}}>
                     <Text style={styles.title}>Step 1. 반려견 정보 작성하기{'\n'}</Text>
-                    <Text style={[styles.subtitle]}>반려견 분양을 위해 동물등록 조회가 필요해요. </Text>
+                    <Text style={[styles.subtitle]}>반려견 분양을 위해 보호소 번호 조회가 필요해요. </Text>
                     
                     <AnimalNumberAPI onChangeDogInfo={onChangeDogInfo} >  </AnimalNumberAPI>
 
-                    <Text>{dogInfo === null ? null : 
+                    <Text>{careInfo === null ? null : 
                     
-                        (dogInfo[0] === undefined || dogInfo[0] === 'undefined') ?
+                        (careInfo[0] === undefined || careInfo[0] === 'undefined') ?
                         <Icon name='close-circle' color='red'> 조회 실패</Icon>  : 
                     <Icon name='check-circle' color='green'> 조회 완료</Icon> }
                     </Text>
@@ -307,88 +269,75 @@ function EnrollStep1({navigation}) {
                 <View style={[{justifyContent:'flex-start'}]}>
                     {/*<Text style={[styles.subtitle, {marginTop: "3%"}]}> 동물등록된 반려견 분양이 가능해요. </Text>*/}
                     
-                    {console.log("** dog: ", dogInfo)}
-                    {dogInfo == null || (dogInfo[0] === undefined || dogInfo[0] === 'undefined') ? 
+                    {console.log("** dog: ", careInfo)}
+                    {careInfo == null || (careInfo[0] === undefined || careInfo[0] === 'undefined') ? 
                     null : 
 
                     <>
 
-                        <Text style={styles.subtitle}>반려견 등록 정보를 확인해주세요. </Text>
-                    
+                        <Text style={styles.subtitle}>보호소 등록 정보의 지역을 확인해주세요. </Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                            <View style={styles.btnTxtStyles}>
+                                <Text >지역</Text>
+                            </View>
+                            <View style={[{flex:1},styles.btnTxtStyles]}>
+                                <Text>{careInfo[0].orgNm}</Text>
+                            </View>
+                        </View>
+                        
+                        <Divider style={{margin:"5%"}} />
+                        
+                        <Text style={styles.subtitle}>반려견 정보를 입력해주세요. </Text>
                         <View style={{ flexDirection: 'row', alignItems: 'center'}}>
                             <View style={styles.btnTxtStyles}>
                                 <Text>이름</Text>
                             </View>
 
                             <View style={[{flex:1},styles.btnTxtStyles]}>
-                                <Text>{dogInfo[0].dogNm}</Text>
+                                <TextInput
+                                style={[styles.textFormMiddle, styles.textFrom,  {borderRadius:7}]}
+                                onChangeText={(AnimalName) =>
+                                    setAnimalName(AnimalName)
+                                }
+                                placeholder="반려견 이름" 
+                                placeholderTextColor="#C9C9C9"
+                                autoCapitalize="none"
+                                keyboardType="email-address"
+                                returnKeyType="next"
+                                onSubmitEditing={() =>
+                                    passwordInputRef.current &&
+                                    passwordInputRef.current.focus()
+                                }
+                                underlineColorAndroid="#f000"
+                                blurOnSubmit={false}
+                                />
                             </View>
                         </View>
-
-                        <View style={{ flexDirection: 'row', alignItems: 'center'}}>
-                            <View style={styles.btnTxtStyles}>
-                                <Text>성별</Text>
-                            </View>
-                            <View style={[{flex:1},styles.btnTxtStyles]}>
-                                <Text>{dogInfo[0].sexNm}</Text>
-                            </View>
-                        </View>
-
-                        <View style={{ flexDirection: 'row', alignItems: 'center'}}>
-
-                            <View style={styles.btnTxtStyles}>
-                                <Text>품종</Text>
-                            </View>
-                        
-                            <View style={[{flex:1}, styles.btnTxtStyles]}>
-                                <Text>{dogInfo[0].kindNm}</Text>
-                            </View>
-                        </View>
-
-                        <View style={{ flexDirection: 'row', alignItems: 'center'}}>
-
-                            <View style={styles.btnTxtStyles}>
-                                <Text>중성화</Text>
-                            </View>
-                            <View style={[{flex:1},styles.btnTxtStyles]}>
-                                <Text>{dogInfo[0].neuterYn}</Text>
-                            </View>
-                        </View>
-
-                        <View style={{ flexDirection: 'row', alignItems: 'center'}}>
-
-                            <View style={styles.btnTxtStyles}>
-                                <Text>지역</Text>
-                            </View>
-                            <View style={[{flex:1},styles.btnTxtStyles]}>
-                                <Text>{dogInfo[0].orgNm}</Text>
-                            </View>
-                        </View>
-
+                       
                         <Divider style={{margin:"5%"}} />
 
                         <Text style={styles.subtitle}>반려견 정보를 체크해주세요. </Text>
                         
                         <FilterDogList selectedFilter={selectedFilter}>   
-                            {console.log("-&&&&& >", dogInfo[0].sexNm)}    
                         </FilterDogList>
-                        
+
                         <Divider style={{margin:"5%"}} />
 
                         
                         <View  style={{flex:3,justifyContent:'flex-end'}}>
                             <TouchableOpacity 
                                 onPress={() => {
-                                    gotoNextScreen(dogInfo[0]);
+                                    gotoNextScreen(careInfo[0]);
                                 }}
                                 style={styles.nextBtn}>
                                 <Text style={[styles.botText, {color: 'white'}]}>다음</Text>
                             </TouchableOpacity>
                         </View>
                     </>
-                    
                     }
-                   
+                   {   console.log("---selectedFilter---> ", selectedFilter)}
+                   {   console.log("---dogRegInfo---> ", dogRegInfo, animalName)}
+
                 </View>
 
 
@@ -580,7 +529,7 @@ const styles = StyleSheet.create({
         textAlign:'left',
         marginBottom: '3%',
         //marginLeft: "5%",        
-        //marginTop: "3%",
+        // marginTop: "3%",
 
     },
     activityIndicator: {

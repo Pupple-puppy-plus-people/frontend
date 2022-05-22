@@ -9,25 +9,41 @@ import {
     BackHandler,
 } from 'react-native';
 import { responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
-import { HS_API_END_POINT } from '../../Shared/env';
 import { FlatList } from "react-native-gesture-handler";
 
-const baseUrl = `${HS_API_END_POINT}`;
+const baseUrl = 'http:127.0.0.1:8000';
 let query = '?';
 function filterRequest(){
 
 }
-let selectedFilter = [
-    {filter:'gender',value : ""},
-    {filter:'kind',value : ""},
-    {filter:'desexing',value : ""},
-    {filter:'age',value : ""},
-    {filter:'size',value : ""},
-    {filter:'hair_loss',value : ""},
-    {filter:'bark_term',value : ""},
-    {filter:'activity',value : ""},
-    {filter:'person_personality',value : ""},
-]
+
+//         selectedFilter[filterNumber].value = choicesName[filterNumber][checkboxId]
+
+
+
+const data = [
+    //{ title : '성별', filterNumber : 0},
+    //{ title : '품종', filterNumber : 1},
+    //{ title : '중성화', filterNumber : 2},
+    { title : '나이', filterNumber : 0},
+    { title : '크기', filterNumber : 1},
+    { title : '털 빠짐', filterNumber : 2},
+    { title : '짖기', filterNumber : 3},
+    { title : '활동성', filterNumber : 4},
+    { title : '잘맞는 성격', filterNumber : 5},
+];
+  
+const choicesName=[
+    //['수컷','암컷'],
+    //['리트리버','보스턴테리어','믹스','스피츠','닥스훈트','말티즈','웰시코기','푸들','포메라 니안'],
+    //['중성','미중성'],
+    ['~1','2~4','5~8','9~'],
+    ['소형','중형','대형'],
+    ['덜 빠짐','많이 빠짐'],
+    ['안 짖음','자주 짖음'],
+    ['적음','보통','높음'],
+    ['차분함','활발함']    
+];
 const Checkbox = ({
     id,
     btnstyles,
@@ -57,6 +73,7 @@ const Checkbox = ({
 };
   
 const Choice = ({
+    selectedFilter, // 이거 추가해줬는데, 바꿀 순 있음
     callback,
     text,
     btnstyles,
@@ -116,7 +133,7 @@ const Choice = ({
             <View style={btnTxtStyles}>
                 <Text>{text}</Text>
             </View>
-            {whatFilter !== 1 &&
+            {
                Array.from({length: choicesCount}).map((item, index) => (
                     <Checkbox
                     id={index}
@@ -128,43 +145,13 @@ const Choice = ({
                     />
                 ))
             }
-            {whatFilter ===1 &&
-            <View style={{flexDirection:'row',alignItems:'center'}}>
-                {indexRange(0)}
-                {indexRange(3)}
-                {indexRange(6)}
-            </View>
-            }
-            
+           
         </View>
     );
 };
 
-const data = [
-    { title : '성별', filterNumber : 0},
-    { title : '품종', filterNumber : 1},
-    { title : '중성화', filterNumber : 2},
-    { title : '나이', filterNumber : 3},
-    { title : '크기', filterNumber : 4},
-    { title : '털 빠짐', filterNumber : 5},
-    { title : '짖기', filterNumber : 6},
-    { title : '활동성', filterNumber : 7},
-    { title : '당신의 성격', filterNumber : 8},
-];
   
-const choicesName=[
-    ['수컷','암컷'],
-    ['리트리버','보스턴테리어','믹스','스피츠','닥스훈트','말티즈','웰시코기','푸들','포메라 니안'],
-    ['중성','미중성'],
-    ['~1','2~4','5~8','9~'],
-    ['소형','중형','대형'],
-    ['덜 빠짐','많이 빠짐'],
-    ['안 짖음','자주 짖음'],
-    ['적음','보통','높음'],
-    ['차분함','활발함']    
-];
-  
-const FilterDogList = ({navigation}) => {
+const SelectDogInfo = ({navigation, selectedFilter}) => {
     const handleValueChange = (filterNumber, checkboxId) => {
         // do what ever you want with this two
         selectedFilter[filterNumber].value = choicesName[filterNumber][checkboxId]
@@ -175,6 +162,7 @@ const FilterDogList = ({navigation}) => {
             <View style={styles.container}>
             {data.map((x) => (
             <Choice
+                selectedFilter={selectedFilter}
                 text={x.title}
                 whatFilter={x.filterNumber}
                 btnTxtStyles={styles.btnTxtStyles}
@@ -185,72 +173,7 @@ const FilterDogList = ({navigation}) => {
                 choicesName={choicesName[x.filterNumber]}
             />
             ))}
-            <View style={{flexDirection:'row',
-            marginHorizontal:responsiveScreenWidth(10),
-            marginVertical:responsiveScreenHeight(1),
-            justifyContent:'space-around'}}>
-                <TouchableOpacity
-                style={{
-                    backgroundColor:'#ab4ec7',
-                    borderRadius:100,
-                    width:responsiveScreenHeight(15),
-                    height:responsiveScreenHeight(6),
-                    alignItems:'center',
-                    justifyContent:'center',
-                    }}>
-                    <Text style={{color:'white',fontSize:20,fontWeight:'bold'}}>취소</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                style={{
-                    backgroundColor:'#ab4ec7',
-                    borderRadius:100,
-                    width:responsiveScreenHeight(15),
-                    height:responsiveScreenHeight(6),
-                    alignItems:'center',
-                    justifyContent:'center',
-                    }}
-                    onPress={() => {
-                        query = 
-                        '?'+
-                        'gender='+selectedFilter[0].value+'&'+
-                        'kind='+selectedFilter[1].value+'&'+
-                        'desexing='+selectedFilter[2].value+'&'+
-                        'age='+selectedFilter[3].value+'&'+
-                        'size='+selectedFilter[4].value+'&'+
-                        'hair_loss='+selectedFilter[5].value+'&'+
-                        'bark_term='+selectedFilter[6].value+'&'+
-                        'activity='+selectedFilter[7].value+'&'+
-                        'person_personality='+selectedFilter[8].value
-                        selectedFilter = [
-                            {filter:'gender',value : ""},
-                            {filter:'kind',value : ""},
-                            {filter:'desexing',value : ""},
-                            {filter:'age',value : ""},
-                            {filter:'size',value : ""},
-                            {filter:'hair_loss',value : ""},
-                            {filter:'bark_term',value : ""},
-                            {filter:'activity',value : ""},
-                            {filter:'person_personality',value : ""},
-                        ]
-                        axios.get(baseUrl+'/api/dogs/list'+query)
-                        .then(function (response){
-                            //success
-                            console.log(baseUrl+'/api/dogs/list'+query)
-                            console.log(response.data);
 
-                            navigation.navigate({
-                                name:'DogListHome',
-                                params: { dogs: response.data},
-                                merge: true});
-                            
-                        })
-                        .catch(function (error){
-                            //error
-                        });
-                    }}>
-                    <Text style={{color:'white',fontSize:20,fontWeight:'bold'}}>적용</Text>
-                </TouchableOpacity>
-            </View>
         </View>
         );
     }
@@ -266,7 +189,7 @@ const FilterDogList = ({navigation}) => {
 const checkBoxBaseStyles = {
     height: responsiveScreenHeight(6),
     width: responsiveScreenHeight(6),
-    margin: 10,
+    margin: 7,
 };
 
 const labelDimentions = {
@@ -293,4 +216,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-export default FilterDogList;
+export default SelectDogInfo;

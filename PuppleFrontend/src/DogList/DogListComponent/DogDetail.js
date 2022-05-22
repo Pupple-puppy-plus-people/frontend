@@ -19,9 +19,20 @@ import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import { responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
 import { Chip } from 'react-native-paper';
+import axios from 'axios';
+import { HS_API_END_POINT,  USER_INFO } from '../../Shared/env';
 
-const DogDetail = ({item,id}) => {
+const DogDetail = ({item,id, heart}) => {
     const [isHeart, setIsHeart] = useState(false);
+    // var isHeart = (heart.indexOf(item.id)<0)?false:true;
+    React.useEffect(()=>{
+        console.log(heart);
+        if(heart.indexOf(item.id)<0){
+            setIsHeart(false);
+        } else{
+            setIsHeart(true);
+        }
+    },[]);
     var genderStr="";
     if (item.gender=="암컷"){
         genderStr = "여";
@@ -36,7 +47,37 @@ const DogDetail = ({item,id}) => {
         }else{
             imageStr = {uri: 'https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
         }
-    PressHeart =() => setIsHeart(!isHeart);
+    PressHeart =() => {
+        
+        if(!isHeart){
+            console.log("하트 만들기");
+            axios.post(`${HS_API_END_POINT}/api/users/wishlist/add/`,{"email":USER_INFO.USER_EMAIL,"dog_id":item.id})
+            .then(function(res){
+                if(res.data==="success"){
+                    console.log(success);
+                }
+            })
+            .catch(function(error){
+                console.log(error);
+            });
+        }
+        else{
+            console.log("하트 취소하기");
+            axios.post(`${HS_API_END_POINT}/api/users/wishlist/delete/`,{"email":USER_INFO.USER_EMAIL,"dog_id":item.id})
+            .then(function(res){
+                if(res.data==="success"){
+                    console.log(success);
+                }
+            })
+            .catch(function(error){
+                console.log(error);
+            });
+        }
+        
+        // isHeart = !isHeart;
+        setIsHeart(!isHeart)
+        
+    };
     // {
     //     // 하트누른 데이터베이스가 있다면, 속성으로는 사용자 아이디, 강아지아이디
     //     // insert item.id, user.id
@@ -57,7 +98,6 @@ const DogDetail = ({item,id}) => {
                 style={{alignItems:'center',justifyContent:'center'}}
                 onPress={PressHeart}
                 >
-                    
                     {!isHeart && <Icon name="heart-o" size={30} color="red" />}
                     {isHeart && <Icon name="heart" size={30} color="red" />}
                 </TouchableOpacity>

@@ -1,6 +1,0 @@
-module Pods_PuppleFrontend {
-  umbrella header "Pods-PuppleFrontend-umbrella.h"
-
-  export *
-  module * { export * }
-}
