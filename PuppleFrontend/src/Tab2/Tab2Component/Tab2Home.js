@@ -36,9 +36,6 @@ const Stack = createStackNavigator();
 
 
 //&****************************** 로그인 정보로 받아와야함 ****************************// 
-USER_INFO.USER_TYPE = "seller"
-USER_INFO.USER_ID = "2"
-
 
 function Authenticate ({navigation}) {
   const isFocused = useIsFocused();
@@ -56,7 +53,7 @@ function Authenticate ({navigation}) {
               email: USER_INFO.USER_EMAIL,}) 
                     .then((res)=> {
                         wish = res.data
-                        console.log("구매자 wishlist Data 받음.", wish);
+                        console.log("구매자 wishlist Data 받음.");
   
                         dog_idx = []
                         for(dog in wish){
@@ -66,15 +63,16 @@ function Authenticate ({navigation}) {
                         console.log("id:", dog_idx)
 
                         axios.all(dog_idx.map((endpoint) => 
-                        axios.get(`${HS_API_END_POINT}/api/dogs/${endpoint}`))) //id= 으로 찾으려고 하면 오류남
+                        axios.get(`${HS_API_END_POINT}/api/dogs/list/${endpoint}/`))) //id= 으로 찾으려고 하면 오류남 Warning: Encountered two children with the same key, `:`
                         .then(
                           (data) => {
+                            
                             wish_dog = []
                             for(dog in data){
                               wish_dog.push(data[dog].data)
                             }
                             setDogs(wish_dog)
-                            console.log("dog:", wish_dog)
+                            //console.log("dog:", wish_dog)
                           }
                         );
   
@@ -87,7 +85,7 @@ function Authenticate ({navigation}) {
                   '?'+
                   'user_id='+USER_INFO.USER_ID 
                 
-               axios.get(`${HS_API_END_POINT}/api/dogs/${query}`)  
+               axios.get(`${HS_API_END_POINT}/api/dogs/list/${query}`)  
               .then((res)=> {      
                    console.log("판매자 등록한 Doglist Data 받음.");
                    setDogs(res.data);
@@ -104,7 +102,7 @@ function Authenticate ({navigation}) {
       /* item: 아이템 배열
        * navigation: 네비게이션
        * icon: 표시할 아이콘 모양 */
-      <Item item={item} navigation={navigation} icon={'circle'}/>
+      <Item item={item} navigation={navigation} icon={'circle'} nextPage='EnrollPage'/>
     );
 
     return (

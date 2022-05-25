@@ -32,6 +32,7 @@ const bigOne = screenWidth > screenHeight ? screenWidth:screenHeight;
 const smallOne = screenWidth < screenHeight ? screenWidth:screenHeight;
 
 import "react-native-gesture-handler";
+import { USER_INFO } from '../../../Shared/env';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -56,7 +57,13 @@ function TopTabs({aboutDog}) {
                     <Icon name = "dog" size={25}/>
                 ),
             }}/>
-            <Tab.Screen name="AdoptionStep" children={()=><AdoptionStep aboutDog={aboutDog}/>} 
+            <Tab.Screen name="AdoptionStep" children={()=>{
+                return(
+                    <View style={{flex:1}}>
+                    {USER_INFO.USER_TYPE==='customer'&&<AdoptionStep aboutDog={aboutDog}/>}
+                    {USER_INFO.USER_TYPE==='seller'&&<Text>ads</Text>}
+                    </View>
+                )}} 
              options={{
                 
                 headerShown: false,
@@ -64,7 +71,7 @@ function TopTabs({aboutDog}) {
                 tabBarLabel:() => {return null},
                 tabBarIcon: ()=>(
                     
-                    <Icon name = "grid" size={25}/> 
+                    <Icon name = "grid" size={25}/> // 아이콘 추천 받아요
                 )
             }}/>
         </Tab.Navigator>

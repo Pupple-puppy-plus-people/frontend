@@ -16,7 +16,9 @@ class WalkPassCondition extends Component{
         return(
             <View style={[styles.container, {backgroundColor:'white'}]}>
                 <WalkPassComponent
-                setAllData={this.props.setAllData}/>
+                onWalkDay={this.props.onWalkDay} 
+                onWalkTime={this.props.onWalkTime}
+                onWalkDistance={this.props.onWalkDistance}/>
             </View>
             // 화면 반응성(spring) && 돌아가기 추가
         );

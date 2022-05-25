@@ -1,5 +1,6 @@
 //export const HS_API_END_POINT = 'http://52.79.229.200:8000';
-export const HS_API_END_POINT = 'https://8c73-219-255-207-99.jp.ngrok.io';
+export const HS_API_END_POINT = 'https://f2e6-211-104-180-181.jp.ngrok.io';
+
 import {useState} from 'react'
 export const USER_INFO=()=>{
     // const [USER_EMAIL,setUSER_EMAIL] = useState("");
@@ -10,3 +11,5 @@ export const USER_INFO=()=>{
     //     setUSER_EMAIL(value);
     // };
 };
+
+export const HOST_IP = 'f2e6-211-104-180-181.jp.ngrok.io';

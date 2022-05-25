@@ -67,7 +67,7 @@ function EnrollStep3({navigation, route}) {
                 onPress={() => {
 
                     // dogs DB에 등록하기
-                    axios.post(`${HS_API_END_POINT}/api/dogs/`,{
+                    axios.post(`${HS_API_END_POINT}/api/dogs/list/`,{
                         // id : 100,
                         registration_number : dogRegInfo[4].value ,
                         image :dogImage,
@@ -91,7 +91,7 @@ function EnrollStep3({navigation, route}) {
                     }).then(function (response) {
                         console.log(response);
                         // dog ID 를 받아오는 작업
-                        axios.get(`${HS_API_END_POINT}/api/dogs/registration_number=${registration_number}`)  
+                        axios.get(`${HS_API_END_POINT}/api/dogs/list/registration_number=${registration_number}`)  
                         .then((res)=> {      
                              console.log("등록한 dogID 받음: ", res.data);
                              setdogID(res.data.id);

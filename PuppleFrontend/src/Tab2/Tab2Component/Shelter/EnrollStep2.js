@@ -6,7 +6,9 @@ import ImagePicker from 'react-native-image-picker';
 import { launchCamera,launchImageLibrary } from 'react-native-image-picker';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { HS_API_END_POINT } from '../../../Shared/env';
 
+import axios from 'axios';
 
 import {
   StyleSheet,
@@ -77,50 +79,62 @@ function EnrollStep2({route, navigation}) {
             );
         }
         else{
-            url="https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L"
+            //url="https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L"
             // setdogImage(url)
             // setdogImage(dogImage[dogImage.length-1]) // 찍은 것 중에서 하나만 보냄 
-            navigation.navigate('EnrollWalkAuth',{dogInfo: route.params, dogText: text, dogImage: url}); // dogImage로 바꾸기 
+            navigation.navigate('EnrollWalkAuth',{dogInfo: route.params, dogText: text, dogImage: dogImage}); // dogImage로 바꾸기 
         }
     }
 
-const openCamera = () => {    
-    const options = {
-        maxHeight: 250,
-        maxWidth: 250,
-        //selectionLimit: 1,
-        mediaType: 'photo',
-        includeBase64: true,
+    const openCamera = () => {    
+        const options = {
+            maxHeight: 250,
+            maxWidth: 250,
+            //selectionLimit: 1,
+            mediaType: 'photo',
+            includeBase64: true,
+        };
+        launchCamera(options,(response)=>{
+            if (response.didCancel) {
+                console.log('User cancelled image picker')
+            }
+            else if (response.error) {
+                console.log('ImagePicker Error: ', response.error)
+            }
+            else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton)
+            }
+            else if (response.fileSize > 5242880) {
+                Alert.alert(
+                    "Nilamhut Say\'s",
+                    "Oops! the photos are too big. Max photo size is 4MB per photo. Please reduce the resolution or file size and retry",
+                    [
+                        { text: "OK", onPress: () => console.log('ok Pressed') }
+                    ],
+                    { cancelable: false }
+                )
+            }
+            else {
+                console.log('Response uri =', response.assets[0].uri)
+                console.log("base64 =",response.assets[0].base64);
+                console.log("base64 length =",response.assets[0].base64.length);
+                axios.post(`${HS_API_END_POINT}/api/dogs/add/`,{"image":response.assets[0].base64})
+                .then(function(res){
+                    
+                    console.log("post response", res.data);
+                    
+                })
+                .catch(function(error){
+                    console.log(error);
+                });
+
+                setdogImage([...dogImage,response.assets[0].base64]) //access like this
+            }
+        });
+        //launchImageLibrary(options, setPickerResponse);
+        //console.log(pickerResponse);
     };
-    launchCamera(options,(response)=>{
-        if (response.didCancel) {
-            console.log('User cancelled image picker')
-        }
-        else if (response.error) {
-            console.log('ImagePicker Error: ', response.error)
-        }
-        else if (response.customButton) {
-            console.log('User tapped custom button: ', response.customButton)
-        }
-        else if (response.fileSize > 5242880) {
-            Alert.alert(
-                "Nilamhut Say\'s",
-                "Oops! the photos are too big. Max photo size is 4MB per photo. Please reduce the resolution or file size and retry",
-                [
-                    { text: "OK", onPress: () => console.log('ok Pressed') }
-                ],
-                { cancelable: false }
-            )
-        }
-        else {
-            console.log('Response uri = ', response.assets[0].uri)
-            // console.log("base64 = ",response.assets[0].base64);
-            setdogImage([...dogImage,response.assets[0].base64]) //access like this
-        }
-    });
-    //launchImageLibrary(options, setPickerResponse);
-    //console.log(pickerResponse);
-};
+
     return (
         <KeyboardAwareScrollView  contentContainerStyle={{flex: 1}}>   
 
@@ -132,7 +146,7 @@ const openCamera = () => {
             <View style={{flex:5}}>
                 <Text style={[styles.subtitle, {marginBottom:'2%'}]}>반려견 사진을 등록해주세요. </Text>
                 
-                {console.log("dogImage", dogImage.length)}
+                {console.log("dogImage2", dogImage.length, `data:image/jpeg;base64,${dogImage[dogImage.length-1]}`)}
                 
                 
                 {/**alignself: controls how a child aligns in the cross direction, overriding the alignItems of the parent*/}

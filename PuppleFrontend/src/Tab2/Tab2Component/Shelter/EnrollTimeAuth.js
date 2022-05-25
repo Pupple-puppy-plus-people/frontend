@@ -42,7 +42,7 @@ function EnrollTimeAuth({route, navigation}) {
     //console.log("---route.pparames---> ", route.params?.selectedFilter);
     //console.log("---route.pparames---> ", route.params?.dogRegInfo);
 
-    const [time, setTime] = useState(0);
+    const [time, setTime] = useState(1);
     
     useEffect(()=>{
     console.log("time", time)

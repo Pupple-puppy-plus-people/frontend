@@ -19,13 +19,13 @@ import {
 
 } from 'react-native';
 import { responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
-import axios from 'axios';
+import { Divider } from 'react-native-paper';
 
 const width = Dimensions.get("window").width - 10; // container style에 paddingHorizontal*2
 const height = Dimensions.get("window").height;
 
 
-function Item({item, navigation, icon}) {
+function Item({item, navigation, icon, nextPage}) {
 
     // console.log("item: ", item);
 
@@ -41,35 +41,42 @@ function Item({item, navigation, icon}) {
       const {x, y, height, width} = event.nativeEvent.layout; // position (x, y), size (height, width)
       setimagePos({X:x, Y:y});
     };
-  
+    
     return (
             <Pressable style={styles.dogCard} onLayout={onLayout} 
               backgroundColor='white' // background가 필요한지 모르겠음, 이미 dogCard에 있는데 
               activeOpacity={1}
               onPress={()=>{
-              navigation.navigate('EnrollPage',
-              {aboutDog : item})
+                console.log("nextPage:", nextPage)
+                navigation.navigate(nextPage,
+                  {aboutDog : item})
               }}
               // onLongPress 길게 누르면 삭제 될 수 있게 하기 
             >
-            
             <View style={{alignSelf:'center'}} >
-              <Image source={{uri: item.image}} onLayout={onLayoutImage} 
+              
+              { 
+                // `data:image/jpeg;base64,${item.image.substring(2, item.image.length-1)}`
+                <Image source={{uri: item.image}} onLayout={onLayoutImage} 
                 style={ {width: parentHeight.height/2,
                 height:parentHeight.height/2,
                 borderRadius:50,
                 margin: '3%'}}/>
+              }
+             
               {/* 입양처가 새로운 인증절차 확인할 것 있을 때 new state 나타내는 알림 표시, 크기 반응형 확인*/}
               <View style={[styles.add, {bottom:imagePos.X, right:imagePos.Y}]}>
                 <Icon name={icon} size={25} color='lightgreen' />
               </View>
             </View>
-  
-            <Text style={styles.btnTitle}>{item.name}</Text>
-            <Text style={styles.btnText}>{item.gender} (중성화 {item.desexing=='중성'?'O':'X'}) </Text>
-            <Text style={styles.btnText}>{item.age} 살</Text>  
-            <Text style={styles.btnText}>{item.location}</Text>
-  
+            
+            <View>
+              <Text style={styles.btnTitle}>{item.name}</Text>
+              <Divider style={{margin:"0.5%"}} />
+              <Text style={styles.btnText}>{item.gender} (중성화 {item.desexing=='중성'?'O':'X'}) </Text>
+              <Text style={styles.btnText}>{item.age} 살</Text>  
+              <Text style={styles.btnText}>{item.location}</Text>
+            </View>
           </Pressable> 
     )
   }
@@ -114,7 +121,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         height: '10%',
         overflow: 'hidden',
-        fontSize: responsiveScreenFontSize(0.9)
+        fontSize: responsiveScreenFontSize(0.9),
     },
     button: {
         marginHorizontal:5,
@@ -139,12 +146,13 @@ const styles = StyleSheet.create({
       fontSize: responsiveScreenFontSize(2.0),
       margin: '2%',
       textAlign: 'center',
+      alignSelf:'center',
       width: "50%",
       fontWeight:'bold',
     },
     btnText: {
       fontSize: responsiveScreenFontSize(1.7),
-      textAlign: 'center',
+      alignSelf:'center',
       width: "100%"  // 텍스트 길이 제한
     },
     dogCard: { 

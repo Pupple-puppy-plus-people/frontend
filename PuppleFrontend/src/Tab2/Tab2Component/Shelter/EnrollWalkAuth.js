@@ -50,6 +50,17 @@ function EnrollWalkAuth({route, navigation}) {
         setWalkTime(walkTimeNew);
         setWalkDistance(walkDistanceNew);
     }
+    
+    const onWalkDay = (number) => {
+        setWalkDay(number);
+    }
+    const onWalkTime = (number) => {
+        setWalkTime(number);
+    }
+    const onWalkDistance = (number) => {
+        setWalkDistance(number);
+    }
+
     useEffect(()=>{
     console.log(walkDay,walkTime,walkDistance)
     });
@@ -74,7 +85,9 @@ function EnrollWalkAuth({route, navigation}) {
             
             <View style={{flex:1.4}}>
                 <WalkPassCondition
-                setAllData={setAllData}/>
+                onWalkDay={onWalkDay} 
+                onWalkTime={onWalkTime}
+                onWalkDistance={onWalkDistance}/> 
             </View>
             
             <View style={{height:"10%", marginBottom:"5%", justifyContent:'flex-end', flex:0.2}}>

@@ -19,7 +19,7 @@ const TimestampPassComponent = ({setData}) => {
     const setAllData = (number) => {
         setTime(number);
         setData(number);    // 자식에서 부모로 값 보냄(자식이 부모 값 바꿈)
-      }
+    }
 
     return(
         <SafeAreaView style={[]}>
