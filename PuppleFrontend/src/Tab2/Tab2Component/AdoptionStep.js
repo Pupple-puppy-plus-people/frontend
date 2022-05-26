@@ -1,6 +1,6 @@
 
 //import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, {useState, useEffect, useIsFocused} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
     View, 
     Text, 
@@ -22,11 +22,12 @@ import axios from 'axios';
 //import { HS_API_END_POINT } from '../../Shared/env';
 //import { setJwt,setUserInfo } from '../Store/Actions';
 //import { connect } from 'react-redux';
+import {navigation, useIsFocused} from '@react-navigation/native';
 
 const AdoptionStep = ({navigation,aboutDog})=>{
     // 1) dog에서 인증 절차 개수, 종류 받아오기 
     const isFocused = useIsFocused();
-
+    
     // 2) 찜목록에서 인증 진행률 받아오기-해당 인증 절차에 관한  (판매자 아이디로)
     
     //React.useEffect(()=> {

@@ -21,7 +21,7 @@ import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-nat
 import Animation from 'lottie-react-native';
 import symbolicateStackTrace from 'react-native/Libraries/Core/Devtools/symbolicateStackTrace';
 // import Loader from './Components/Loader';
-import { USER_INFO, HOST_IP } from '../../Shared/env';
+import { HS_API_END_POINT, USER_INFO, HOST_IP } from '../../Shared/env';
 import { Divider } from 'react-native-paper';
 
 const screenWidth = Dimensions.get('screen').width;
@@ -35,7 +35,7 @@ import axios from 'axios';
 import { set } from 'react-native-reanimated';
 
 
-// 받는 메시지의 색을 바꾸기 위한 것
+// Gifted-chat의 발신자 말풍선 색을 바꾸기 위한 것
 function renderBubble(props) {
     return (
       // Step 3: return the component
@@ -62,18 +62,18 @@ function ChattingRoom({navigation, route}) {
 
     const [socketConnected, setSocketConnected] = useState(false);
 
-    const [roomNumber, setroomNumber] = useState(route.params?.aboutDog.room); // 동적인 값 관리
-    const [sellerID, setSellerID] = useState(Number(route.params?.aboutDog.room.split('.')[2])); // 동적인 값 관리
-    const [customerID, setcustomerID] = useState(Number(route.params?.aboutDog.room.split('.')[1])); // 동적인 값 관리
-    const isFocused = useIsFocused();
+    const [roomNumber, setroomNumber] = useState(route.params?.aboutDog.room); // 채팅방 번호
+    const [sellerID, setSellerID] = useState(Number(route.params?.aboutDog.room.split('.')[2])); // 구매자 ID
+    const [customerID, setcustomerID] = useState(Number(route.params?.aboutDog.room.split('.')[1])); // 판매자 ID
+    const isFocused = useIsFocused(); 
 
     const [messages, setMessages] = useState([]);
     const [customText, setCustomText] = useState([]);
 
     // ${route.params?.aboutDog.id}${USER_INFO.USER_ID}
-    // ws로 했을 때는 안됨 ..........
-    let ws = useRef(null);
+    let ws = useRef(null); // 클라이언트 소켓
     
+    // 채팅 방 이전 메시지 내용 다 불러올때까지 로딩화면 띄움
     function renderLoading() {
         return (
             <View style={styles.loadingContainer}>
@@ -82,44 +82,65 @@ function ChattingRoom({navigation, route}) {
         );
     }
 
+    async function setMessageHistory(){ // 이전 메시지 가져오기
+        
+        await axios.post(`${HS_API_END_POINT}/api/chat/history/`,{ room_number: roomNumber,}) 
+            .then((res)=> {
+                history = res.data
+                //console.log("message history 받음.", history);
+                unread = false
+                unread_message = {}
+                message = []
+                for(msg in history){
+                    data = JSON.parse(history[msg]['message'])
+                    message.push(data)
+                    // 최초초 안 읽은 메시지 찾기 - 상대가 보낸 메시지 중에서 
+                    if( unread == false && data.user.name != USER_INFO.USER_TYPE){
+                        if( history[msg]['received'] == false){ // 안 읽은 메시지가 있으면 
+                            unread = true
+                            unread_message = data
+                        }
+                    }
+                }
+
+                setMessages(message)
+                //console.log("messages list:", messages)
+
+            })
+            .catch((err)=> {
+                console.log(err);
+            })
+    }
+
+    async function setMessageRead(){ // 방 나가기 전까지 읽은 메시지 모두 읽음 처리 해주기 
+
+        await axios.post(`${HS_API_END_POINT}/api/chat/update/`,{ room_number: roomNumber, user_type: USER_INFO.USER_TYPE,}) 
+            .then((res)=> {
+                history = res.data
+                //console.log("message history 받음.", history);
+                console.log("messages updated to received true:", history)
+
+            })
+            .catch((err)=> {
+                console.log(err);
+            })
+    }
+
+    // 소켓 프로그래밍
     useEffect(() => {
 
-        if(!ws.current){
-            // 방이름=개ID/보내는이/받는이
+        if(!ws.current){ // 소켓이 있으면
+        // 채팅방 key = 반려견ID/구매자ID/판매자ID로 식별함
         ws.current = (new WebSocket(`wss://${HOST_IP}/ws/chat/${roomNumber}/`));
 
-        // 페이지 헤더의 제목을 반려견 이름으로 설정
+        // 페이지 헤더의 title을 반려견 이름으로 설정
         navigation.setOptions({
             title: route.params?.aboutDog.name
         });
         
+        // 이전 메시지 가져오기
+        setMessageHistory()
 
-        // onLoadEarlier (Function) - 이전 메시지 로드 시 콜백
-        // isLoadingEarlier (Bool) - ActivityIndicator이전 메시지를 로드할 때 표시
-        setMessages([{
-            _id: 4, // 받는 사람
-            text: 'Hello developer', // 받은 메시지
-            createdAt: new Date(),
-            user: {
-            _id: 2, // 보낸 사람
-            name: 'React Native',
-            avatar: route.params?.aboutDog.image,
-            },
-        }])
-        /*
-        {
-            _id: 1,
-            text: 'Hello developer',
-            createdAt: new Date(),
-            user: {
-            _id: 2,
-            name: 'React Native',
-            avatar: 'https://placeimg.com/140/140/any',
-            },
-        }
-        */
-
-        // onChangeRoomNumber(`${route.params?.aboutDog.id}${USER_INFO.USER_ID}`);
          // http가 아니기 때문에 ws(web socket)을 사용한 것이다. 
          console.log(ws)
          ws.current.onopen = () => {
@@ -130,25 +151,13 @@ function ChattingRoom({navigation, route}) {
          };
  
          ws.current.onmessage = (e) => {
-             // a message was received
-             data = JSON.parse(e.data);
-             message = data['message'];
+            // a message was received
+            data = JSON.parse(e.data);
+            message = data['message'];
 
-             console.log("received message", message);
+            console.log("received message", message);
+            // message.received = true; // 읽음 표시 처리
 
-            /*newMessage = [{
-            _id: 1, // 메시지 아이디
-            text: message,
-            createdAt: new Date(),
-            user: {
-                _id: 2, // 작성자 아이디
-                name: 'React Native',
-                avatar: 'https://placeimg.com/140/140/any',
-            },
-            //sent: true,
-            //received: JSON.parse(`${chat.isRead}`),
-            }]*/
-            
             setMessages(previousMessages => GiftedChat.append(previousMessages, [message]))
          };
  
@@ -163,6 +172,7 @@ function ChattingRoom({navigation, route}) {
          };
         }
          return () => {
+            setMessageRead(); // 읽은 메시지 처리 
             ws.current.close();
          };
     }, [])
@@ -170,38 +180,24 @@ function ChattingRoom({navigation, route}) {
    
     const onSend = useCallback((messages = []) => {
         // 여기 어떻게 바꾸지 
-        if (socketConnected) {
+        if (socketConnected) { // 소켓이 연결되어 있을 때 
 
 
             const [messageToSend] = messages;
-            // messageToSend.received = true; // 읽음 표시 
-
-            /*if(USER_INFO.USER_TYPE=='seller'){
-                messageToSend._id = customerID
-            }else{
-                messageToSend._id = sellerID
-            }*/
+            // messageToSend.received = false; // 읽음 표시 
 
             console.log("LOG: send message--> ",messageToSend)
             ws.current.send(JSON.stringify(messageToSend)); 
-            /***
-             * client
-                    .mutate({
-                    variables: {
-                        ...
-                    },
-                    mutation: YOUR_MUTATION,
-                    })
-            * 
-            * 
-            */
 
             setMessages(previousMessages => GiftedChat.append(previousMessages, [messageToSend]))
         }
     }, [socketConnected])
    
     return (
-        <SafeAreaView style={styles.container}>  
+
+        <SafeAreaView style={styles.container}>
+
+            {messages.length !== 0 ?
             <GiftedChat
             messages={messages}
             onSend={messages => onSend(messages)}
@@ -210,15 +206,21 @@ function ChattingRoom({navigation, route}) {
                 name: USER_INFO.USER_TYPE,
                 avatar: route.params?.aboutDog.image,
             }}
-            renderBubble={renderBubble} // 보낸 메시지 배경색
-            //text={customText} // Redux 관련 ?
-            //onInputTextChanged={text => setCustomText(text)} // 아직 용도 ?
+            renderBubble={renderBubble} // 보낸 메시지 말풍선 배경색
+            // text={customText} // Redux 관련 ?
+            // onInputTextChanged={text => setCustomText(text)} // 아직 용도 ?
             // onQuickReply={messages => on}
+            // renderSend={true}
             renderLoading={renderLoading} // 로딩화면
             />
+            : renderLoading() // 로딩화면 있으니까 더 느린 느낌 -> 안 읽은 메시지 구분해주니까 느려짐 // 일단 console.log 다 지우자 
+            } 
+            
 
+            {/*<Text> ㅎㅇ </Text>*/}
         </SafeAreaView>
-        
+        //<KeyboardAvoidingView style={styles.container}>
+        //</KeyboardAvoidingView>
     );
 }
 const styles = StyleSheet.create({
@@ -234,7 +236,7 @@ const styles = StyleSheet.create({
         flex: 1,
       },
     board:{
-        marginTop: "10%", // 이거 임시방편임
+        marginTop: "10%", // 
         shadowColor: "#000",
         shadowOffset: {
           width: 0,
