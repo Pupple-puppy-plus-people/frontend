@@ -34,7 +34,7 @@ const ChattingHome = ({navigation})=>{
   async function checkUnreadMessgae(wish_dog){ // 방 나가기 전까지 읽은 메시지 모두 읽음 처리 해주기 
 
     // 진행률 100%인 찜목록의 dog_id로 dogs에서 받아옴
-    console.log("--->",roomNumber, wish_dog)
+    //console.log("--->",roomNumber, wish_dog)
     await axios.all(roomNumber.map((endpoint) => 
     axios.post(`${HS_API_END_POINT}/api/chat/check/`,{ room_number: endpoint, user_type: USER_INFO.USER_TYPE,}))) //id= 으로 찾으려고 하면 오류남 Warning: Encountered two children with the same key, `:`
         .then((data)=> {
@@ -83,7 +83,7 @@ const ChattingHome = ({navigation})=>{
                   room_idx.push(`${wish[dog].dog_id}.${wish[dog].user}`) // '/' 오류 가능임
                 }
               }
-              console.log("room_idx", room_idx);
+              //console.log("room_idx", room_idx);
 
               // 진행률 100%인 찜목록의 dog_id로 dogs에서 받아옴
               axios.all(dog_idx.map((endpoint) => 
@@ -98,7 +98,7 @@ const ChattingHome = ({navigation})=>{
                     wish_dog.push(data[dog].data)
                   }
                   setDogs(wish_dog)
-                  console.log(room_idx)
+                  console.log("room_idx", room_idx)
                   setRoomNumber(room_idx)
 
                   checkUnreadMessgae(wish_dog)
@@ -135,26 +135,26 @@ const ChattingHome = ({navigation})=>{
                 completed_dog = []
                 room_idx = []
                 
-                console.log("판매자 dog 찜목록 ", data.length)
+                //console.log("판매자 dog 찜목록 ", data.length)
                 for(dog in data){
                   // 진행률 100% 된 것만 저장
-                  console.log("판매자 dog 찜목록 ", data.length, data[dog].data)
+                  //console.log("판매자 dog 찜목록 ", data.length, data[dog].data)
 
                   if(data[dog].data.length == 0){
                     continue
                   }
                   for(idx in data[dog].data){
                     wishDog = data[dog].data[idx]
-                    console.log("       --> ",idx, wishDog, wishDog.user)
+                    //console.log("       --> ",idx, wishDog, wishDog.user)
                     copydog = JSON.parse(JSON.stringify(enrolledDog[dog])) //deepcopy
                     if(wishDog.total==100){
                       roomNum = `${wishDog.dog_id}.${wishDog.user}.${copydog.user_id}`
-                      console.log("       --> ",idx, roomNum)
-                      room_idx.push(roomNum) // '/' 오류 가능임?
+                      //console.log("       --> ",idx, roomNum)
+                      room_idx.push(roomNum) 
 
                       if(data[dog].data.length>1){
                         num = Number(idx)+Number(1)
-                        console.log("   num    --> ",num, typeof(idx))
+                        //console.log("   num    --> ",num, typeof(idx))
                         copydog.name=`${copydog.name} (${num})`
                       }
 
@@ -163,7 +163,7 @@ const ChattingHome = ({navigation})=>{
                     }
                   }
                 }
-                console.log("NOW ROOM:", room_idx, completed_dog)
+                //console.log("NOW ROOM:", room_idx, completed_dog)
                 setDogs(completed_dog)
                 setRoomNumber(room_idx) 
                 

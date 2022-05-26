@@ -30,7 +30,7 @@ const bigOne = screenWidth > screenHeight ? screenWidth:screenHeight;
 const smallOne = screenWidth < screenHeight ? screenWidth:screenHeight;
 import { GiftedChat, Bubble } from 'react-native-gifted-chat/src'
 
-
+import CustomToolBar from './CustomToolBar';
 import axios from 'axios';
 import { set } from 'react-native-reanimated';
 
@@ -61,6 +61,7 @@ function renderBubble(props) {
 function ChattingRoom({navigation, route}) {
 
     const [socketConnected, setSocketConnected] = useState(false);
+    const [messageLoaded, setMessageLoaded] = useState(false);
 
     const [roomNumber, setroomNumber] = useState(route.params?.aboutDog.room); // 채팅방 번호
     const [sellerID, setSellerID] = useState(Number(route.params?.aboutDog.room.split('.')[2])); // 구매자 ID
@@ -88,8 +89,6 @@ function ChattingRoom({navigation, route}) {
         );
     }
 
-   
-    
     async function setMessageHistory(){ // 이전 메시지 가져오기
         
         await axios.post(`${HS_API_END_POINT}/api/chat/history/`,{ room_number: roomNumber,}) 
@@ -119,6 +118,7 @@ function ChattingRoom({navigation, route}) {
                 }
 
                 setMessages(message)
+                setMessageLoaded(true)
 
             })
             .catch((err)=> {
@@ -192,14 +192,12 @@ function ChattingRoom({navigation, route}) {
 
    
     const onSend = useCallback((messages = []) => {
-        // 여기 어떻게 바꾸지 
         if (socketConnected) { // 소켓이 연결되어 있을 때 
-
 
             const [messageToSend] = messages;
             // messageToSend.received = false; // 읽음 표시 
 
-            console.log("LOG: send message--> ",messageToSend)
+            //console.log("LOG: send message--> ",messageToSend)
             ws.current.send(JSON.stringify(messageToSend)); 
 
             setMessages(previousMessages => GiftedChat.append(previousMessages, [messageToSend]))
@@ -221,7 +219,7 @@ function ChattingRoom({navigation, route}) {
 
         <SafeAreaView style={styles.container}>
 
-            {//messages.length !== 0 ?
+            {messageLoaded ?
             <GiftedChat
             messages={messages}
             onSend={messages => onSend(messages)}
@@ -242,7 +240,7 @@ function ChattingRoom({navigation, route}) {
             }}}*/
             //ref={ref2}
             //scrollToIndex={scrollToIndex}
-            renderLoading={renderLoading} // 로딩화면
+            renderLoading={renderLoading} // 로딩화면 -> 음 부모 view가 giftedchat 로딩할 때 나타나는 듯(잘 안보임)
             //ref={(component) => (_giftedChatRef.scrollToIndex({index: 8, viewOffset: 0, viewPosition: 1}))}
             /*ref={(component) => (
                 giftedChatRef.current?._messageContainerRef?.current?.scrollToIndex({
@@ -252,12 +250,22 @@ function ChattingRoom({navigation, route}) {
             /*ref={()=>ref.current._messageContainerRef.current.scrollToOffset({
                 offset: 30 // for inverted
             })}*/
-            ref={(c)=>(
+            ref={(c)=>( // 안 읽은 메시지부터 스크롤 하고 싶어서 넣었는데 삽질 
                 giftref = c
             )}
-            />
             
-            //: renderLoading() // 로딩화면 있으니까 더 느린 느낌 -> 안 읽은 메시지 구분해주니까 느려짐 // 일단 console.log 다 지우자 
+            renderAccessory={props => {
+                return (
+                  <CustomToolBar
+                    aboutDog={route.params?.aboutDog}
+                    sellerID={sellerID}
+                    customerID={customerID}
+                    // handleSendMes={handleSendMes}
+                  />
+                );
+            }}
+            />
+            : renderLoading() // 로딩화면 있으니까 더 느린 느낌 -> 안 읽은 메시지 구분해주니까 느려짐 // 일단 console.log 다 지우자 
             } 
             
 
