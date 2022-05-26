@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback, useRef} from 'react';
+import React, {useEffect, useState, useCallback, useRef, createRef} from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import {
   StyleSheet,
@@ -68,8 +68,14 @@ function ChattingRoom({navigation, route}) {
     const isFocused = useIsFocused(); 
 
     const [messages, setMessages] = useState([]);
+    const [unreadMessage, setunreadMessage] = useState({});
+    const [unreadMessageIdx, setunreadMessageIdx] = useState({});
+
     const [customText, setCustomText] = useState([]);
 
+    const ref2 = useRef(); // 읽지 않은 메시지로 이동하기 위한 ref
+    const ref1 = createRef();
+    var giftref;
     // ${route.params?.aboutDog.id}${USER_INFO.USER_ID}
     let ws = useRef(null); // 클라이언트 소켓
     
@@ -82,6 +88,8 @@ function ChattingRoom({navigation, route}) {
         );
     }
 
+   
+    
     async function setMessageHistory(){ // 이전 메시지 가져오기
         
         await axios.post(`${HS_API_END_POINT}/api/chat/history/`,{ room_number: roomNumber,}) 
@@ -93,18 +101,24 @@ function ChattingRoom({navigation, route}) {
                 message = []
                 for(msg in history){
                     data = JSON.parse(history[msg]['message'])
+                    /*if( data.user.name == USER_INFO.USER_TYPE){
+                        if( history[msg]['received'] == true){ // 상대 읽은 메시지가 있으면 
+                            data.received='true' // 상대 읽은 메시지를 읽음 표시 해주기 
+                        }
+                    }*/
                     message.push(data)
-                    // 최초초 안 읽은 메시지 찾기 - 상대가 보낸 메시지 중에서 
-                    if( unread == false && data.user.name != USER_INFO.USER_TYPE){
+                    // 최초로 안 읽은 메시지 찾기 - 상대가 보낸 메시지 중에서 
+                    /*if( unread == false && data.user.name != USER_INFO.USER_TYPE){
                         if( history[msg]['received'] == false){ // 안 읽은 메시지가 있으면 
                             unread = true
                             unread_message = data
+                            setunreadMessage(unread_message)
+                            setunreadMessageIdx(msg) // 안 읽은 메시지 index
                         }
-                    }
+                    }*/
                 }
 
                 setMessages(message)
-                //console.log("messages list:", messages)
 
             })
             .catch((err)=> {
@@ -157,7 +171,6 @@ function ChattingRoom({navigation, route}) {
 
             console.log("received message", message);
             // message.received = true; // 읽음 표시 처리
-
             setMessages(previousMessages => GiftedChat.append(previousMessages, [message]))
          };
  
@@ -175,7 +188,7 @@ function ChattingRoom({navigation, route}) {
             setMessageRead(); // 읽은 메시지 처리 
             ws.current.close();
          };
-    }, [])
+    }, [isFocused])
 
    
     const onSend = useCallback((messages = []) => {
@@ -190,14 +203,25 @@ function ChattingRoom({navigation, route}) {
             ws.current.send(JSON.stringify(messageToSend)); 
 
             setMessages(previousMessages => GiftedChat.append(previousMessages, [messageToSend]))
+            
         }
     }, [socketConnected])
-   
+
+    /*const scrollToIndex = () => {
+        ref2?.current?._messageContainerRef?.current?.scrollToIndex({
+            animated: true,
+            index: 3,})
+    }
+
+    giftref?._messageContainerRef?.current?.scrollToIndex({ // 안 읽은 메시지로 이동하고 싶음 -> 잘 안된다. ㅠㅠ 
+        animated: true,
+        index: 1})*/
+    
     return (
 
         <SafeAreaView style={styles.container}>
 
-            {messages.length !== 0 ?
+            {//messages.length !== 0 ?
             <GiftedChat
             messages={messages}
             onSend={messages => onSend(messages)}
@@ -211,9 +235,29 @@ function ChattingRoom({navigation, route}) {
             // onInputTextChanged={text => setCustomText(text)} // 아직 용도 ?
             // onQuickReply={messages => on}
             // renderSend={true}
+            /*renderMessage={shouldScrollTo={(offset: 5) => {
+                giftedChatRef.current._messageContainerRef.current.scrollToOffset({
+                    offset: scrollViewHeight - offset // for inverted
+                });
+            }}}*/
+            //ref={ref2}
+            //scrollToIndex={scrollToIndex}
             renderLoading={renderLoading} // 로딩화면
+            //ref={(component) => (_giftedChatRef.scrollToIndex({index: 8, viewOffset: 0, viewPosition: 1}))}
+            /*ref={(component) => (
+                giftedChatRef.current?._messageContainerRef?.current?.scrollToIndex({
+                    index: 1, viewOffset: 0, viewPosition: 1
+                  }))}*/
+            //ref={(component) => (this._giftedChatRef = component)}
+            /*ref={()=>ref.current._messageContainerRef.current.scrollToOffset({
+                offset: 30 // for inverted
+            })}*/
+            ref={(c)=>(
+                giftref = c
+            )}
             />
-            : renderLoading() // 로딩화면 있으니까 더 느린 느낌 -> 안 읽은 메시지 구분해주니까 느려짐 // 일단 console.log 다 지우자 
+            
+            //: renderLoading() // 로딩화면 있으니까 더 느린 느낌 -> 안 읽은 메시지 구분해주니까 느려짐 // 일단 console.log 다 지우자 
             } 
             
 

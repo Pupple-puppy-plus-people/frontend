@@ -41,7 +41,6 @@ function Item({item, navigation, icon, nextPage}) {
       const {x, y, height, width} = event.nativeEvent.layout; // position (x, y), size (height, width)
       setimagePos({X:x, Y:y});
     };
-    
     return (
             <Pressable style={styles.dogCard} onLayout={onLayout} 
               backgroundColor='white' // background가 필요한지 모르겠음, 이미 dogCard에 있는데 
@@ -64,10 +63,12 @@ function Item({item, navigation, icon, nextPage}) {
                 margin: '3%'}}/>
               }
              
-              {/* 입양처가 새로운 인증절차 확인할 것 있을 때 new state 나타내는 알림 표시, 크기 반응형 확인*/}
+              { // 새로 읽어야할 메시지가 있을 때 초록색 띄워줌 -> 단점: 비동기식이 아님 // 페이지 리프래시해주어야함
+                ("unread" in item) == true && (item.unread == true)? 
               <View style={[styles.add, {bottom:imagePos.X, right:imagePos.Y}]}>
                 <Icon name={icon} size={25} color='lightgreen' />
-              </View>
+              </View>:null
+              }
             </View>
             
             <View>

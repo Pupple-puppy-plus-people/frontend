@@ -29,9 +29,41 @@ const ChattingHome = ({navigation})=>{
   const isFocused = useIsFocused();
   const [dogs, setDogs] = useState([{}]) 
   const [roomNumber, setRoomNumber] = useState([])
+  const [unreadChatRoom, setunreadChatRoom] = useState([])
+
+  async function checkUnreadMessgae(wish_dog){ // 방 나가기 전까지 읽은 메시지 모두 읽음 처리 해주기 
+
+    // 진행률 100%인 찜목록의 dog_id로 dogs에서 받아옴
+    console.log("--->",roomNumber, wish_dog)
+    await axios.all(roomNumber.map((endpoint) => 
+    axios.post(`${HS_API_END_POINT}/api/chat/check/`,{ room_number: endpoint, user_type: USER_INFO.USER_TYPE,}))) //id= 으로 찾으려고 하면 오류남 Warning: Encountered two children with the same key, `:`
+        .then((data)=> {
+          history = []
+          //console.log("message history 받음.", history);
+          
+          for(dog in data){
+            if(data[dog].data.unread=='true'){
+              history.push(true)
+              wish_dog[dog].unread=true // 읽어야할 메시지가 있으면 적어줌 
+            }
+            else{
+              history.push(false)
+              wish_dog[dog].unread=false
+            }
+          }
+          setDogs(wish_dog)
+          //console.log("messages updated to received true:", history, USER_INFO.USER_TYPE)
+          setunreadChatRoom(history)
+      })
+      .catch((err)=> {
+          console.log(err);
+      })
+
+  }
 
   // dog list 받아옴
   React.useEffect(()=> {
+
     // 구매자로 들어올때 
     if (USER_INFO.USER_TYPE == "customer"){ 
         let wish = []
@@ -68,6 +100,9 @@ const ChattingHome = ({navigation})=>{
                   setDogs(wish_dog)
                   console.log(room_idx)
                   setRoomNumber(room_idx)
+
+                  checkUnreadMessgae(wish_dog)
+
                 }
               );
 
@@ -99,22 +134,41 @@ const ChattingHome = ({navigation})=>{
               (data) => {
                 completed_dog = []
                 room_idx = []
-
+                
+                console.log("판매자 dog 찜목록 ", data.length)
                 for(dog in data){
                   // 진행률 100% 된 것만 저장
+                  console.log("판매자 dog 찜목록 ", data.length, data[dog].data)
+
                   if(data[dog].data.length == 0){
                     continue
                   }
-                  wishDog = data[dog].data[0]
-                  if(wishDog.total==100){
-                    room_idx.push(`${wishDog.dog_id}.${wishDog.user}.${enrolledDog[dog].user_id}`) // '/' 오류 가능임?
-                    enrolledDog[dog].room=room_idx[dog]
-                    completed_dog.push(enrolledDog[dog])
+                  for(idx in data[dog].data){
+                    wishDog = data[dog].data[idx]
+                    console.log("       --> ",idx, wishDog, wishDog.user)
+                    copydog = JSON.parse(JSON.stringify(enrolledDog[dog])) //deepcopy
+                    if(wishDog.total==100){
+                      roomNum = `${wishDog.dog_id}.${wishDog.user}.${copydog.user_id}`
+                      console.log("       --> ",idx, roomNum)
+                      room_idx.push(roomNum) // '/' 오류 가능임?
 
+                      if(data[dog].data.length>1){
+                        num = Number(idx)+Number(1)
+                        console.log("   num    --> ",num, typeof(idx))
+                        copydog.name=`${copydog.name} (${num})`
+                      }
+
+                      copydog.room=roomNum
+                      completed_dog.push(copydog)
+                    }
                   }
                 }
+                console.log("NOW ROOM:", room_idx, completed_dog)
                 setDogs(completed_dog)
-                setRoomNumber(room_idx)                  
+                setRoomNumber(room_idx) 
+                
+                checkUnreadMessgae(completed_dog)
+
               }
             );
 
@@ -125,6 +179,9 @@ const ChattingHome = ({navigation})=>{
 
            
       }
+
+
+
   },[isFocused]); // isFocused로 refresh시 state 업데이트 됨
   
 
