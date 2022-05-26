@@ -11,7 +11,8 @@ import {
     TouchableOpacity,
     TouchableWithoutFeedback,
     ScrollView,
-    Modal
+    Modal,
+    Alert
 
 } from 'react-native';
 import RNCamera from 'react-native-camera'
@@ -36,6 +37,20 @@ const Agreement=({navigation, route})=> {
     const [accept, setAccept] = useState(false)
     const [moreInfo, setMoreInfo] = useState(false)
 
+    const sendAgreement = () => {
+        route.params.dog_id = 1;
+        sendData = {user_id:USER_INFO.USER_ID, dog_id:route.params.dog_id , person_info:personalInfo, location_info:location, chit_penalty:other, cannot_adopt:accept, more_info:moreInfo}
+        axios.post(`${HS_API_END_POINT}/api/survey/agreement/update`,sendData)
+        .then(function(res){
+            if(res.data.response==="success"){
+                Alert.alert("응답이 전송되었습니다!");
+                
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
 
 
     return (
@@ -213,6 +228,7 @@ const Agreement=({navigation, route})=> {
                 <View style={{alignContent:'center',alignItems:'center'}}>
                     <TouchableOpacity 
                     style={{width:responsiveScreenWidth(80),height:responsiveScreenHeight(5),borderRadius:15,justifyContent:'center',backgroundColor:'purple',margin:30}}
+                    onPress={sendAgreement}
                     >
                         <Text style={{fontSize:responsiveScreenFontSize(3),color:'white',fontWeight:'bold',textAlign:'center'}}>제출할게요!</Text>
                     </TouchableOpacity>

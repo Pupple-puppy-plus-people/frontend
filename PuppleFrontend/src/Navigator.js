@@ -49,7 +49,7 @@ const BottomNavigation = ({navigation}) => {
                   animationEnabled: false,
                   tabBarIcon: ()=> (
                       <MaterialCommunityIcons name="paw" size={25} />
-                  )
+                  ),
               }}
           >
           </BottomTab.Screen>

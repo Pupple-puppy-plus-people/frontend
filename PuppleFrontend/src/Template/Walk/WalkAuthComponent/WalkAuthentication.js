@@ -261,6 +261,7 @@ const StopWatch = ({changeState}) => {
                     posision => {
                         walkauthData.distance += getDistance(lastLocation,posision.coords)
                         lastLocation = posision.coords
+                        console.log("lastLocation",lastLocation)
                     },
                     error => {
                         console.log(error.code,error.messages);
@@ -367,6 +368,7 @@ function extract(){
 
 class WalkAuthComponent extends Component{
     constructor(props){
+        Geolocation.requestAuthorization('always');
         super(props);
         this.state={
             total_count : 0,
