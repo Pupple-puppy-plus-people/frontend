@@ -65,5 +65,7 @@ buck-out/
 
 # API 인증키
 secret.json
+secret2.json
+
 
 /src/Shared/env.js

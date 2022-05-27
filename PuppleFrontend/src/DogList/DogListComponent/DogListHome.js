@@ -50,10 +50,12 @@ const DogListHome = ({ navigation,route }) => {
             setDogs(route.params?.dogs)
         }
         else{
-            axios.get(`${HS_API_END_POINT}/api/dogs/`)
+            axios.get(`${HS_API_END_POINT}/api/dogs/list/`)
             .then((res)=> {      
                 console.log("dogs Data 받음.");
                 setDogs(res.data);
+                // console.log("처음 받은 개들", res.data);
+
                 //console.log(dogs.image);
                 // handleBookObj("allBook",res.data.data);
                 // handleBookObj("workBook", res.data.data.filter(item => item.category === '문제집'))
@@ -92,14 +94,17 @@ const DogListHome = ({ navigation,route }) => {
         }
         var imageStr;
         if(item.image){
+            //`data:image/jpeg;base64,${item.image.substring(2, item.image.length-1)}`
             imageStr = {uri: item.image};
             //imageStr = {uri: 'https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
-
+            // console.log("->", imageStr)
         }else{
             imageStr = {uri: 'https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
         }
         // console.log(item.image);
         if(item){
+            // console.log("imageStr", dogs);
+
             return (
                 
                 <TouchableOpacity 

@@ -5,7 +5,7 @@ import {
     View
 } from 'react-native';
 import TimeStampComponent from './TimeStampComponent/TimeStampHome';
-import TimeStampSet from './TimeStampComponent/TimeStampSet';
+// import TimeStampSet from '../TimeStampPassCondition/TimeStampPassComponent/TimeStampConditioin';
 
 
 class TimeStamp extends Component{

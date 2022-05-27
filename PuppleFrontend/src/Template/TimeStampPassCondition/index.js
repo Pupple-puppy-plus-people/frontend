@@ -4,23 +4,19 @@ import {
     Text,
     View
 } from 'react-native';
-import WalkPassComponent from './WalkPassComponent/WalkPassCondition';
+import TimestampPassComponent from './TimeStampPassComponent/TimeStampConditioin';
 
 
-class WalkPassCondition extends Component{
+class TimestampCondition extends Component{
     constructor(props){
         super(props);
-        //set this.state
     }
     render(){
         return(
             <View style={[styles.container, {backgroundColor:'white'}]}>
-                <WalkPassComponent
-                onWalkDay={this.props.onWalkDay} 
-                onWalkTime={this.props.onWalkTime}
-                onWalkDistance={this.props.onWalkDistance}/>
+                <TimestampPassComponent
+                setData={this.props.setData}/>
             </View>
-            // 화면 반응성(spring) && 돌아가기 추가
         );
     }
 }
@@ -37,4 +33,4 @@ const styles=StyleSheet.create({
     }
 });
 
-export default WalkPassCondition;
+export default TimestampCondition;

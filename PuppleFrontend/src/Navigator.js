@@ -9,14 +9,18 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import DogList from './DogList';
 import Login from './Login';
 import Tab2 from './Tab2'; // 인증탭 이름 추천 받아요  -> autntication
-import ChattingRoom from './ChattingRoom';
+import ChattingPage from './ChattingRoom';
 import EnrollStep1 from './Tab2/Tab2Component/Shelter/EnrollStep1';
 import EnrollStep11 from './Tab2/Tab2Component/Shelter/EnrollStep11';
 import EnrollStep2 from './Tab2/Tab2Component/Shelter/EnrollStep2';
 import EnrollStep3 from './Tab2/Tab2Component/Shelter/EnrollStep3';
 import EnrollPage from './Tab2/Tab2Component/Shelter/EnrollPage';
 import TimeStamp from './Template/TimeStamp/';
-
+//import WalkPassComponent from './Template/WalkPassCondition/WalkPassComponent/WalkPassCondition';
+//import WalkPassCondition from './Template/WalkPassCondition';
+import EnrollWalkAuth from './Tab2/Tab2Component/Shelter/EnrollWalkAuth';
+import EnrollTimeAuth from './Tab2/Tab2Component/Shelter/EnrollTimeAuth';
+import ChattingRoom from './ChattingRoom/ChattingComponent/ChattingRoom';
 
 const Stack = createStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -47,6 +51,7 @@ const BottomNavigation = ({navigation}) => {
                   tabBarLabel: '인증',
                   headerShown: false,
                   animationEnabled: false,
+                  // unmountOnBlur: true,
                   tabBarIcon: ()=> (
                       <MaterialCommunityIcons name="paw" size={25} />
                   ),
@@ -56,8 +61,8 @@ const BottomNavigation = ({navigation}) => {
 
 
           <BottomTab.Screen
-              name="ChattingRoom"
-              component={ChattingRoom} // Timestamp
+              name="ChattingPage"
+              component={ChattingPage} // Timestamp
               options={{
                   tabBarLabel: '채팅',
                   headerShown: false,
@@ -181,7 +186,35 @@ function Navigator() {
               
           }}/>
 
-      <LogStack.Screen
+        <LogStack.Screen
+            name="EnrollWalkAuth"
+            component={EnrollWalkAuth}
+            options={{
+                title: "산책량 설정",
+                headerShown: true,
+                headerTransparent: false,
+                headerBackTitle: "back", // x 표시로 바꾸기 
+                // header shadow
+                // header 반려견 삭제 버튼 
+                // bottom navigation 사라져야하나?
+                
+            }}/>
+
+        <LogStack.Screen
+            name="EnrollTimeAuth"
+            component={EnrollTimeAuth}
+            options={{
+                title: "시간량 설정",
+                headerShown: true,
+                headerTransparent: false,
+                headerBackTitle: "back", // x 표시로 바꾸기 
+                // header shadow
+                // header 반려견 삭제 버튼 
+                // bottom navigation 사라져야하나?
+                
+            }}/>
+
+        <LogStack.Screen
           name="EnrollStep3"
           component={EnrollStep3}
           options={{
@@ -208,6 +241,20 @@ function Navigator() {
                 
             }}/>
 
+        <LogStack.Screen
+            name="ChattingRoom"
+            component={ChattingRoom}
+            options={{
+                title: false,
+                headerShown: true,
+                headerTransparent: false,
+                headerBackTitle: "back", 
+                // header shadow
+                // header 반려견 삭제 버튼 
+                // bottom navigation 사라져야하나?
+                
+            }}/>
+         
 
             </Stack.Navigator>
         </NavigationContainer>

@@ -169,11 +169,15 @@ class SummaryList extends Component{
     constructor(props){
         super(props);
         this.state={
-            day_index : 0
+            dayIndex : 0
         }
+    }
+    setDayIndex(newIndex) {
+        this.setState({dayIndex:newIndex})    
     }
     render(){
         let day_index = 0;
+        // const [dayIndex, setDayIndex] = useState(0);
         const day_num = [0,1,2,3,4,5,6];
         const dayEval = day_num.map((oneday)=>
             <MaterialCommunityIcons 
@@ -187,10 +191,53 @@ class SummaryList extends Component{
             size={25}/>
         );
 
+        const timeEval = day_num.map((oneday)=>
+            <View>
+                <Text>{day_index}</Text>
+                {
+                    myData[day_index].day == oneday&&
+                    myData[oneday].elapsed_time>=pass_condition.min_per_walk&&
+                    <MaterialCommunityIcons
+                    key={'time'+oneday}
+                    name='check-circle-outline'
+                    color={'green'}
+                    size={25}/>
+                }
+                {
+                    myData[day_index].day == oneday&&
+                    myData[oneday].elapsed_time<pass_condition.min_per_walk&&
+                    <MaterialCommunityIcons
+                    key={'time'+oneday}
+                    name='close-circle-outline'
+                    color={'red'}
+                    size={25}/>
+                }
+                {/* {myData[day_index].day == oneday && this.setDayIndex(this.state.dayIndex+1)} */}
+            </View>    
+        );
+        const distanceEval = day_num.map((oneday)=>
+            <View>
+                {myData[oneday].distance>=pass_condition.meter_per_walk&&
+                    <MaterialCommunityIcons
+                    key={'distance'+oneday}
+                    name='check-circle-outline'
+                    color={'green'}
+                    size={25}/>
+                }
+                {myData[oneday].distance<pass_condition.meter_per_walk&&
+                    <MaterialCommunityIcons
+                    key={'distance'+oneday}
+                    name='close-circle-outline'
+                    color={'red'}
+                    size={25}/>
+                }
+            </View>
+        );
         // #eedbff background color
         return(
             <View style={styles.summary_row}>
-                {dayEval}
+                {this.props.evalType==='time'&&timeEval}
+                {this.props.evalType==='distance'&&distanceEval}
             </View>
         );
     }
@@ -274,14 +321,6 @@ const StopWatch = ({changeState}) => {
               clearInterval(increment.current)
               stopAndload()
               changeState()
-              axios.post(baseUrl+'/api/passcondition/13/',{
-                dog_id : 13,
-                walk_total_count : 13,
-                min_per_walk : 13,
-                meter_per_walk : 13,
-                ts_total_count : 13,
-                ts_check_time : 13,
-              })
         .then(function(response){
             // handle success
             myData = response.data
@@ -370,6 +409,7 @@ class WalkAuthComponent extends Component{
     constructor(props){
         Geolocation.requestAuthorization('always');
         super(props);
+        Geolocation.requestAuthorization('always');
         this.state={
             total_count : 0,
             total_time : 0,
@@ -426,8 +466,8 @@ class WalkAuthComponent extends Component{
                 <View style={styles.summary_column}>
                     <WeekComponent/>
                     {/* status */}
-                    <SummaryList/>
-                    <SummaryList/>
+                    <SummaryList evalType={'time'}/>
+                    <SummaryList evalType={'distance'}/>
                 </View>
             </View>
 
@@ -456,7 +496,6 @@ class WalkAuthComponent extends Component{
                 <Text
                 style={styles.subTitle}>
                 Current Total
-                <Text>{this.state.pass_count}</Text>
                 </Text>
                 <View style={styles.dataInfoStyle}>
                     <Text
@@ -548,6 +587,7 @@ const styles=StyleSheet.create({
     main_container:{
         flex:1,
         flexDirection:'column',
+        marginTop:30,
     },
     title:{
         textAlign:'left',

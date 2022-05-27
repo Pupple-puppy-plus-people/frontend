@@ -166,12 +166,16 @@ const TimeStamp = (props) => {
                 {
                 Object.keys(timelist).length === 0? null : 
                 <ScrollView style={{height:200,}}>
+
+                {/*버벅임 현상 <TouchableWithoutFeedback > 아님 scroll view 없애보기*/}
+
                 <FlatList
                     data={timelist}
                     renderItem={renderItem}
                     keyExtractor={item => item.id} // keyExtractor tells the list to use the ids for the react keys instead of the default key property.
                     style={styles.flatList}
-                /></ScrollView>}
+                /></ScrollView>
+                }
             </View>
 
             <View style={styles.dataInfoStyle}>

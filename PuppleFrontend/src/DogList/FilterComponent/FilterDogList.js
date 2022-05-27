@@ -230,10 +230,10 @@ const FilterDogList = ({navigation}) => {
                             {filter:'activity',value : ""},
                             {filter:'person_personality',value : ""},
                         ]
-                        axios.get(baseUrl+'/api/dogs'+query)
+                        axios.get(baseUrl+'/api/dogs/list/'+query)
                         .then(function (response){
                             //success
-                            console.log(baseUrl+'/api/dogs'+query)
+                            console.log(baseUrl+'/api/dogs/list/'+query)
                             console.log(response.data);
 
                             navigation.navigate({

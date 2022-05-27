@@ -11,18 +11,15 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 
-const EmptyDogList = ({user})=>{
+const EmptyChatList = ({user})=>{
       
     return (
 
-        
         <Text style={{color:'#C9C9C9',fontWeight:'bold',textAlign:'center'}}>
-        <Icon name="dog" size={50}/>
+        <Icon name="message" size={50}/>
         
-        {'\n'} 등록된 반려견이 없어요. {'\n'} 
-        {(user==="customer")? 
-            <Text> '반려견 리스트'에서 당신의 반려견을 찾아주세요. </Text>:
-            <Text> '+'를 눌러 새로운 만남을 기다리는 반려견을 등록해주세요. </Text>}
+        {'\n'} 채팅방이 열리지 않았어요. {'\n'} 
+            <Text> 반려견 입양을 위한 채팅방이 열릴때까지 기다려주세요:{')'} </Text>
         </Text>
                     
     );
@@ -35,4 +32,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default EmptyDogList;
+export default EmptyChatList;
