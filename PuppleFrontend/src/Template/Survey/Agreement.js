@@ -38,8 +38,8 @@ const Agreement=({navigation, route})=> {
     const [moreInfo, setMoreInfo] = useState(false)
 
     const sendAgreement = () => {
-        route.params.dog_id = 1;
-        sendData = {user_id:USER_INFO.USER_ID, dog_id:route.params.dog_id , person_info:personalInfo, location_info:location, chit_penalty:other, cannot_adopt:accept, more_info:moreInfo}
+        // route.params.dog_id = 1;
+        sendData = {user_id:USER_INFO.USER_ID, dog_id:4 , person_info:personalInfo, location_info:location, chit_penalty:other, cannot_adopt:accept, more_info:moreInfo}
         axios.post(`${HS_API_END_POINT}/api/survey/agreement/update`,sendData)
         .then(function(res){
             if(res.data.response==="success"){
