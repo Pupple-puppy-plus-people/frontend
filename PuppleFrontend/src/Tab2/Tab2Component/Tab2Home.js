@@ -138,7 +138,11 @@ function Authenticate ({navigation}) {
 
     );
 };
-
+const Tab2Home = ({ navigation }) => {
+  return (
+    <Authenticate navigation={navigation}></Authenticate>
+  );
+};
 // 스타일 
 const styles = StyleSheet.create({
     container: {

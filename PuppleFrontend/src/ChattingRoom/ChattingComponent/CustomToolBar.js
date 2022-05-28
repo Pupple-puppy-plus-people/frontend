@@ -18,34 +18,65 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
 import { Chip } from 'react-native-paper';
+import AuthResultModal from './AuthResultModal';
 
 
 const width = Dimensions.get("window").width - 10; // container style에 paddingHorizontal*2
 const height = Dimensions.get("window").height;
 
 
-// Modal 부분 (필요하면 쓰세여)
-const Document = () => {
-    return(
-        <View style={{flex:1}}>
-            <Text>ㅎㅇㅎㅇ</Text>
-        </View>
-    );
-}
 
+const Item = (props) => {
 
-const Item = ({ item, setModalVisible }) => {
-
-    if(item.bool){
+    if(props.item.bool){
         return (
             <TouchableOpacity
                 //activeOpacity={0.5}  
                 underlayColor="#DDDDDD" 
-                onPress={() => 
-                    (setModalVisible(true))
-                }>
-                <Chip style={styles.chip} textStyle={styles.chipText}> {item.title} </Chip>
+                onPress={props.onPress}
+                >
+                <View>
+                    <Modal  
+                        animationType="fade" // 임시 코드
+                        transparent={true}
+                        visible={props.modalVisible}
+                        onRequestClose={() => {
+                        props.setModalVisible(!props.modalVisible)
+                    }}>
+                        
+                        <Pressable // 모달 dispaly의 뒷배경 눌러도 버튼 취소 효과
+                            style={[styles.iOSBackdrop, styles.backdrop]} onPress={() => props.setModalVisible(false)} />
+                        
+                        <View style={[styles.menu]}>
 
+                            <View style={styles.modalView}>
+                                <AuthResultModal 
+                                selectedTitle={props.selectedTitle}
+                                customerID={props.customerID}
+                                dogId={props.dogId}
+                                >
+
+                                </AuthResultModal>
+                            </View>
+                            
+                            <View style={{margin:"2%"}}></View> 
+                            <View>
+                                <TouchableOpacity 
+                                    activeOpacity={0.8} 
+                                    underlayColor="#DDDDDD" 
+                                    onPress={() => 
+                                        props.setModalVisible(false)
+                                    }
+                                    style={[styles.closeButton, {backgroundColor:'#FBEDFD'}]}
+                                    >
+                                    <Icon name='close' size={35} style={{color:'black'}}/>  
+                                </TouchableOpacity> 
+                            </View>
+
+                        </View>
+                    </Modal>
+                <Chip style={styles.chip} textStyle={styles.chipText}> {props.item.title} </Chip>
+                </View>
             </TouchableOpacity> 
         );
     }
@@ -62,6 +93,7 @@ const Item = ({ item, setModalVisible }) => {
 const CustomToolBar = (props)=>  {
 
     const [modalVisible, setModalVisible] = useState(false);
+    const [selectedTitle, setSelectedTitle] = useState(null);
     
     let chiplist = [     // chip 리스트
         { title : '설문지', bool : true},
@@ -80,8 +112,19 @@ const CustomToolBar = (props)=>  {
     }
 
     const renderItem = ({ item }) => (
-        <Item item={item} setModalVisible=
-        {setModalVisible}/>
+        <Item 
+        item={item}
+        onPress={()=> {
+            setModalVisible(true)
+            setSelectedTitle(item.title)
+        }}
+        selectedTitle={selectedTitle}
+        customerId={props.customerID}
+        dogId={props.aboutDog.id}
+        setModalVisible={setModalVisible} 
+        modalVisible={modalVisible}
+        
+        />
     );
 
     return (
@@ -97,13 +140,14 @@ const CustomToolBar = (props)=>  {
                 renderItem={renderItem}
                 keyExtractor={item => item.title}
                 style={{alignSelf:'center'}}
-                />
+            />
             <View style={{alignItems:"flex-end", justifyContent:'center', right:-20}}>
                 <Icon name='chevron-right' size={responsiveScreenFontSize(5)} style={styles.slideIcon}></Icon>
             </View>
 
             
-            <Modal  animationType="fade" // 임시 코드
+            {/* <Modal  
+                animationType="fade" // 임시 코드
                 transparent={true}
                 visible={modalVisible}
                 onRequestClose={() => {
@@ -116,7 +160,9 @@ const CustomToolBar = (props)=>  {
                 <View style={[styles.menu]}>
 
                     <View style={styles.modalView}>
-                        <Document >
+                        <Document 
+                        value={"hello"}
+                        >
 
                         </Document>
                     </View>
@@ -136,7 +182,7 @@ const CustomToolBar = (props)=>  {
                     </View>
 
                 </View>
-            </Modal>
+            </Modal> */}
         </View>    
 
     );
