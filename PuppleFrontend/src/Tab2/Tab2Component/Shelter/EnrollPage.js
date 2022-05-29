@@ -102,7 +102,7 @@ function EnrollPage({navigation,route}) {
         <SafeAreaView style={styles.container} onLayout={onLayout}>  
              
             <ScrollView ref = {ref} style={styles.scrollView} >
-                <> 
+                
                     <View style={{flex:0.5,flexDirection:'column', padding:'3%',backgroundColor:'#fff'}}>
                         <View style={{flex:0.5}}/>
                         <View style={[styles.board,{flex:9,backgroundColor:'#E1BEE7',borderRadius:20}]}>
@@ -125,10 +125,11 @@ function EnrollPage({navigation,route}) {
                     
                     <View style={{ flex:1, 
                         // 여기 크기 다시 ! -> 제일 긴 크기로 해야함
-                        height: (parentHeight.height)*1.5}} /**(Dimensions.get('window').width)/(0.4) */>  
+                        height: (parentHeight.height)*1.5
+                        }} /**(Dimensions.get('window').width)/(0.4) */>  
                         <TopTabs aboutDog={route.params?.aboutDog} setWishList={setWishList}></TopTabs>
                     </View>
-                </>
+                
             </ScrollView>
 
         </SafeAreaView>
@@ -143,7 +144,7 @@ const styles = StyleSheet.create({
         
     },
     scrollView: {
-        backgroundColor: 'pink',
+        backgroundColor: 'white',
         marginHorizontal: 0,
         flex: 1,
         flexGrow: 1,
