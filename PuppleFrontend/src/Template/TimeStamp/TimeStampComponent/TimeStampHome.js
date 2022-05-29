@@ -12,9 +12,10 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
 
 import WeekComponent from '../../Recycle/WeekComponent';
-import { HS_API_END_POINT } from '../../../Shared/env';
+import { HS_API_END_POINT, USER_INFO } from '../../../Shared/env';
 import { Divider } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
 
@@ -78,24 +79,24 @@ const Information = ({informationName,showData}) => {
 
 const Item = ({ item }) => (
     <View style={{flexDirection:'row', alignItems:'center'}}>
-    {console.log("itme:", item)}
-    <Text style={[styles.body],{flex:1}}>   {item.id}</Text>
-    <Text style={[styles.body],{flex:2}}>   {item.press_time}</Text>
+    <Text style={[styles.body,{flex:1}]}>   {item.id}</Text>
+    <Text style={[styles.body,{flex:2}]}>   {item.press_time}</Text>
     </View>
 );
 
-const TimeStamp = (props) => {
+const TimeStamp = ({parentlist, getlist, dogID}) => {
     const [timer, setTimer] = useState(0)
     const [prevTimer, setPrevTimer] = useState(0)   // 서버에서 받아온 것 중 가장 마지막  -> 누른 시각에 뜨기도 함
     const [isActive, setIsActive] = useState(false)
     const [timelist, setTimeList] = useState([{}])
 
     React.useEffect(()=> {
-        axios.get(`${HS_API_END_POINT}/api/timestamp/`) 
+        axios.get(`${HS_API_END_POINT}/api/timestamp/get/?user=${USER_INFO.USER_ID}&dog=${dogID}`) 
         .then((res)=> {      
             setTimeList(res.data);
             props.getlist(res.data)
             console.log("TimeStamp Data 받음.", timelist, res.data); // 왜 timeList에 안들어가지 
+
         })
         .catch((err)=> {
             console.log(err);
@@ -108,7 +109,7 @@ const TimeStamp = (props) => {
             userdog: 0,
             day: 0,
             press_time: timer,
-            elapsed_time: 0,
+            start_time: 0,
             evaluate: true
         })
         .then(function (response){
@@ -201,13 +202,12 @@ const TimeStamp = (props) => {
   }
   
 
-
 class TimeStampComponent extends Component{
     constructor(props){
-        super();
+        super(props);
         this.state = { 
             //isPressed : false,
-            timelist : ''
+            timelist : '',
         };
         this.getlist = this.getlist.bind(this)
     }
@@ -216,7 +216,7 @@ class TimeStampComponent extends Component{
         const now = date.getTime()
         console.log("---time :",time, now);
 
-        // 마지막으로 누른 버튼 시간
+        // 다음 체크까지 남은 시간 
         const times = time[Object.keys(time).length-1].press_time.split(':')
 
         times[0] = date.getHours()-Number(times[0])
@@ -239,8 +239,15 @@ class TimeStampComponent extends Component{
     }
     render(){
         // const [isPressed, setPressed] = useState(false);
+        // 하루를 시작하는 시간을 말해주세요. 시작 시간부터 12시간 동안만 유효한 검사입니다:)
         const getHeader = () => {
-            return <Text style={styles.title}>타임스탬프 검증</Text>;
+            return (
+            <View>
+            <Text style={styles.title}>타임스탬프 검증</Text>
+            <Text style={styles.subTitle}>* 통과 기준: 검사 주기 {this.props.ts_check_time}시간  | 횟수 {this.props.ts_total_count}일/7일</Text>
+            <Text style={styles.subTitle}>* 시작 시간: 시 </Text>
+            </View>
+            );
         };
         const getFooter = () => {
             return null;
@@ -248,56 +255,55 @@ class TimeStampComponent extends Component{
         const renderItem = () => {
             return (
                 <TouchableWithoutFeedback>
-                <View>
-                {/* status for element & day */}
-                <View style={[styles.summary_container,styles.container_background]}>
-                {/* element name */}
-                <View style={styles.summary_element_list}>
-                    <Text style={styles.summary_element_text}>
-                        통과한 날
-                    </Text>
+                    <View>
+                        {/* status for element & day */}
+                        <View style={[styles.summary_container,styles.container_background]}>
+                            {/* element name */}
+                            <View style={styles.summary_element_list}>
+                                <Text style={styles.summary_element_text}>
+                                    통과한 날
+                                </Text>
+                                
+                            </View>
+
+                            <View style={styles.summary_column}>
+                                <WeekComponent/>
+                                {/* status */}
+                                <SummaryList/>
+                            </View>
+                        </View>
+                        {/* pass condition */}
+                        
+
+                        {/* total information text about walking */}
+                        
+
+                        {/* average information text about walking */}
+                        <Information
+                        informationName={'마지막 체크 후 지난 시간'}
+                        showData={[
+                            {
+                                dataName:'시간',
+                                data:`${this.state.timelist[0]}:${this.state.timelist[1]}:${this.state.timelist[2]}`
+                            },
+                        
+                        ]}/>
                     
-                </View>
+                        {/* 산책 시작 버튼 */}
+                    
+                        <View style={[styles.container_background,styles.textInformation_container]}>
+                            <Text style={styles.subTitle}>
+                                Press Now!
+                            </Text>
+                            <TimeStamp parentlist={this.state.timelist} getlist={this.getlist} dogID={this.props.dog_id}/>
 
-                <View style={styles.summary_column}>
-                    <WeekComponent/>
-                    {/* status */}
-                    <SummaryList/>
-                </View>
-            </View>
-            {/* pass condition */}
-            
-
-            {/* total information text about walking */}
-            
-
-            {/* average information text about walking */}
-            <Information
-            informationName={'마지막 체크 후 지난 시간'}
-            showData={[
-                {
-                    dataName:'시간',
-                    data:`${this.state.timelist[0]}:${this.state.timelist[1]}:${this.state.timelist[2]}`
-                },
-              
-            ]}/>
-            
-            {/* 산책 시작 버튼 */}
-            
-                <View style={[styles.container_background,styles.textInformation_container]}>
-                    <Text style={styles.subTitle}>
-                        Press Now!
-                    </Text>
-                    <TimeStamp parentlist={this.state.timelist} getlist={this.getlist}/>
-                    {console.log("getlist:", this.state.timelist)}
-
-                </View>   
-            </View>
+                        </View>   
+                    </View>
             </TouchableWithoutFeedback>
             );
         };
         return(
-            <SafeAreaView style={styles.main_container}>
+            <SafeAreaView style={[styles.main_container, {marginTop:40}]}>
                 <FlatList
                     data={[{id:0}]}
                     renderItem={renderItem}
@@ -319,11 +325,10 @@ const styles=StyleSheet.create({
     },
     title:{
         textAlign:'left',
-        fontSize:35,
+        fontSize:responsiveScreenFontSize(3.5),
+        marginTop:responsiveScreenHeight(2),
+        marginBottom:responsiveScreenHeight(1),
         fontWeight:'bold',
-        marginTop:10,
-        marginLeft:30,
-        marginBottom:20,
         // backgroundColor:'magenta'
     },
     container_background:{
@@ -364,9 +369,8 @@ const styles=StyleSheet.create({
         paddingLeft:30,
     },
     subTitle:{
-        fontSize:27,
-        marginTop:20,
-        marginBottom:10,
+        fontSize:responsiveScreenFontSize(2),
+        marginBottom:responsiveScreenHeight(1),
     },
     dataInfoStyle:{
         flexDirection:'row',

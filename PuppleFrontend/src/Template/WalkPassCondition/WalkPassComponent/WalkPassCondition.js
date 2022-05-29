@@ -47,7 +47,6 @@ const WalkPassComponent = ({onWalkDay, onWalkTime, onWalkDistance}) => {
         });
     }
     return(
-        <SafeAreaView style={[]}>
             <ScrollView>
             <Text style={styles.title}>산책 통과 기준</Text>
             <View style={[styles.conatiner_background,styles.textInformation_container]}>
@@ -122,7 +121,6 @@ const WalkPassComponent = ({onWalkDay, onWalkTime, onWalkDistance}) => {
                 </Pressable>*/}
             </View>
             </ScrollView>
-        </SafeAreaView>
     );
 }
 

@@ -15,7 +15,9 @@ class TimestampCondition extends Component{
         return(
             <View style={[styles.container, {backgroundColor:'white'}]}>
                 <TimestampPassComponent
-                setData={this.props.setData}/>
+                onTime={this.props.onTime}
+                onChangeDay={this.props.onChangeDay}
+                />
             </View>
         );
     }

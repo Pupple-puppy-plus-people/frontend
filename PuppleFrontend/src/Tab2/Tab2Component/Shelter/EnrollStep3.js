@@ -31,9 +31,9 @@ const smallOne = screenWidth < screenHeight ? screenWidth:screenHeight;
 import axios from 'axios';
 
 
-function EnrollStep3({navigation, route}) {
+function EnrollStep3({route, navigation}) {
     // user ID 어디서 받아와야함
-    console.log("---navigated to EnrollStep3---> ", route.params);
+    const input = route.params;
 
     const [selectedFilter, setselectedFilter] = useState(null);
     const [dogRegInfo, setdogRegInfo] = useState(null);
@@ -45,6 +45,8 @@ function EnrollStep3({navigation, route}) {
     const [dogID, setdogID] = useState("");
 
     useEffect(()=>{
+        console.log("---navigated to EnrollStep3---> ", route.params);
+
         setselectedFilter(route.params?.dogInfo.selectedFilter);
         setdogRegInfo(route.params?.dogInfo.dogRegInfo);
         setdogImage(route.params?.dogImage);
@@ -54,12 +56,7 @@ function EnrollStep3({navigation, route}) {
         setmeter_per_walk(route.params?.walkDistance);
     }, []);
     
-    console.log("->", selectedFilter);
-    console.log("->", dogRegInfo);
-    console.log("->", dogImage);
-    console.log("->", dogText);
-    console.log("walk->", meter_per_walk);
-
+    
 
     navigation.setOptions({
         headerRight: () => (
@@ -68,9 +65,8 @@ function EnrollStep3({navigation, route}) {
 
                     // dogs DB에 등록하기
                     axios.post(`${HS_API_END_POINT}/api/dogs/list/`,{
-                        // id : 100,
                         registration_number : dogRegInfo[4].value ,
-                        image :dogImage,
+                        image :"http", //dogImage
                         name:dogRegInfo[0].value,
                         gender:dogRegInfo[1].value,
                         kind:dogRegInfo[2].value,
@@ -89,31 +85,25 @@ function EnrollStep3({navigation, route}) {
                         house_auth:true, // 버튼의 isActive 변수로 
                         floor_auth:true,    // 버튼의 isActive 변수로 
                     }).then(function (response) {
-                        console.log(response);
-                        // dog ID 를 받아오는 작업
-                        axios.get(`${HS_API_END_POINT}/api/dogs/list/registration_number=${registration_number}`)  
-                        .then((res)=> {      
-                             console.log("등록한 dogID 받음: ", res.data);
-                             setdogID(res.data.id);
-                         })
-                         .catch((err)=> {
-                             console.log(err);
-                         })
+                        // get 응답에서 pk 값 받아옴
+                        setdogID(JSON.parse(response.request._response).id);
+                        
                     }).catch(error => {console.log('error : ',error.response)});
 
+                    console.log("dogID", dogID)
                     // 인증 템플릿 설정에 post 하기 --> get 안에 넣기 
-                    /*axios.post(`${HS_API_END_POINT}/api/passcondition/${40}`,{
-                        dog_id: 40, // get 으로 받아온 dog_id로 등록해야함
+                    axios.post(`${HS_API_END_POINT}/api/passcondition/${40}/`,{
+                        dog_id: dogID, 
                         walk_total_count:walk_total_count,
                         min_per_walk:min_per_walk,
                         meter_per_walk:meter_per_walk,
-                        ts_total_count: 7,
-                        ts_check_time:route.params?.setTime,
+                        ts_total_count: input.checkDay,
+                        ts_check_time:input.setTime,
                     }).then(function (response) {console.log(response);})
-                    .catch(error => {console.log('error : ',error.response)});*/
+                    .catch(error => {console.log('error : ',error.response)});
 
                     alert('게시글이 등록 되었습니다.');
-                    navigation.navigate('Tab2Home',{}); // Tab2Home
+                    // navigation.navigate('Tab2Home',{}); // Tab2Home
 
             }}>완료</Text>
         ),
@@ -121,15 +111,6 @@ function EnrollStep3({navigation, route}) {
 
    
     return (
-
-        // bottom navigation 지우기
-        // 그 아래 등록하기(홈에서 보임), 저장하기 버튼 두기 
-
-        // 선택하기 (입양처 / 입양인)
-        // 사진 올리기 
-        // 견적사항 완성하기 (step 1) - 왼쪽 페이지에서
-        // 인증절차 선택하기 (step 2) - 오른쪽 페이지에서 
-        // progress bar는 어디에?
 
         <SafeAreaView style={styles.container}>  
 

@@ -17,53 +17,136 @@ import {
 import { responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Walk from '../../Template/Walk/';
+import TimeStamp from '../../Template/TimeStamp';
 //import * as RNFS from 'react-native-fs'
 import axios from 'axios';
-//import { HS_API_END_POINT } from '../../Shared/env';
+import { HS_API_END_POINT, USER_INFO } from '../../Shared/env';
 //import { setJwt,setUserInfo } from '../Store/Actions';
 //import { connect } from 'react-redux';
 import {navigation, useIsFocused} from '@react-navigation/native';
+import { Divider } from 'react-native-paper';
+import Icon from 'react-native-vector-icons//MaterialCommunityIcons';
 
-const AdoptionStep = ({navigation,aboutDog})=>{
-    // 1) dog에서 인증 절차 개수, 종류 받아오기 
+import RoomCheckHome from '../../Template/RoomCheck/RoomCheckHome';
+import Agreement from '../../Template/Survey/Agreement';
+import Survey from '../../Template/Survey/Survey';
+
+
+import { timeEnd } from 'console';
+
+const Item = ({ item, setModalVisible, setSelectedAuth }) => {
+
+    if(item.bool){
+        return (
+            <View style={{marginVertical:responsiveScreenHeight(3)}}>
+                <Pressable
+                underlayColor="#ffffff00" 
+                activeOpacity={0.5}  
+                onPress={()=>{setModalVisible(true) 
+                    setSelectedAuth(item.id)
+                }}
+                style={({ pressed }) => [{
+                    backgroundColor: pressed
+                    ? '#E1BEE7'
+                    : 'white'},{ // 진행률 에 따라 배경색 채워지는 정도 다름 
+                    // width:parentWidth.width,
+                    borderColor:'purple',
+                    borderWidth:3,
+                    borderRadius:40,
+                    width:responsiveScreenWidth(80),
+                    height:responsiveScreenHeight(5),
+                    alignSelf:'center',
+                    alignItems:'center',
+                    flexDirection:'row',
+                    justifyContent:'space-between',
+                    }]
+                }>
+                    <Icon size={responsiveScreenFontSize(3)} name={item.icon} style={{marginLeft:responsiveScreenWidth(5)}}></Icon>
+                    <Text
+                    style={{fontSize:responsiveScreenFontSize(3), }}>{item.title}</Text>
+                    <Text
+                    style={{fontSize:responsiveScreenFontSize(2), marginRight:responsiveScreenWidth(2), fontWeight:'bold', color:'purple'}}>| {item.progress}%</Text>
+                </Pressable>
+            </View>
+        );
+    }
+    else{
+        return (null);
+    }
+}
+
+     
+const AdoptionStep = ({navigation,aboutDog,setWishList})=>{
     const isFocused = useIsFocused();
-    
-    // 2) 찜목록에서 인증 진행률 받아오기-해당 인증 절차에 관한  (판매자 아이디로)
-    
-    //React.useEffect(()=> {
-        /*axios.post(`${HS_API_END_POINT}/api/users/wishlist/`,{ 
-            email: USER_INFO.USER_EMAIL,}) */
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedAuth, setSelectedAuth] = useState(null);
+    const [passCondition, setPassCondition] = useState(null);
         
-        /*axios.post(`${HS_API_END_POINT}/api/users/wishlist/`,{
-            "email":USER_INFO.USER_EMAIL,"dog_id":item.id})
-        .then(function(res){
-            if(res.data==="success"){
-                console.log(success);
-            }
+    // 1) dog에서 인증 절차 개수, 종류 확인 
+    let authlist = [ 
+    { title : '설문지', bool : true, id:0, icon:'file-document', progress:0},
+    { title : '동의서', bool : true, id:1, icon:'file-sign', progress:0},
+    { title : '산책량 측정', bool : true, id:2, icon:'walk', progress:0},
+    { title : '생활패턴 검증', bool : true, id:3, icon:'alarm', progress:0},
+    { title : '집 바닥재질 평가', bool : true, id:4, icon:'floor-plan', progress:0},
+    { title : '반려견 생활환경 평가', bool : true, id:5, icon:'home', progress:0},
+    ];
+    if(!aboutDog.floor_auth){
+        authlist[4].bool=false
+    } 
+    if(!aboutDog.house_auth){ 
+        authlist[5].bool=false
+    }
+
+   
+    React.useEffect(()=> { // useCallback?
+        // pass condition 받아오기 - 1번만 받아오는게 좋은데 
+        axios.get(`${HS_API_END_POINT}/api/passcondition/${aboutDog.id}/`)
+        .then(function (response) {
+            setPassCondition(response.data[0])
+            console.log("pass condition: ",aboutDog.id,response.data);})
+        .catch(error => {console.log('error : ',error.response)});
+    
+        // 반려견 진행율 업데이트하기
+        
+        // 반려견 진행률 받아오기 
+        axios.post(`${HS_API_END_POINT}/api/users/wishlist/`,{
+            "email":USER_INFO.USER_EMAIL,"dog_id":aboutDog.id})
+        .then(function(res){   
+            wishlist = res.data[0] 
+            authlist[0].progress = wishlist.survey
+            authlist[1].progress = wishlist.agreement
+            authlist[2].progress = wishlist.template1
+            authlist[3].progress = wishlist.template2
+            authlist[4].progress = wishlist.template3
+            authlist[5].progress = wishlist.template4
+            console.log("->",authlist)
+            setWishList(wishlist)
         })
         .catch(function(error){
             console.log(error);
-        });*/
-    //},[isFocused]);
+        });
 
-    // 3) 인증 진행률을 list로 넘기기 
+    },[isFocused]);
 
-    // 4) progress bar 순으로 // 동의서 -> 설문지 -> 인증 절차 1, 2, 3... 순으로 cloumn 나열
+    const renderItem = ({ item }) => (
+        <Item item={item} setModalVisible={setModalVisible} setSelectedAuth={setSelectedAuth}/>
+    );
 
-    // 5) 
-
-    // 또 빠뜨린거 없나..?
-
-    const [modalVisible, setModalVisible] = useState(false);
-    const [modalVisible2, setModalVisible2] = useState(false);
-    const [parentWidth, setParentWidth] = useState({width:0});
-    const onLayout=(event)=>{
-        const {x,y,height,width} = event.nativeEvent.layout;
-        setParentWidth({width:width});
-    };
     return (
-        <View style={styles.container} onLayout={onLayout}>
-            <View style={{marginVertical:20}}>
+        <View style={styles.container}>
+            <View style={{margin:"2%"}}></View>
+            <FlatList
+                horizontal={true}   // 스크롤
+                contentContainerStyle={{
+                    flexDirection: 'column', // 횡
+                }}
+                data={authlist}
+                renderItem={renderItem}
+                keyExtractor={item => item.id}
+                style={{alignSelf:'center'}}
+                />
+
             <Modal
             animationType='slide'
             transparent={false}
@@ -80,68 +163,30 @@ const AdoptionStep = ({navigation,aboutDog})=>{
                     onPress={()=>{
                         setModalVisible(!modalVisible)
                     }}>
+                        <View style={{margin:"1%"}} />
+
                         <Text
-                        style={{fontSize:20,color:'#006ef9'}}>{'←'}돌아가기</Text>
+                        style={{fontSize:20,color:'#006ef9', marginLeft:'1%'}}>{'←'}돌아가기</Text>
+                        <Divider style={{margin:"1%"}} />
                     </Pressable>
-                    <Walk/>
+                    
+                    {console.log("setSelectedAuth", selectedAuth)}
+                    {selectedAuth==0?<Survey></Survey>:null}
+                    {selectedAuth==1?<Agreement></Agreement>:null}
+                    {selectedAuth==2?<Walk></Walk>:null}
+                    {selectedAuth==3?<TimeStamp dog_id={aboutDog.id} ts_check_time={passCondition.ts_check_time} ts_total_count={passCondition.ts_total_count}></TimeStamp>:null}
+                    {selectedAuth==4?<Walk></Walk>:null}
+                    {selectedAuth==5?<RoomCheckHome></RoomCheckHome>:null}
+
                 </View>
             </Modal>
-            <Pressable
-            onPress={()=>{setModalVisible(true)}}
-            style={{
-                // width:parentWidth.width,
-                borderColor:'purple',
-                borderWidth:3,
-                borderRadius:40,
-                marginHorizontal:60,
-                width:parentWidth.width/1.5,
-                alignSelf:'center',
-                flexDirection:'row',
-                justifyContent:'space-between'
-                }}>
-                <Text
-                style={{fontSize:25}}>Walk</Text>
-                <Text
-                style={{fontSize:25}}>75%</Text>
-            </Pressable>
-            </View>
-            <View>
-            <Modal
-            animationType='slide'
-            transparent={false}
-            visible={modalVisible2}
-            onRequestClose={()=>{
-                setModalVisible2(!modalVisible2)
-            }}>
-                <View
-                style={{flexDirection:'column',flex:1}}>
-                    <Pressable
-                    style={{marginTop:40,
-                        marginBottom:40,
-                        zIndex:1,}}
-                    onPress={()=>{
-                        setModalVisible2(!modalVisible2)
-                    }}>
-                        <Text
-                        style={{fontSize:20,color:'#006ef9'}}>{'←'}돌아가기2</Text>
-                    </Pressable>
-                    <Walk/>
-                </View>
-            </Modal>
-            <Pressable
-            onPress={()=>{setModalVisible2(true)}}
-            style={{
-                borderColor:'purple',
-                borderWidth:3,
-                borderRadius:40,
-                marginHorizontal:60}}>
-                <Text
-                style={{fontSize:25,textAlign:'center'}}>Other Auth</Text>
-            </Pressable>
-            </View>
+
         </View>
     );
 };
+
+
+
 const styles = StyleSheet.create({
     bookBox: {
         margin:'5%',

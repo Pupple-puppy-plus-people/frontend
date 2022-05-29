@@ -1,6 +1,6 @@
 import React, {useState, createRef} from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
-import { NavigationContainer, useScrollToTop } from '@react-navigation/native';
+import { NavigationContainer, useScrollToTop, useIsFocused } from '@react-navigation/native';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {
@@ -25,6 +25,8 @@ import symbolicateStackTrace from 'react-native/Libraries/Core/Devtools/symbolic
 
 import DogInfo from '../DogInfo';
 import AdoptionStep from '../AdoptionStep'
+import axios from 'axios';
+import { HS_API_END_POINT, USER_INFO } from '../../../Shared/env';
 
 const screenWidth = Dimensions.get('screen').width;
 const screenHeight = Dimensions.get('screen').height;
@@ -32,11 +34,11 @@ const bigOne = screenWidth > screenHeight ? screenWidth:screenHeight;
 const smallOne = screenWidth < screenHeight ? screenWidth:screenHeight;
 
 import "react-native-gesture-handler";
-import { USER_INFO } from '../../../Shared/env';
 
 const Tab = createMaterialTopTabNavigator();
 
-function TopTabs({aboutDog}) {
+function TopTabs({aboutDog, setWishList}) {
+   
     return (
       <NavigationContainer 
          screenOptions={{ tabBarScrollEnabled: true,tabBarIndicatorStyle:{
@@ -60,7 +62,7 @@ function TopTabs({aboutDog}) {
             <Tab.Screen name="AdoptionStep" children={()=>{
                 return(
                     <View style={{flex:1}}>
-                    {USER_INFO.USER_TYPE==='customer'&&<AdoptionStep aboutDog={aboutDog}/>}
+                    {USER_INFO.USER_TYPE==='customer'&&<AdoptionStep aboutDog={aboutDog} setWishList={setWishList}/>}
                     {USER_INFO.USER_TYPE==='seller'&&<Text>ads</Text>}
                     </View>
                 )}} 
@@ -71,7 +73,7 @@ function TopTabs({aboutDog}) {
                 tabBarLabel:() => {return null},
                 tabBarIcon: ()=>(
                     
-                    <Icon name = "grid" size={25}/> // 아이콘 추천 받아요
+                    <Icon name = "grid" size={25}/> 
                 )
             }}/>
         </Tab.Navigator>
@@ -82,16 +84,20 @@ function TopTabs({aboutDog}) {
 
 function EnrollPage({navigation,route}) {
     const ref = React.useRef(null);
+    const isFocused = useIsFocused();
 
     useScrollToTop(ref);
 
     const [parentHeight, setParentHeight] = useState({height:0}); // 동적인 값 관리
+    const [wishlist, setWishList] = useState({}); // AdoptionStep에서 받아옴
 
     const onLayout=(event)=> {
         const {x, y, height, width} = event.nativeEvent.layout; // position (x, y), size (height, width)
         setParentHeight({height:height});
     };
-   
+
+    console.log("--HOW-->", wishlist)
+
     return (
         <SafeAreaView style={styles.container} onLayout={onLayout}>  
              
@@ -118,9 +124,9 @@ function EnrollPage({navigation,route}) {
                     </View>
                     
                     <View style={{ flex:1, 
-                        // 여기 크기 다시 !
+                        // 여기 크기 다시 ! -> 제일 긴 크기로 해야함
                         height: (parentHeight.height)*1.5}} /**(Dimensions.get('window').width)/(0.4) */>  
-                        <TopTabs aboutDog={route.params?.aboutDog}></TopTabs>
+                        <TopTabs aboutDog={route.params?.aboutDog} setWishList={setWishList}></TopTabs>
                     </View>
                 </>
             </ScrollView>

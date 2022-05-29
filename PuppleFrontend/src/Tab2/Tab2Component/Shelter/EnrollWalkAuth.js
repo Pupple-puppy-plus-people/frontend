@@ -62,7 +62,7 @@ function EnrollWalkAuth({route, navigation}) {
     }
 
     useEffect(()=>{
-    console.log(walkDay,walkTime,walkDistance)
+        console.log(walkDay,walkTime,walkDistance)
     });
 
     const gotoNextScreen = () => {
@@ -82,7 +82,8 @@ function EnrollWalkAuth({route, navigation}) {
             <View style={{flex:0.1}}>
                 <Text style={styles.title}>Step 3. 산책량 검증 시간 설정{'\n'}</Text>
             </View>
-            
+            <Divider style={{margin:"5%"}} />
+
             <View style={{flex:1.4}}>
                 <WalkPassCondition
                 onWalkDay={onWalkDay} 
