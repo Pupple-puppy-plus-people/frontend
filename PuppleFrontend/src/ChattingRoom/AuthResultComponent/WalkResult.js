@@ -19,7 +19,6 @@ import { ScrollView } from 'react-native-gesture-handler';
 import WeekComponent from '../../Template/Recycle/WeekComponent';
 import Geolocation from 'react-native-geolocation-service';
 
-
 const today = new Date().getDay();
 let baseUrl = `${HS_API_END_POINT}`
 let userdog = 'dddd'
@@ -373,6 +372,19 @@ const StopWatch = ({changeState}) => {
                     {walkauthData.distance}{'  m'}
                 </Text>
             </View>
+            <Pressable 
+            style={[styles.stopwatchBtn,{
+                backgroundColor:isActive
+                ? '#ff5959'
+                : '#55e07a'}]}
+            onPress={()=>{
+                handleStart()
+                }}>
+                <Text style={{ fontSize: 30 ,paddingVertical:10}}>{!isActive ? "Start" : "Stop"}</Text>
+            </Pressable>
+            <Pressable onPress={handleReset}>
+                <Text style={{ fontSize: 30 }}>Reset</Text>
+            </Pressable>
         </View>
     )
 }
@@ -546,6 +558,12 @@ class WalkResult extends Component{
             </View>
             {/* 산책 시작 버튼 */}
             
+            {/* <View style={[styles.container_background,styles.textInformation_container]}>
+                <Text style={styles.subTitle}>
+                    Walk Now!
+                </Text>
+                <StopWatch changeState={this.changeState}/>
+            </View> */}
                         
             </View>
             </TouchableWithoutFeedback>
@@ -633,7 +651,7 @@ const styles=StyleSheet.create({
         fontSize:20,
     },
     body_data:{
-        marginRight:150
+        marginRight:130
     },
     stopwatchBtn:{
         borderRadius:100,

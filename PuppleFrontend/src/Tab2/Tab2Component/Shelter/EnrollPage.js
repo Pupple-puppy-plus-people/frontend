@@ -16,9 +16,10 @@ import {
   ScrollView,
   Dimensions,
   Alert,
+  FlatList,
 } from 'react-native';
 import LottieView from 'lottie-react-native';
-import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
+import { responsiveFontSize, responsiveHeight, responsiveScreenHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import Animation from 'lottie-react-native';
 import symbolicateStackTrace from 'react-native/Libraries/Core/Devtools/symbolicateStackTrace';
 // import Loader from './Components/Loader';
@@ -27,6 +28,7 @@ import DogInfo from '../DogInfo';
 import AdoptionStep from '../AdoptionStep'
 import axios from 'axios';
 import { HS_API_END_POINT, USER_INFO } from '../../../Shared/env';
+import HandleTemplateReqeust from '../HandleTemplateRequest';
 
 const screenWidth = Dimensions.get('screen').width;
 const screenHeight = Dimensions.get('screen').height;
@@ -63,7 +65,7 @@ function TopTabs({aboutDog, setWishList}) {
                 return(
                     <View style={{flex:1}}>
                     {USER_INFO.USER_TYPE==='customer'&&<AdoptionStep aboutDog={aboutDog} setWishList={setWishList}/>}
-                    {USER_INFO.USER_TYPE==='seller'&&<Text>ads</Text>}
+                    {USER_INFO.USER_TYPE==='seller'&&<HandleTemplateReqeust aboutDog={aboutDog}/>}
                     </View>
                 )}} 
              options={{
@@ -95,42 +97,57 @@ function EnrollPage({navigation,route}) {
         const {x, y, height, width} = event.nativeEvent.layout; // position (x, y), size (height, width)
         setParentHeight({height:height});
     };
+   
+    const getHeader = () => {
+        return (
+            <View style={{flex:0.5,flexDirection:'column', padding:'3%',backgroundColor:'#fff'}}>
+                <View style={{flex:0.5}}/>
+                <View style={[styles.board,{flex:9,backgroundColor:'#E1BEE7',borderRadius:20}]}>
+                    <View style={{flex:1,justifyContent:'flex-end'}}>
+                        {/* <LottieView style={{width:'100%',height:'100%',margin:0}} source={require('../../Assets/json/42476-register.json')} autoPlay loop /> */}
+                        {/* <Text style={styles.title}>Step 1.</Text> */}
+                        <Text style={styles.title}> </Text>
+                        <Text style={styles.title}>반려견에 대한 인증절차</Text>
+                    </View>
+                    <View style={{flex:0.5, padding:10,justifyContent:'flex-start'}}>
+                        <Text style={styles.subtitle}>반려견 인증절차 수행 및 견적사항 확인</Text>
 
-    console.log("--HOW-->", wishlist)
+                    </View>
+                    <View style={{flex:4, flexDirection:'column',justifyContent:'center'}}>
+                    </View>
+                </View>
+
+                {/* <View style={{flex:1.5}}/> */}
+            </View>
+        );
+    };
+
+    const renderItem = ({item}) =>{
+        return(
+            <View style={{ flex:1, 
+                // 여기 크기 다시다시 !
+                height: responsiveScreenHeight(150)
+                }} /**(Dimensions.get('window').width)/(0.4) */>  
+                <TopTabs 
+                aboutDog={route.params?.aboutDog}
+                setWishList={setWishList}
+                ></TopTabs>
+            </View>
+        );
+    };
 
     return (
         <SafeAreaView style={styles.container} onLayout={onLayout}>  
-             
-            <ScrollView ref = {ref} style={styles.scrollView} >
-                <> 
-                    <View style={{flex:0.5,flexDirection:'column', padding:'3%',backgroundColor:'#fff'}}>
-                        <View style={{flex:0.5}}/>
-                        <View style={[styles.board,{flex:9,backgroundColor:'#E1BEE7',borderRadius:20}]}>
-                            <View style={{flex:1,justifyContent:'flex-end'}}>
-                                {/* <LottieView style={{width:'100%',height:'100%',margin:0}} source={require('../../Assets/json/42476-register.json')} autoPlay loop /> */}
-                                {/* <Text style={styles.title}>Step 1.</Text> */}
-                                <Text style={styles.title}> </Text>
-                                <Text style={styles.title}>반려견에 대한 인증절차</Text>
-                            </View>
-                            <View style={{flex:0.5, padding:10,justifyContent:'flex-start'}}>
-                                <Text style={styles.subtitle}>반려견 인증절차 수행 및 견적사항 확인</Text>
-
-                            </View>
-                            <View style={{flex:4, flexDirection:'column',justifyContent:'center'}}>
-                            </View>
-                        </View>
-
-                        <View style={{flex:1.5}}/>
-                    </View>
-                    
-                    <View style={{ flex:1, 
-                        // 여기 크기 다시 ! -> 제일 긴 크기로 해야함
-                        height: (parentHeight.height)*1.5}} /**(Dimensions.get('window').width)/(0.4) */>  
-                        <TopTabs aboutDog={route.params?.aboutDog} setWishList={setWishList}></TopTabs>
-                    </View>
-                </>
-            </ScrollView>
-
+            
+            <FlatList
+            ref={ref}
+            style={styles.scrollView}
+            data={[{id:0}]}
+            renderItem={renderItem}
+            listKey={new Date().getTime().toString()}
+            ListHeaderComponent={getHeader}
+            />
+            
         </SafeAreaView>
         
     );
@@ -143,7 +160,7 @@ const styles = StyleSheet.create({
         
     },
     scrollView: {
-        backgroundColor: 'pink',
+        backgroundColor: 'white',
         marginHorizontal: 0,
         flex: 1,
         flexGrow: 1,
