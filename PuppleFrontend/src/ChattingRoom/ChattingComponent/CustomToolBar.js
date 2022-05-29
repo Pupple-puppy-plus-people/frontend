@@ -72,10 +72,10 @@ const CustomToolBar = (props)=>  {
         { title : '반려견 생활환경 평가', bool : true},
     ];
     
-    if(!props.aboutDog.house_auth){ // dogs에서 인증절차 여부에 따라 chiplist의 bool 바뀜
+    if(!props.aboutDog.floor_auth){
         chiplist[4].bool=false
     }
-    if(!props.aboutDog.floor_auth){
+    if(!props.aboutDog.house_auth){ // dogs에서 인증절차 여부에 따라 chiplist의 bool 바뀜
         chiplist[5].bool=false
     }
 

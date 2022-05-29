@@ -37,46 +37,66 @@ const smallOne = screenWidth < screenHeight ? screenWidth:screenHeight;
 
 function EnrollTimeAuth({route, navigation}) {
     const ref = React.useRef(null);
+    const input = route.params;
 
-    console.log("---navigated to EnrollTimeAuth---> ", route.params);
+    
     //console.log("---route.pparames---> ", route.params?.selectedFilter);
     //console.log("---route.pparames---> ", route.params?.dogRegInfo);
 
-    const [time, setTime] = useState(1);
-    
-    useEffect(()=>{
-    console.log("time", time)
-    });
+    const [time, setTime] = useState(7);
+    const [checkDay, setCheckDay] = useState(7);
 
+    const onTime = (number) => {
+        setTime(number);
+    }
+    const onChangeDay = (number) => {
+        setCheckDay(number);
+    }
+
+    useEffect(()=>{
+    console.log("set timestamp", time, checkDay)
+    });
+    
     const gotoNextScreen = () => {
+
         navigation.navigate('EnrollStep3',
-        {dogInfo: route.params?.dogInfo, 
-            dogText: route.params?.dogText, 
-            dogImage: route.params?.dogImage, 
-            walkDay: route.parmas?.walkDay, 
-            walkTime: route.parmas?.walkTime, 
-            walkDistance: route.parmas?.walkDistance,
+        {dogInfo: input.dogInfo, 
+            dogText: input.dogText, 
+            dogImage: input.dogImage, 
+            walkDay: input.walkDay, 
+            walkTime: input.walkTime, 
+            walkDistance: input.walkDistance,
             setTime: time,
+            checkDay: checkDay,
         });
     }
-    const setData = (number) => {
-        setTime(number);
-      }
+  
+    useEffect(()=>{
+        console.log(time,checkDay)
+    });
+    
     return (
 
         <View  style={[styles.container]}>
-            <View style={{flex:0.1}}>
+            <View style={{flex:0.1,}}>
                 <Text style={styles.title}>Step 4. 돌봄 검증 시간 설정{'\n'}</Text>
             </View>
-            
-            <View style={{flex:1.4}}>
+            <Divider style={{margin:"1%"}} />
+
+            <View style={{flex:0.15}}>
+                {/** 인증 템플릿 설명 **/}
+                <Text style={styles.subtitle}>*시간: 반려견과 집에서 함께 보내는 시간을 체크해요.</Text> 
+                <Text style={styles.subtitle}>*횟수: 인증을 진행할 횟수를 정해주세요.</Text> 
+            </View>
+
+            <View style={{flex:1}}>
                 <TimestampCondition
-                setData={setData}/>
+                onTime={onTime}
+                onChangeDay={onChangeDay}/>
             </View>
             
-            <View style={{height:"10%", marginBottom:"5%", justifyContent:'flex-end', flex:0.2}}>
+            <View style={{height:"10%", marginBottom:"5%", flex:0.16}}>
                 <Divider style={{margin:"5%"}} />
-
                 <TouchableOpacity 
                     onPress={gotoNextScreen}
                     style={styles.nextBtn}>
