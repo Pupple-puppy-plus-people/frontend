@@ -9,14 +9,17 @@ import {
     FlatList,
     TouchableWithoutFeedback,
 } from 'react-native';
-import Geolocation from 'react-native-geolocation-service';
-import {getDistance} from 'geolib';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import { HS_API_END_POINT } from '../../../Shared/env';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import WeekComponent from '../../Recycle/WeekComponent';
+import { HS_API_END_POINT } from '../../Shared/env';
+import { Divider } from 'react-native-paper';
+import { ScrollView } from 'react-native-gesture-handler';
+import WeekComponent from '../../Template/Recycle/WeekComponent';
+import Geolocation from 'react-native-geolocation-service';
+
+
 const today = new Date().getDay();
 let baseUrl = `${HS_API_END_POINT}`
 let userdog = 'dddd'
@@ -370,19 +373,6 @@ const StopWatch = ({changeState}) => {
                     {walkauthData.distance}{'  m'}
                 </Text>
             </View>
-            <Pressable 
-            style={[styles.stopwatchBtn,{
-                backgroundColor:isActive
-                ? '#ff5959'
-                : '#55e07a'}]}
-            onPress={()=>{
-                handleStart()
-                }}>
-                <Text style={{ fontSize: 30 ,paddingVertical:10}}>{!isActive ? "Start" : "Stop"}</Text>
-            </Pressable>
-            <Pressable onPress={handleReset}>
-                <Text style={{ fontSize: 30 }}>Reset</Text>
-            </Pressable>
         </View>
     )
 }
@@ -405,7 +395,7 @@ function extract(){
     }
 }
 
-class WalkAuthComponent extends Component{
+class WalkResult extends Component{
     constructor(props){
         Geolocation.requestAuthorization('always');
         super(props);
@@ -556,12 +546,6 @@ class WalkAuthComponent extends Component{
             </View>
             {/* 산책 시작 버튼 */}
             
-            <View style={[styles.container_background,styles.textInformation_container]}>
-                <Text style={styles.subTitle}>
-                    Walk Now!
-                </Text>
-                <StopWatch changeState={this.changeState}/>
-            </View>
                         
             </View>
             </TouchableWithoutFeedback>
@@ -649,7 +633,7 @@ const styles=StyleSheet.create({
         fontSize:20,
     },
     body_data:{
-        marginRight:130
+        marginRight:150
     },
     stopwatchBtn:{
         borderRadius:100,
@@ -664,4 +648,4 @@ const styles=StyleSheet.create({
     }
 });
 
-export default WalkAuthComponent;
+export default WalkResult;

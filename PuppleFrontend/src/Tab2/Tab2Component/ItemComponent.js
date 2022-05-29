@@ -1,5 +1,5 @@
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
-import React, {useState, useEffect, Component} from 'react';
+import React, {useState, useEffect, Component, useCallback} from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import {navigation} from '@react-navigation/native';
 

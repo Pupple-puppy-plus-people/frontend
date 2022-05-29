@@ -137,8 +137,8 @@ const DogDetail = ({item,id}) => {
                     <View style={{flexDirection: 'row', justifyContent: 'flex-start', flexWrap:'wrap',marginBottom:20,marginHorizontal:10}}>
                         <Chip style={styles.chip} textStyle={styles.chipText}> 산책량 측정 </Chip>
                         <Chip style={styles.chip} textStyle={styles.chipText}>  생활패턴 검증 </Chip>
-                        <Chip style={styles.chip} textStyle={styles.chipText}>  집 바닥재질 평가 </Chip>
-                        <Chip style={styles.chip} textStyle={styles.chipText}>  반려견 생활환경 평가 </Chip>
+                        {item.floor_auth && <Chip style={styles.chip} textStyle={styles.chipText}>  집 바닥재질 평가 </Chip>}
+                        {item.house_auth && <Chip style={styles.chip} textStyle={styles.chipText}>  반려견 생활환경 평가 </Chip>}
                     </View> 
                 </View>
             </View>

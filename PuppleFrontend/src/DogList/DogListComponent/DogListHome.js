@@ -20,7 +20,7 @@ import {
 //import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import Icon2 from 'react-native-vector-icons/Feather';
-import { responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth, responsiveWidth } from 'react-native-responsive-dimensions';
+import { responsiveFontSize, responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth, responsiveWidth } from 'react-native-responsive-dimensions';
 import DogDetail from './DogDetail';
 import axios from 'axios';
 import { HS_API_END_POINT, USER_INFO } from '../../Shared/env';
@@ -218,36 +218,23 @@ const DogListHome = ({ navigation,route }) => {
 
                 <View style={{flexDirection:'row'}}>
                     <Pressable
-                        style={[styles.button, styles.buttonOpen]}
+                        style={{...styles.buttonOpen,flex:1,
+                            marginHorizontal: 5,
+                            borderRadius: 15,
+                            elevation: 2}}
                     // onPress={() => setModal(true)}
                         onPress={() =>
                         navigation.navigate('FilterDogList')}
                     >
-                        <Icon2 name="menu" size={30} color="red" />
+                        <View style={{borderRadius:20,alignItems:'center',flexDirection:'row',padding:10, backgroundColor:'#E9E0FF'}}>
+                            
+                            <Icon2 name="menu" size={30} color="purple" style={{alignSelf:'center',marginHorizontal:10}} />
+                            <Text style={{fontSize:responsiveFontSize(2),fontWeight:'bold',alignSelf:'center'}}>
+                                원하는 조건의 강아지를 선택해 보세요!
+                            </Text>
+                        </View>
                     </Pressable>
                     
-                    <Pressable
-                    style={[styles.button, styles.buttonOpen]}
-                    onPress={() => 
-                    navigation.navigate('RoomCheck')}
-                    > 
-                       <Icon2 name="camera" size={30} color="purple" />
-                    </Pressable>
-
-                    <Pressable
-                    style={[styles.button, styles.buttonOpen]}
-                    onPress={() => 
-                    navigation.navigate('Survey')}
-                    > 
-                       <Icon2 name="file-text" size={30} color="purple" />
-                    </Pressable>
-                    <Pressable
-                    style={[styles.button, styles.buttonOpen]}
-                    onPress={() => 
-                    navigation.navigate('Agreement')}
-                    > 
-                       <Icon2 name="file" size={30} color="purple" />
-                    </Pressable>
                 </View>
 
                 <SafeAreaView style={{ alignItems: 'center', width: '100%', marginTop: '3%' }}>

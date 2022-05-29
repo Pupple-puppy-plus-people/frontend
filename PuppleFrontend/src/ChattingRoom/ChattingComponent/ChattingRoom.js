@@ -28,8 +28,8 @@ const screenWidth = Dimensions.get('screen').width;
 const screenHeight = Dimensions.get('screen').height;
 const bigOne = screenWidth > screenHeight ? screenWidth:screenHeight;
 const smallOne = screenWidth < screenHeight ? screenWidth:screenHeight;
-import { GiftedChat, Bubble } from 'react-native-gifted-chat/src'
-
+// import { GiftedChat, Bubble } from 'react-native-gifted-chat/src'
+import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import CustomToolBar from './CustomToolBar';
 import axios from 'axios';
 import { set } from 'react-native-reanimated';

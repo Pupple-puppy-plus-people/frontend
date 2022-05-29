@@ -53,6 +53,7 @@ function DogList({user_info}){
             }}
             />
             
+            
         </Stack.Navigator>
     )
 }
