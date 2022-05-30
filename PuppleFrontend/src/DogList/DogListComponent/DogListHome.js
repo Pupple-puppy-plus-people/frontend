@@ -232,7 +232,7 @@ const DogListHome = ({ navigation,route }) => {
                     <Pressable
                     style={[styles.button, styles.buttonOpen]}
                     onPress={() => 
-                    navigation.navigate('Survey')}
+                    navigation.navigate('MatDetector')}
                     > 
                        <Icon2 name="file-text" size={30} color="purple" />
                     </Pressable>
