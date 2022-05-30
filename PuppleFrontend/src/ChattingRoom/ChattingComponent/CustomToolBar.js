@@ -242,7 +242,10 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.25,
         shadowRadius: 4,
-        elevation: 5
+        elevation: 5,
+
+        backgroundColor: "#eedbff",
+        borderRadius:15,
     },
     closeButton: {
         justifyContent: 'center',
@@ -265,7 +268,9 @@ const styles = StyleSheet.create({
     menu: {
         justifyContent: 'center',
         alignItems: 'center',
-    },conatiner_background:{
+        
+    },
+    conatiner_background:{
         backgroundColor: "#eedbff",
         borderRadius:15,
     },
