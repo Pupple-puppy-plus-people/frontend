@@ -53,7 +53,7 @@ const Item = (props) => {
                                 <AuthResultModal 
                                 selectedTitle={props.selectedTitle}
                                 customerID={props.customerID}
-                                dogId={props.dogId}
+                                dogID={props.dogID}
                                 >
 
                                 </AuthResultModal>
@@ -119,8 +119,8 @@ const CustomToolBar = (props)=>  {
             setSelectedTitle(item.title)
         }}
         selectedTitle={selectedTitle}
-        customerId={props.customerID}
-        dogId={props.aboutDog.id}
+        customerID={props.customerID}
+        dogID={props.aboutDog.id}
         setModalVisible={setModalVisible} 
         modalVisible={modalVisible}
         

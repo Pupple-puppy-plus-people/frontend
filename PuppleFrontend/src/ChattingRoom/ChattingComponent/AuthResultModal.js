@@ -25,6 +25,7 @@ import AgreementResult from '../AuthResultComponent/AgreementResult';
 import SurveyResult from '../AuthResultComponent/SurveyResult';
 import TimestampResult from '../AuthResultComponent/TimestampResult';
 import WalkResult from '../AuthResultComponent/WalkResult';
+import HousePhotoResult from '../AuthResultComponent/HousePhotoResult';
 
 
 
@@ -40,12 +41,12 @@ const AuthResultModal = (props) => {
 
     return(
         <View style={{flex:1}}>
-            {props.selectedTitle==='설문지' && <SurveyResult dogId={props.dogId} userId={props.customerId}/>}
-            {props.selectedTitle==='동의서' && <AgreementResult dogId={props.dogId} userId={props.customerId}/>}
-            {props.selectedTitle==='산책량 측정' && <WalkResult dogId={props.dogId} userId={props.customerId}/>}
-            {props.selectedTitle==='생활패턴 검증' && <TimestampResult  dogId={props.dogId} userId={props.customerId}/>}
+            {props.selectedTitle==='설문지' && <SurveyResult dogId={props.dogID} userId={props.customerID}/>}
+            {props.selectedTitle==='동의서' && <AgreementResult dogId={props.dogID} userId={props.customerID}/>}
+            {props.selectedTitle==='산책량 측정' && <WalkResult dogId={props.dogID} userId={props.customerID}/>}
+            {props.selectedTitle==='생활패턴 검증' && <TimestampResult  dogId={props.dogID} userId={props.customerID}/>}
             {props.selectedTitle==='집 바닥재질 평가' && <Text style={{fontSize:50}}>5555555555</Text>}
-            {props.selectedTitle==='반려견 생활환경 평가' && <Text style={{fontSize:50}}>666666666</Text>}
+            {props.selectedTitle==='반려견 생활환경 평가' && <HousePhotoResult dogId={props.dogID} userId={props.customerID}/>}
         </View>
     );
 }
