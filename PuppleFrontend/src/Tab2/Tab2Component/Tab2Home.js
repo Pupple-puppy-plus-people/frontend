@@ -39,9 +39,9 @@ const Stack = createStackNavigator();
 
 function Authenticate ({navigation}) {
   const isFocused = useIsFocused();
-    const [type, setType] = useState("");
-    const {width, height} = useWindowDimensions();
-    const [dogs, setDogs] = useState([{}]) 
+  const [type, setType] = useState("");
+  const {width, height} = useWindowDimensions();
+  const [dogs, setDogs] = useState([{}]) 
 
       // dog list 받아옴
       React.useEffect(()=> {
@@ -94,6 +94,7 @@ function Authenticate ({navigation}) {
                    console.log(err);
                })
           }
+ 
     },[isFocused]); // isFocused로 refresh시 state 업데이트 됨
       
 

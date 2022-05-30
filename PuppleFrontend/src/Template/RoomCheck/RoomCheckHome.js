@@ -31,13 +31,13 @@ const RoomCheckHome=({navigation, route})=> {
 
 
     const [pickerResponse, setPickerResponse] = useState(null);
-    useEffect(() => {
+    /*useEffect(() => {
         if(route.params){
             setPhotoUri([...photoUri,...route.params.photoUri])
             console.log("route image : ",route.params.photoUri)
             console.log(photoUri)
         }
-      }, [route.params]);
+      }, [route.params]);*/
     
     const openCamera = () => {
         

@@ -7,9 +7,10 @@ import {
     Text,
     TouchableOpacity,
     BackHandler,
+    
 } from 'react-native';
-import { responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
 import { FlatList } from "react-native-gesture-handler";
+import { responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
 
 const baseUrl = 'http:127.0.0.1:8000';
 let query = '?';
@@ -111,9 +112,9 @@ const Choice = ({
        );
     };
     return (
-        <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+        <View style={{ backgroundColor:'white',flexDirection: 'row', alignItems: 'center'}}>
             <View style={btnTxtStyles}>
-                <Text>{text}</Text>
+                <Text style={{fontSize:18, fontWeight:'bold', color:'purple'}}>{text}</Text>
             </View>
             {whatFilter !== 1 &&
                Array.from({length: choicesCount}).map((item, index) => (
@@ -171,7 +172,7 @@ const FilterDogList = ({navigation}) => {
       };
     const renderItem=()=>{
         return(
-            <View style={styles.container}>
+            <View style={{...styles.container, backgroundColor:'white'}}>
             {data.map((x) => (
             <Choice
                 text={x.title}
@@ -289,6 +290,17 @@ const styles = StyleSheet.create({
   btnTxtStyles: {
     ...labelDimentions,
     alignItems: 'center',
+    
   },
+  chip:{
+    width:'auto',
+    margin:4,
+    backgroundColor:'purple',
+},
+chipText:{
+    fontSize:responsiveScreenFontSize(2),
+    fontWeight:'bold',
+    color:'white'
+}
 });
 export default FilterDogList;

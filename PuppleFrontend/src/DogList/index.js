@@ -28,9 +28,6 @@ function DogList({user_info}){
                 title: '찾으시는 강아지가 있으신가요?',
             }}/>
 
-
-
-
             <Stack.Screen 
             name="RoomCheck" 
             component={RoomCheckHome}

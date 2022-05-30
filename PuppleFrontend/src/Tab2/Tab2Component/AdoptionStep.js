@@ -27,7 +27,7 @@ import {navigation, useIsFocused} from '@react-navigation/native';
 import { Divider } from 'react-native-paper';
 import Icon from 'react-native-vector-icons//MaterialCommunityIcons';
 
-import RoomCheckHome from '../../Template/RoomCheck/RoomCheckHome';
+import RoomCheck from '../../Template/RoomCheck';
 import Agreement from '../../Template/Survey/Agreement';
 import Survey from '../../Template/Survey/Survey';
 
@@ -98,6 +98,8 @@ const AdoptionStep = ({navigation,aboutDog,setWishList})=>{
         authlist[5].bool=false
     }
 
+    const [startTime, setStartTime] = useState([]);
+
    
     React.useEffect(()=> { // useCallback?
         // pass condition 받아오기 - 1번만 받아오는게 좋은데 
@@ -126,6 +128,21 @@ const AdoptionStep = ({navigation,aboutDog,setWishList})=>{
         .catch(function(error){
             console.log(error);
         });
+        
+        // timestamp 시작시간 
+        axios.get(`${HS_API_END_POINT}/api/timestamp/get/?user=${USER_INFO.USER_ID}&dog=${aboutDog.dog_id}&day=${-1}`) 
+        .then((res)=> {      
+            if(Object.keys(res.data).length==0){ // Object.keys(this.timelist).length==0
+                console.log("HI")
+                setStartTime(0)
+            }else{
+                setStartTime(res.data[0]['start_time'])
+            }
+            console.log("TimeStamp start time", startTime); // 왜 timeList에 안들어가지 
+        })
+        .catch((err)=> {
+            console.log(err);
+        })
 
     },[isFocused]);
 
@@ -174,9 +191,9 @@ const AdoptionStep = ({navigation,aboutDog,setWishList})=>{
                     {selectedAuth==0?<Survey></Survey>:null}
                     {selectedAuth==1?<Agreement></Agreement>:null}
                     {selectedAuth==2?<Walk></Walk>:null}
-                    {selectedAuth==3?<TimeStamp dog_id={aboutDog.id} ts_check_time={passCondition.ts_check_time} ts_total_count={passCondition.ts_total_count}></TimeStamp>:null}
+                    {selectedAuth==3?<TimeStamp dog_id={aboutDog.id} ts_check_time={passCondition.ts_check_time} ts_total_count={passCondition.ts_total_count} startTime={startTime} setStartTime={setStartTime}></TimeStamp>:null}
                     {selectedAuth==4?<Walk></Walk>:null}
-                    {selectedAuth==5?<RoomCheckHome></RoomCheckHome>:null}
+                    {selectedAuth==5?<RoomCheck></RoomCheck>:null}
 
                 </View>
             </Modal>

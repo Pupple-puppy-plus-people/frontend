@@ -8,6 +8,7 @@ import {
     Pressable,
     FlatList,
     TouchableWithoutFeedback,
+    Alert,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
@@ -18,6 +19,7 @@ import WeekComponent from '../../Recycle/WeekComponent';
 import { HS_API_END_POINT, USER_INFO } from '../../../Shared/env';
 import { Divider } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 
 class SummaryList extends Component{
     constructor(props){
@@ -38,6 +40,83 @@ class SummaryList extends Component{
     }
 }
 
+class SummaryList2 extends Component{
+    constructor(props){
+        super(props);
+        this.state={
+            dayIndex : 0
+        }
+    }
+    setDayIndex(newIndex) {
+        this.setState({dayIndex:newIndex})    
+    }
+    render(){
+        let day_index = 0;
+        // const [dayIndex, setDayIndex] = useState(0);
+        const day_num = [0,1,2,3,4,5,6];
+        const dayEval = day_num.map((oneday)=>
+            <MaterialCommunityIcons 
+            key={oneday}
+            name={myData[oneday].day == oneday ?
+                (myData[oneday].evaluate?"check-circle-outline":"close-circle-outline")
+            :   ("progress-question")}
+            color={myData[oneday].day == oneday ?
+                (myData[oneday].evaluate?'green':'red')
+            :   ("purple")}
+            size={25}/>
+        );
+
+        const timeEval = day_num.map((oneday)=>
+            <View>
+                <Text>{day_index}</Text>
+                {
+                    myData[day_index].day == oneday&&
+                    myData[oneday].elapsed_time>=pass_condition.min_per_walk&&
+                    <MaterialCommunityIcons
+                    key={'time'+oneday}
+                    name='check-circle-outline'
+                    color={'green'}
+                    size={25}/>
+                }
+                {
+                    myData[day_index].day == oneday&&
+                    myData[oneday].elapsed_time<pass_condition.min_per_walk&&
+                    <MaterialCommunityIcons
+                    key={'time'+oneday}
+                    name='close-circle-outline'
+                    color={'red'}
+                    size={25}/>
+                }
+                {/* {myData[day_index].day == oneday && this.setDayIndex(this.state.dayIndex+1)} */}
+            </View>    
+        );
+        const distanceEval = day_num.map((oneday)=>
+            <View>
+                {myData[oneday].distance>=pass_condition.meter_per_walk&&
+                    <MaterialCommunityIcons
+                    key={'distance'+oneday}
+                    name='check-circle-outline'
+                    color={'green'}
+                    size={25}/>
+                }
+                {myData[oneday].distance<pass_condition.meter_per_walk&&
+                    <MaterialCommunityIcons
+                    key={'distance'+oneday}
+                    name='close-circle-outline'
+                    color={'red'}
+                    size={25}/>
+                }
+            </View>
+        );
+        // #eedbff background color
+        return(
+            <View style={styles.summary_row}>
+                {this.props.evalType==='time'&&timeEval}
+                {this.props.evalType==='distance'&&distanceEval}
+            </View>
+        );
+    }
+}
 // FlatList 시작
 // list에 반복적으로 보여질 item
 const Info_Item = ({dataInfo}) => (
@@ -49,7 +128,9 @@ const Info_Item = ({dataInfo}) => (
         <Text 
         style={[styles.body,styles.body_data]}>
             {dataInfo.data}
-            
+        </Text>
+        <Text // 빈공간
+        style={styles.body}> 
         </Text>
     </View>
 );
@@ -76,63 +157,179 @@ const Information = ({informationName,showData}) => {
     );
 }
 
-
 const Item = ({ item }) => (
     <View style={{flexDirection:'row', alignItems:'center'}}>
-    <Text style={[styles.body,{flex:1}]}>   {item.id}</Text>
-    <Text style={[styles.body,{flex:2}]}>   {item.press_time}</Text>
+        <View style={{flex:1}}>
+            <Text style={[styles.body,{flex:1}]}>{item.id}</Text>
+        </View>
+        <View style={{flex:4}}>
+            <Text style={[styles.body,{flex:2}]}>{item.press_time}</Text> 
+        </View>
     </View>
-);
 
-const TimeStamp = ({parentlist, getlist, dogID}) => {
+);
+// // document.writeln(curr);
+const TimeStamp = ({info, getlist}) => {
+    const isFocused = useIsFocused();
+
     const [timer, setTimer] = useState(0)
     const [prevTimer, setPrevTimer] = useState(0)   // 서버에서 받아온 것 중 가장 마지막  -> 누른 시각에 뜨기도 함
     const [isActive, setIsActive] = useState(false)
     const [timelist, setTimeList] = useState([{}])
+    const today = new Date().getDay();
+
 
     React.useEffect(()=> {
-        axios.get(`${HS_API_END_POINT}/api/timestamp/get/?user=${USER_INFO.USER_ID}&dog=${dogID}`) 
-        .then((res)=> {      
-            setTimeList(res.data);
-            props.getlist(res.data)
-            console.log("TimeStamp Data 받음.", timelist, res.data); // 왜 timeList에 안들어가지 
+        console.log("parentState", info)
+        // 오늘 요일에 해당하는 누른 시간 가져옴
+        axios.get(`${HS_API_END_POINT}/api/timestamp/get/?user=${USER_INFO.USER_ID}&dog=${info.parentState.dog_id}&day=${Number(today)}`) 
+        .then((res)=> { 
 
+            list = []
+            
+            //getlist(res.data)
+            if(res.data.length==0){
+                console.log("NO DATA")
+            }else{
+                info.prev_timelist = res.data[res.data.length-1] // 마지막 리스트
+                console.log("-=====>", info.prev_timelist)
+                getlist(res.data[res.data.length-1])
+            }
+
+            for(idx in res.data){
+                copy = JSON.parse(JSON.stringify(res.data[idx])) //deepcopy
+                copy.press_time=convertTimeFormat(copy.press_time)
+                copy.id = Number(idx)+Number(1)
+                list.push(copy)
+            }
+            setTimeList(list);
+            console.log("1TimeStamp Data 받음."); 
         })
         .catch((err)=> {
             console.log(err);
         })
-    }, []); 
-    
-    function postserver(timer){
-        console.log("time:", timer)
-        axios.post(`${HS_API_END_POINT}/api/timestamp/`,{ 
-            userdog: 0,
-            day: 0,
-            press_time: timer,
-            start_time: 0,
-            evaluate: true
-        })
+    }, [isFocused]); 
+
+
+    function postserver(time){
+        console.log("time:", time, info)
+
+        dogID = info.parentState.dog_id // 개 아이디 
+        start_time = info.parentState.start_time // 사용자 설정 시작 시간
+        prev_start_time = start_time // 마직막에 누른 시간의 시작 시간
+        ts_check_time = info.parentState.ts_check_time // 공백 시간
+
+        var compare= new Date();
+
+        data = { 
+            user: USER_INFO.USER_ID,
+            dog: dogID,
+            day: today,
+            press_time: time.getTime().toString(), // 1/1000초의 string
+        }
+
+        // 초 단위로 비교
+        if(info.prev_timelist.length==0){ // 이전에 누른 시간이 없을 때 
+            compare.setHours(start_time, 0, 0, 0); // 시작 시간으로 
+            console.log("===didi==>", Math.floor(time - compare)/1000, time, compare)
+            if(Math.floor(time - compare)/1000 < 0 ){
+                // 시작 시간 이전에 누른 경우
+                Alert.alert("시작 시간이 전이에요:)");
+                return 0;
+            }
+            if(Math.floor(time - compare)/1000 <= 3600*ts_check_time){
+                // 시작 시간 + 공백 시간 전에 누른 경우 
+                data.start_time = start_time 
+                data.evaluate = true
+                Alert.alert("좋아요! 순조로운 시작:)");
+            }else{
+                // 시간 시간 + 공백 시간 후에 누른 경우
+                data.start_time = 0
+                data.evaluate = false
+                Alert.alert("오늘 하루는 늦은 시작이네요:(");
+            }
+        }else{ // 이전에 누른 시간이 있는 경운
+            prev_start_time = info.prev_timelist.start_time // 마직막에 누른 시간의 시작 시간
+            compare.setHours(prev_start_time, 0, 0, 0); // 검사할 시간
+
+            if(info.prev_timelist.evaluate){
+                // 이전에 누른게 true 일때 
+                if(Math.floor(time - compare)/1000 <= 3600*ts_check_time){
+                    // 이전 시간의 시작 시간 전에 누른 경우
+                    data.start_time = prev_start_time  
+                    data.evaluate = true
+                    Alert.alert("이미 통과에요! 다음 마감 시간까지 쉬어도 돼요:)");
+                }else{
+                    // 이전 시간의 시작 시간 후에 누른 경우
+                    if(Math.floor(time - compare)/1000 <= 3600*(prev_start_time+ts_check_time)){
+                        // 이전 시간의 시작 시간 + 공백 시간 보다 작을 때 
+                        data.start_time = prev_start_time + ts_check_time 
+                        data.evaluate = true
+                        Alert.alert("통과에요! 반려견이 기뻐해요:)");
+                    }else{
+                        // 이전 시간의 시작 시간 + 공백 시간 보다 클 때 
+                        data.start_time = 0   
+                        data.evaluate = false
+                        Alert.alert("늦었어요! 반려견과의 시간을 지켜주세요:(");
+                    }
+                }     
+            }else{
+                // 이전에 누른게 false 일때
+                // post 하지 않는다. 
+                //data.start_time = 0
+                //data.evaluate = false
+                Alert.alert("다음 기회에! 내일이 있어요:(");
+                return 0;
+            }
+           
+        }
+        getlist(data)
+
+        console.log("data---->", data)
+        // post를 해야할 때 
+        axios.post(`${HS_API_END_POINT}/api/timestamp/add/`,data)
         .then(function (response){
-            console.log(response.status);
+            console.log(response);
         })
         .then(function (error){
             console.log(error);
         });
+
+        if(timelist.length==0){
+            data.id = 1
+            data.press_time=convertTimeFormat(data.press_time)
+            setTimeList([data])
+        }else{
+
+            data.id = Number(timelist[timelist.length-1].id)+Number(1)
+            data.press_time=convertTimeFormat(data.press_time)
+            // setTimeList(timelist.append(data))
+            timelist.push(data)
+            setTimeList(timelist)
+        }
     }
 
     const handleStart = () => {
-        //getfromserver('start')
         const date = new Date();
         console.log(date);
+        postserver(date) //timer
+    }
+
+    function convertTimeFormat(press_time){
+        const date = new Date(Number(press_time));
+
+        const year = date.getFullYear();
+        const month = ('0' + (date.getMonth() + 1)).slice(-2);
+        const day = ('0' + date.getDate()).slice(-2);
+        const dateString = year + '-' + month  + '-' + day;
 
         const getSeconds = `0${date.getSeconds()}`.slice(-2)
         const minutes = `${date.getMinutes()}`
         const getMinutes = `0${date.getMinutes()}`.slice(-2)
         const getHours = `0${date.getHours()}`.slice(-2)
-        setTimer((timer) => `${getHours}:${getMinutes}:${getSeconds}`)
-        postserver(`${getHours}:${getMinutes}:${getSeconds}`) //timer
-        // 누른 위치 체크 
+        return `${getHours}:${getMinutes}:${getSeconds}  ${dateString}`
     }
+
 
     const formatTime = () => {
         
@@ -158,7 +355,7 @@ const TimeStamp = ({parentlist, getlist, dogID}) => {
                     <View style={{flex:1}}>
                     <Text style={[styles.smallbody]}> 번호 </Text>
                     </View>
-                    <View style={{flex:2}}>
+                    <View style={{flex:4}}>
                     <Text style={[styles.smallbody]}>  누른 시간 </Text>
                     </View>
                 </View>
@@ -171,7 +368,7 @@ const TimeStamp = ({parentlist, getlist, dogID}) => {
                 {/*버벅임 현상 <TouchableWithoutFeedback > 아님 scroll view 없애보기*/}
 
                 <FlatList
-                    data={timelist}
+                    data={[...timelist].reverse()} // 원본 배열 유지 
                     renderItem={renderItem}
                     keyExtractor={item => item.id} // keyExtractor tells the list to use the ids for the react keys instead of the default key property.
                     style={styles.flatList}
@@ -192,10 +389,12 @@ const TimeStamp = ({parentlist, getlist, dogID}) => {
                 </Text>
                 </View>
             </View>
+
+            {/** 채팅에서 필요없는 부분 (Press butoon) */}
             <Pressable 
                 style={[styles.stopwatchBtn,{backgroundColor: '#55e07a'}]}
                 onPress={handleStart}>
-                <Text style={{ fontSize: 30 ,paddingVertical:10}}>{ "Press"}</Text>
+                <Text style={{ fontSize: 30 ,paddingVertical:10}}>{"Press"}</Text>
             </Pressable>
         </View>
     )
@@ -207,52 +406,70 @@ class TimeStampComponent extends Component{
         super(props);
         this.state = { 
             //isPressed : false,
-            timelist : '',
+            prev_timelist : [],
+            //start_time: this.props.parentState.start_time,
+            parentState: this.props.parentState,
+            dueTime: ``,
         };
         this.getlist = this.getlist.bind(this)
     }
-    getlist(time) {
-        const date = new Date()
-        const now = date.getTime()
-        console.log("---time :",time, now);
-
-        // 다음 체크까지 남은 시간 
-        const times = time[Object.keys(time).length-1].press_time.split(':')
-
-        times[0] = date.getHours()-Number(times[0])
-        times[1] = date.getMinutes()-Number(times[1])
-        times[2] = date.getSeconds()-Number(times[2])
-        
-        console.log("---times :", times);
-
-        if(times[2]<0){
-            times[2] += 60
-            times[1] -= 1
-        }
-        if(times[1]<0){
-            times[1] += 60
-            times[0] -= 1
-        }
-
-        console.log("---times :", times);
-        this.setState({timelist:times});
+    
+    getlist=(data)=> {
+        console.log("callback", data)
+        let message;
+        now = new Date()
+        finish = new Date().setHours(this.state.parentState.start_time+12,0,0,0)
+        /*if( Math.floor(now - finish) > 0 ){
+            message = '오늘은 끝났어요 :)'
+        }else{*/
+            if(this.state.prev_timelist.length==0){ // 아무 것도 없을 떄 
+                message = `하루를 시작해주세요 !!` 
+            }else{
+                if(this.state.prev_timelist.start_time==0){
+                    message = `다음에 도전해봐요:)`
+                }else{
+                    message = `${this.state.prev_timelist.start_time}:00:00` 
+                }
+            }
+        //}
+        this.setState({
+            prev_timelist: data,
+            dueTime: message,
+        })
+        console.log("callback2", this.state.dueTime, message)
     }
+    
     render(){
-        // const [isPressed, setPressed] = useState(false);
-        // 하루를 시작하는 시간을 말해주세요. 시작 시간부터 12시간 동안만 유효한 검사입니다:)
+        console.log("parent state", this.state)
         const getHeader = () => {
             return (
             <View>
             <Text style={styles.title}>타임스탬프 검증</Text>
-            <Text style={styles.subTitle}>* 통과 기준: 검사 주기 {this.props.ts_check_time}시간  | 횟수 {this.props.ts_total_count}일/7일</Text>
-            <Text style={styles.subTitle}>* 시작 시간: 시 </Text>
+            <Text style={styles.subtitle}>* 통과 기준: 검사 주기 {this.state.parentState.ts_check_time}시간  | 횟수 {this.state.parentState.ts_total_count}일/7일</Text>
+            <Text style={styles.subtitle}>* 사용자 설정 시작 시간: 오전 {this.state.parentState.start_time}시 </Text>
             </View>
             );
         };
         const getFooter = () => {
             return null;
         };
+        
         const renderItem = () => {
+            now = new Date()
+            finish = new Date().setHours(this.state.parentState.start_time+12,0,0,0)
+            if( Math.floor(now - finish) > 0 ){
+                this.state.dueTime = '오늘은 끝났어요 :)'
+            }else{
+                if(this.state.prev_timelist.length==0){ // 아무 것도 없을 떄 
+                    this.state.dueTime = `하루를 시작해주세요 !!` 
+                }else{
+                    if(this.state.prev_timelist.start_time==0){
+                        this.state.dueTime = `다음에 도전해봐요:)`
+                    }else{
+                        this.state.dueTime = `${this.state.prev_timelist.start_time}:00:00` 
+                    }
+                }
+            }
             return (
                 <TouchableWithoutFeedback>
                     <View>
@@ -280,22 +497,20 @@ class TimeStampComponent extends Component{
 
                         {/* average information text about walking */}
                         <Information
-                        informationName={'마지막 체크 후 지난 시간'}
+                        informationName={'통과하기 위한 다음 마감 시간'}
                         showData={[
                             {
                                 dataName:'시간',
-                                data:`${this.state.timelist[0]}:${this.state.timelist[1]}:${this.state.timelist[2]}`
+                                data:`${this.state.dueTime}` // 마지막 누른 시간
                             },
-                        
                         ]}/>
                     
-                        {/* 산책 시작 버튼 */}
-                    
+                        {/* 채팅에서는 이 부분을 요일 구분 없이 모든 누른 시간 목록으로 받아와도 됨 */}
                         <View style={[styles.container_background,styles.textInformation_container]}>
-                            <Text style={styles.subTitle}>
-                                Press Now!
+                            <Text style={styles.subTitle}> 
+                                하루동안 누른 시간 목록
                             </Text>
-                            <TimeStamp parentlist={this.state.timelist} getlist={this.getlist} dogID={this.props.dog_id}/>
+                            <TimeStamp info={this.state} getlist={this.getlist}/>
 
                         </View>   
                     </View>
@@ -368,23 +583,28 @@ const styles=StyleSheet.create({
         paddingBottom:10,
         paddingLeft:30,
     },
+    subtitle:{
+        fontSize:responsiveScreenFontSize(2.5),
+    },
     subTitle:{
-        fontSize:responsiveScreenFontSize(2),
-        marginBottom:responsiveScreenHeight(1),
+        fontSize:responsiveScreenFontSize(3),
+        marginVertical:responsiveScreenHeight(1),
     },
     dataInfoStyle:{
+        flex:1,
         flexDirection:'row',
         justifyContent:'space-between',
         marginBottom:10,
     },
     body:{
         fontSize:20,
+        marginLeft:10,
     },
     smallbody:{
         fontSize:15,
     },
     body_data:{
-        marginRight:130
+        //marginRight:10
     },
     stopwatchBtn:{
         borderRadius:100,
