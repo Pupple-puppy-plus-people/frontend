@@ -31,13 +31,13 @@ const RoomCheckHome=({navigation, route})=> {
 
 
     const [pickerResponse, setPickerResponse] = useState(null);
-    /*useEffect(() => {
-        if(route.params){
-            setPhotoUri([...photoUri,...route.params.photoUri])
-            console.log("route image : ",route.params.photoUri)
-            console.log(photoUri)
-        }
-      }, [route.params]);*/
+    // useEffect(() => {
+    //     if(route.params){
+    //         setPhotoUri([...photoUri,...route.params.photoUri])
+    //         console.log("route image : ",route.params.photoUri)
+    //         console.log(photoUri)
+    //     }
+    //   }, [route.params]);
     
     const openCamera = () => {
         
@@ -78,7 +78,35 @@ const RoomCheckHome=({navigation, route})=> {
         console.log(pickerResponse);
     };
     const uploadImage = () => {
-        axios.post(`${HS_API_END_POINT}/api/housephoto/add/`,{"email":USER_INFO.USER_EMAIL,"dog_id":route.params.dog_id,"image":photoData})
+        // axios.post(`${HS_API_END_POINT}/api/housephoto/add/`,{"email":USER_INFO.USER_EMAIL,"dog_id":route.params.dog_id,"image":photoData})
+        axios.post(`${HS_API_END_POINT}/api/housephoto/add/`,{"email":USER_INFO.USER_EMAIL,"dog_id":45,"image":photoData})
+        .then(function(res){
+            
+            console.log(res.data);
+        })
+        .catch(function(error) {
+            console.log("error : ",error);
+        })
+    }
+    const getImage = () => {
+        // route.params.dog_id=1
+        axios.post(`${HS_API_END_POINT}/api/housephoto/get/mydog/`,{"email":USER_INFO.USER_EMAIL})
+        .then(function(res){
+            console.log(res.data);
+        })
+        .catch(function(error) {
+            console.log("error : ",error);
+        })
+    }
+    const getOneImage = () => {
+        // route.params.dog_id=1
+        axios.post(`${HS_API_END_POINT}/api/housephoto/get/mydog/onlyone/`,{"dog_id":44})
+        .then(function(res){
+            console.log(res.data);
+        })
+        .catch(function(error) {
+            console.log("error : ",error);
+        })
     }
 
     const renderItem = useCallback(({item}) => (
@@ -124,6 +152,20 @@ const RoomCheckHome=({navigation, route})=> {
                         onPress={uploadImage}
                         style={{margin:3,backgroundColor:'purple',width:'80%',height:'70%',justifyContent:'center',borderRadius:20}}>
                             <Text style={{fontWeight:'bold',fontSize:responsiveScreenFontSize(2.5),textAlign:'center',color:'white'}}>업로드</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{flex:1,justifyContent:'center',margin:3,alignItems:'center'}}>
+                        <TouchableOpacity 
+                        onPress={getImage}
+                        style={{margin:3,backgroundColor:'purple',width:'80%',height:'70%',justifyContent:'center',borderRadius:20}}>
+                            <Text style={{fontWeight:'bold',fontSize:responsiveScreenFontSize(2.5),textAlign:'center',color:'white'}}>받기테스트</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{flex:1,justifyContent:'center',margin:3,alignItems:'center'}}>
+                        <TouchableOpacity 
+                        onPress={getOneImage}
+                        style={{margin:3,backgroundColor:'purple',width:'80%',height:'70%',justifyContent:'center',borderRadius:20}}>
+                            <Text style={{fontWeight:'bold',fontSize:responsiveScreenFontSize(2.5),textAlign:'center',color:'white'}}>한마리 받기테스트</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

@@ -28,46 +28,40 @@ import axios from 'axios';
 import { HS_API_END_POINT, USER_INFO } from '../../Shared/env';
 import { TextInput } from 'react-native-gesture-handler';
 
-const Agreement=({navigation, route})=> {
-
+const AgreementResult = (props) =>{
+    
     const [personalInfo, setPersonalInfo] = useState(false)
     const [location, setLocation] = useState(false)
     const [dogEntrance, setdogEntrance] = useState(false)
     const [other, setOther] = useState(false)
     const [accept, setAccept] = useState(false)
     const [moreInfo, setMoreInfo] = useState(false)
-
-    const sendAgreement = () => {
-        // route.params.dog_id = 1;
-        sendData = {
-            user_id:USER_INFO.USER_ID, 
-            dog_id:4 , 
-            person_info:personalInfo, 
-            location_info:location, 
-            chit_penalty:other, 
-            cannot_adopt:accept,
-            dog_entrance:dogEntrance,
-            more_info:moreInfo
-        }
-        axios.post(`${HS_API_END_POINT}/api/survey/agreement/update`,sendData)
-        .then(function(res){
+    React.useEffect(()=>{
+        //sendData={user_id:props.userId, dog_id:props.dogId}
+        sendData={user_id:2, dog_id:1}
+        
+        axios.post(`${HS_API_END_POINT}/api/survey/agreement/get`,sendData)
+        .then((res)=>{
             if(res.data.response==="success"){
-                Alert.alert("응답이 전송되었습니다!");
-                
+                // console.log(res.data)
+                setPersonalInfo(res.data.person_info)
+                setLocation(res.data.location_info)
+                setdogEntrance(res.data.dog_entrance)
+                setOther(res.data.chit_penalty)
+                setAccept(res.data.cannot_adopt)
+                setMoreInfo(res.data.more_info)
             }
         })
-        .catch(function (error) {
-            console.log(error);
-        });
-    }
-
+        .catch((err)=>{
+            console.log(err);
+        })
+    },[])
 
     return (
         <SafeAreaView style={{flex:1}}>
             <ScrollView style={{margin:9,flex:9,backgroundColor:'#E9E0FF',borderRadius:15}}>
                 <View style={{margin:10,flex:9}}>
-                    <Text style={{fontWeight:'bold',fontSize:responsiveScreenFontSize(3),marginBottom:5}}> 인증을 진행하기 전 동의서입니다.</Text>
-                    <Text style={{fontSize:responsiveScreenFontSize(2),fontWeight:'bold'}}> *동의하지 않아도 지속적으로 인증을 진행할 수는 있지만, 추후 진행과정에서 불이익이 있을 수 있어요. </Text>
+                    <Text style={{fontWeight:'bold',fontSize:responsiveScreenFontSize(3),marginBottom:5}}> 동의서 응답 결과에요</Text>
                     <View>
 
                     </View>
@@ -77,23 +71,18 @@ const Agreement=({navigation, route})=> {
                     <View style={{flexDirection:'row',flex:1}}>
                         <View style={{flex:1,flexDirection:'row'}}>
                             <View style={{flex:1}}>
-                                <CheckBox disabled={false}
+                                <CheckBox disabled={true}
                                 value={personalInfo}
-                                onValueChange={(newValue) => {
-                                    setPersonalInfo(!personalInfo);
-                                    }}/>
+                                />
                             </View>
                             <View style={{flex:3,justifyContent:'center'}}><Text style={{...styles.questText}}>네</Text></View>
                         </View>
                         <View style={{flex:1,flexDirection:'row'}}>
                             <View style={{flex:1}}>
                                 <CheckBox 
-                                disabled={false}
+                                disabled={true}
                                 value={!personalInfo}
-                                onValueChange={(newValue) => {
-                                    setPersonalInfo(!personalInfo);
-
-                                    }}/>
+                                />
                             </View>
                             <View style={{flex:3,justifyContent:'center'}}><Text style={{...styles.questText}}>아니요</Text></View>
                         </View>
@@ -104,23 +93,18 @@ const Agreement=({navigation, route})=> {
                     <View style={{flexDirection:'row',flex:1}}>
                         <View style={{flex:1,flexDirection:'row'}}>
                             <View style={{flex:1}}>
-                                <CheckBox disabled={false}
+                                <CheckBox disabled={true}
                                 value={location}
-                                onValueChange={(newValue) => {
-                                    setLocation(!location);
-                                    }}/>
+                                />
                             </View>
                             <View style={{flex:3,justifyContent:'center'}}><Text style={{...styles.questText}}>네</Text></View>
                         </View>
                         <View style={{flex:1,flexDirection:'row'}}>
                             <View style={{flex:1}}>
                                 <CheckBox 
-                                disabled={false}
+                                disabled={true}
                                 value={!location}
-                                onValueChange={(newValue) => {
-                                    setLocation(!location);
-
-                                    }}/>
+                                />
                             </View>
                             <View style={{flex:3,justifyContent:'center'}}><Text style={{...styles.questText}}>아니요</Text></View>
                         </View>
@@ -131,23 +115,18 @@ const Agreement=({navigation, route})=> {
                     <View style={{flexDirection:'row',flex:1}}>
                         <View style={{flex:1,flexDirection:'row'}}>
                             <View style={{flex:1}}>
-                                <CheckBox disabled={false}
+                                <CheckBox disabled={true}
                                 value={dogEntrance}
-                                onValueChange={(newValue) => {
-                                    setdogEntrance(!dogEntrance);
-                                    }}/>
+                                />
                             </View>
                             <View style={{flex:3,justifyContent:'center'}}><Text style={{...styles.questText}}>네</Text></View>
                         </View>
                         <View style={{flex:1,flexDirection:'row'}}>
                             <View style={{flex:1}}>
                                 <CheckBox 
-                                disabled={false}
+                                disabled={true}
                                 value={!dogEntrance}
-                                onValueChange={(newValue) => {
-                                    setdogEntrance(!dogEntrance);
-
-                                    }}/>
+                                />
                             </View>
                             <View style={{flex:3,justifyContent:'center'}}><Text style={{...styles.questText}}>아니요</Text></View>
                         </View>
@@ -158,23 +137,18 @@ const Agreement=({navigation, route})=> {
                     <View style={{flexDirection:'row',flex:1}}>
                         <View style={{flex:1,flexDirection:'row'}}>
                             <View style={{flex:1}}>
-                                <CheckBox disabled={false}
+                                <CheckBox disabled={true}
                                 value={other}
-                                onValueChange={(newValue) => {
-                                    setOther(!other);
-                                    }}/>
+                                />
                             </View>
                             <View style={{flex:3,justifyContent:'center'}}><Text style={{...styles.questText}}>네</Text></View>
                         </View>
                         <View style={{flex:1,flexDirection:'row'}}>
                             <View style={{flex:1}}>
                                 <CheckBox 
-                                disabled={false}
+                                disabled={true}
                                 value={!other}
-                                onValueChange={(newValue) => {
-                                    setOther(!other);
-
-                                    }}/>
+                                />
                             </View>
                             <View style={{flex:3,justifyContent:'center'}}><Text style={{...styles.questText}}>아니요</Text></View>
                         </View>
@@ -185,23 +159,18 @@ const Agreement=({navigation, route})=> {
                     <View style={{flexDirection:'row',flex:1}}>
                         <View style={{flex:1,flexDirection:'row'}}>
                             <View style={{flex:1}}>
-                                <CheckBox disabled={false}
+                                <CheckBox disabled={true}
                                 value={accept}
-                                onValueChange={(newValue) => {
-                                    setAccept(!accept);
-                                    }}/>
+                                />
                             </View>
                             <View style={{flex:3,justifyContent:'center'}}><Text style={{...styles.questText}}>네</Text></View>
                         </View>
                         <View style={{flex:1,flexDirection:'row'}}>
                             <View style={{flex:1}}>
                                 <CheckBox 
-                                disabled={false}
+                                disabled={true}
                                 value={!accept}
-                                onValueChange={(newValue) => {
-                                    setAccept(!accept);
-
-                                    }}/>
+                                />
                             </View>
                             <View style={{flex:3,justifyContent:'center'}}><Text style={{...styles.questText}}>아니요</Text></View>
                         </View>
@@ -212,35 +181,22 @@ const Agreement=({navigation, route})=> {
                     <View style={{flexDirection:'row',flex:1}}>
                         <View style={{flex:1,flexDirection:'row'}}>
                             <View style={{flex:1}}>
-                                <CheckBox disabled={false}
+                                <CheckBox disabled={true}
                                 value={moreInfo}
-                                onValueChange={(newValue) => {
-                                    setMoreInfo(!moreInfo);
-                                    }}/>
+                                />
                             </View>
                             <View style={{flex:3,justifyContent:'center'}}><Text style={{...styles.questText}}>네</Text></View>
                         </View>
                         <View style={{flex:1,flexDirection:'row'}}>
                             <View style={{flex:1}}>
                                 <CheckBox 
-                                disabled={false}
+                                disabled={true}
                                 value={!moreInfo}
-                                onValueChange={(newValue) => {
-                                    setMoreInfo(!moreInfo);
-
-                                    }}/>
+                                />
                             </View>
                             <View style={{flex:3,justifyContent:'center'}}><Text style={{...styles.questText}}>아니요</Text></View>
                         </View>
                     </View>
-                </View>
-                <View style={{alignContent:'center',alignItems:'center'}}>
-                    <TouchableOpacity 
-                    style={{width:responsiveScreenWidth(80),height:responsiveScreenHeight(5),borderRadius:15,justifyContent:'center',backgroundColor:'purple',margin:30}}
-                    onPress={sendAgreement}
-                    >
-                        <Text style={{fontSize:responsiveScreenFontSize(3),color:'white',fontWeight:'bold',textAlign:'center'}}>제출할게요!</Text>
-                    </TouchableOpacity>
                 </View>
                 
             </ScrollView>
@@ -273,4 +229,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default Agreement;
+export default AgreementResult;

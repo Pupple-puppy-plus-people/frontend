@@ -54,7 +54,7 @@ const BottomNavigation = ({navigation}) => {
                   // unmountOnBlur: true,
                   tabBarIcon: ()=> (
                       <MaterialCommunityIcons name="paw" size={25} />
-                  )
+                  ),
               }}
           >
           </BottomTab.Screen>

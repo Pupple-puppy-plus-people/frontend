@@ -1,6 +1,6 @@
 
 //import resyncStorage from '@react-native-async-storage/async-storage';
-import React, {useState, useEffect, Component} from 'react';
+import React, {useState, useEffect, Component, useCallback} from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import {navigation, useIsFocused} from '@react-navigation/native';
 
@@ -26,6 +26,7 @@ import EmptyDogList from './EmptyList';
 import axios from 'axios';
 import { HS_API_END_POINT, USER_INFO } from '../../Shared/env';
 import Item from './ItemComponent';
+import DogListHome from '../../DogList/DogListComponent/DogListHome';
 
 
 const width = Dimensions.get("window").width - 10; // container style에 paddingHorizontal*2
@@ -138,13 +139,11 @@ function Authenticate ({navigation}) {
 
     );
 };
-
 const Tab2Home = ({ navigation }) => {
   return (
     <Authenticate navigation={navigation}></Authenticate>
   );
 };
-
 // 스타일 
 const styles = StyleSheet.create({
     container: {
