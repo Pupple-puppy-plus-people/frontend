@@ -15,7 +15,7 @@ import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-nat
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 
-// 채팅에서 필요 없는 함수
+/************************* 부가 설명 : 채팅에서 필요 없을 부분****************************************** */
 const SetStartTime = ({onStartTime}) => {
 
     const [time, setTime] = useState(6);
@@ -103,7 +103,7 @@ class TimeStamp extends Component{
       
     }
     
-    // 채팅에서 필요 없는 함수
+    /************************* 부가 설명 : 채팅에서 필요 없을 부분****************************************** */
     setInitStartTime= async(number) =>{
         this.start_time = number;
         console.log(this.start_time, this.props.dog_id);
@@ -127,6 +127,7 @@ class TimeStamp extends Component{
     
     render(){
 
+{/************************* 부가 설명 : 채팅에서 필요 없을 부분****************************************** */}
         // 다음 5줄은 채팅에서는 필요없는 코드
         let initMenu;
         console.log("끝")
@@ -138,14 +139,14 @@ class TimeStamp extends Component{
             
             <View style={styles.container}>
 
-                {initMenu /**<- 채팅에서는 필요 없는 코드 */} 
+{/************************* 부가 설명 : 채팅에서 필요 없을 부분****************************************** */}
+                {initMenu /**<- 채팅에서는 필요 없는 코드 */}  
+{/************************************************************************************************ */}
+
                 <TimeStampComponent
                     parentState={this.state}
-                />
-               
-                {/*<TimeStampSet/>*/}
+                />               
             </View>
-            // 화면 반응성(spring) && 돌아가기 추가
         );
     }
 }

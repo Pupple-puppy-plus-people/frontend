@@ -21,6 +21,7 @@ import { Divider } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 
+// 아직 구현 안함
 class SummaryList extends Component{
     constructor(props){
         super(props);
@@ -40,6 +41,7 @@ class SummaryList extends Component{
     }
 }
 
+// 아직 안 구현함 
 class SummaryList2 extends Component{
     constructor(props){
         super(props);
@@ -117,8 +119,8 @@ class SummaryList2 extends Component{
         );
     }
 }
-// FlatList 시작
-// list에 반복적으로 보여질 item
+
+// 하루 동안 누른 시간 목록의 표 제목 (번호, 누른 시간)
 const Info_Item = ({dataInfo}) => (
     <View style={styles.dataInfoStyle}>
         <Text
@@ -157,6 +159,7 @@ const Information = ({informationName,showData}) => {
     );
 }
 
+// 하루 동안 누른 시간 목록의 한 레코드
 const Item = ({ item }) => (
     <View style={{flexDirection:'row', alignItems:'center'}}>
         <View style={{flex:1}}>
@@ -168,20 +171,21 @@ const Item = ({ item }) => (
     </View>
 
 );
-// // document.writeln(curr);
+
+// 하루 동안 누른 시간 목록 부분에 해당하는 컴포넌트
 const TimeStamp = ({info, getlist}) => {
     const isFocused = useIsFocused();
 
     const [timer, setTimer] = useState(0)
-    const [prevTimer, setPrevTimer] = useState(0)   // 서버에서 받아온 것 중 가장 마지막  -> 누른 시각에 뜨기도 함
-    const [isActive, setIsActive] = useState(false)
     const [timelist, setTimeList] = useState([{}])
     const today = new Date().getDay();
 
-
+    // 하루동안 누른 시간 목록 받아오기 
     React.useEffect(()=> {
-        console.log("parentState", info)
-        // 오늘 요일에 해당하는 누른 시간 가져옴
+
+/************************* 부가 설명 : (모든 요일 누른 시각 전체를 받아오고 싶다면 ) ****************************************** */
+        // 맨처음 오늘 요일에 해당하는 누른 시간 가져옴 
+        // 채팅에서 모든 요일에 대한 값 받아오고 싶으면 url 맨 뒤에 day를 빼면 돼요!!!!!!!! 이 바로 밑 줄 ||
         axios.get(`${HS_API_END_POINT}/api/timestamp/get/?user=${USER_INFO.USER_ID}&dog=${info.parentState.dog_id}&day=${Number(today)}`) 
         .then((res)=> { 
 
@@ -210,9 +214,9 @@ const TimeStamp = ({info, getlist}) => {
         })
     }, [isFocused]); 
 
-
+/************************* 부가 설명: (아마 채팅 모달에선 필요없을 코드) ****************************************** */
+    // 수행 시가나 통과 여부 계산 및 백엔드에 전송
     function postserver(time){
-        console.log("time:", time, info)
 
         dogID = info.parentState.dog_id // 개 아이디 
         start_time = info.parentState.start_time // 사용자 설정 시작 시간
@@ -227,11 +231,10 @@ const TimeStamp = ({info, getlist}) => {
             day: today,
             press_time: time.getTime().toString(), // 1/1000초의 string
         }
-
+        
         // 초 단위로 비교
         if(info.prev_timelist.length==0){ // 이전에 누른 시간이 없을 때 
             compare.setHours(start_time, 0, 0, 0); // 시작 시간으로 
-            console.log("===didi==>", Math.floor(time - compare)/1000, time, compare)
             if(Math.floor(time - compare)/1000 < 0 ){
                 // 시작 시간 이전에 누른 경우
                 Alert.alert("시작 시간이 전이에요:)");
@@ -275,7 +278,6 @@ const TimeStamp = ({info, getlist}) => {
                 }     
             }else{
                 // 이전에 누른게 false 일때
-                // post 하지 않는다. 
                 //data.start_time = 0
                 //data.evaluate = false
                 Alert.alert("다음 기회에! 내일이 있어요:(");
@@ -283,10 +285,9 @@ const TimeStamp = ({info, getlist}) => {
             }
            
         }
-        getlist(data)
+        getlist(data) // 부모 컴포넌트의로 가장 마지막에 누른 시간 데이터를 전송한다. 
 
-        console.log("data---->", data)
-        // post를 해야할 때 
+        // DB에 데이터 전송
         axios.post(`${HS_API_END_POINT}/api/timestamp/add/`,data)
         .then(function (response){
             console.log(response);
@@ -309,12 +310,16 @@ const TimeStamp = ({info, getlist}) => {
         }
     }
 
+/************************* 부가 설명: (아마 채팅 모달에선 필요없을 코드) ****************************************** */
+    // press 버튼 누르면 서버로 보내는 함수
     const handleStart = () => {
         const date = new Date();
-        console.log(date);
         postserver(date) //timer
     }
 
+/************************* 부가 설명 ****************************************** */
+    // 12312493294501 같은 Date 객체를 hh:mm:ss yy-mm-dd 로 예쁘게 보여주는 코드
+    // press_time은 new Date.getTime().toString()의 반환값임
     function convertTimeFormat(press_time){
         const date = new Date(Number(press_time));
 
@@ -329,18 +334,8 @@ const TimeStamp = ({info, getlist}) => {
         const getHours = `0${date.getHours()}`.slice(-2)
         return `${getHours}:${getMinutes}:${getSeconds}  ${dateString}`
     }
-
-
-    const formatTime = () => {
-        
-        if(timer==0){
-            return '00:00:00'
-        }else{
-            return timer
-        }
-    }
   
-    // 누른 시각 정보 (요일별)
+    // 누른 시각 정보 
     const renderItem = ({ item }) => (
         <View>
         <Item item={item}/>
@@ -360,36 +355,21 @@ const TimeStamp = ({info, getlist}) => {
                     </View>
                 </View>
                 <Divider style={{margin:"5%"}} />
-                {console.log("Timelist", timelist)}
                 {
                 Object.keys(timelist).length === 0? null : 
                 <ScrollView style={{height:200,}}>
 
-                {/*버벅임 현상 <TouchableWithoutFeedback > 아님 scroll view 없애보기*/}
-
+                {/* 리스트 버벅임 현상 scroll view 안에 flatlist 라서 그럼 - 창훈님처럼 해보기*/}
                 <FlatList
                     data={[...timelist].reverse()} // 원본 배열 유지 
                     renderItem={renderItem}
-                    keyExtractor={item => item.id} // keyExtractor tells the list to use the ids for the react keys instead of the default key property.
+                    keyExtractor={item => item.id}
                     style={styles.flatList}
                 /></ScrollView>
                 }
             </View>
 
-            <View style={styles.dataInfoStyle}>
-                <View style={{flex:1}}/>
-                <View style={{flex:2}}>
-                <Text style={styles.body}>
-                    누른 시간
-                </Text>
-                </View>
-                <View style={{flex:3}}>
-                <Text style={[styles.body]}>
-                {formatTime()}
-                </Text>
-                </View>
-            </View>
-
+{/************************* 부가 설명 ****************************************** */}
             {/** 채팅에서 필요없는 부분 (Press butoon) */}
             <Pressable 
                 style={[styles.stopwatchBtn,{backgroundColor: '#55e07a'}]}
@@ -400,14 +380,12 @@ const TimeStamp = ({info, getlist}) => {
     )
   }
   
-
+// 전체 타임스탬프 컴포넌트 (부모 컴포넌트 역할) (자식 컴포넌트는 위에 있는 Timestamp('하루동안 누른 시간 목록')컴포넌트임)
 class TimeStampComponent extends Component{
     constructor(props){
         super(props);
         this.state = { 
-            //isPressed : false,
             prev_timelist : [],
-            //start_time: this.props.parentState.start_time,
             parentState: this.props.parentState,
             dueTime: ``,
         };
@@ -415,13 +393,12 @@ class TimeStampComponent extends Component{
     }
     
     getlist=(data)=> {
-        console.log("callback", data)
         let message;
         now = new Date()
         finish = new Date().setHours(this.state.parentState.start_time+12,0,0,0)
-        /*if( Math.floor(now - finish) > 0 ){
+        if( Math.floor(now - finish) > 0 ){
             message = '오늘은 끝났어요 :)'
-        }else{*/
+        }else{
             if(this.state.prev_timelist.length==0){ // 아무 것도 없을 떄 
                 message = `하루를 시작해주세요 !!` 
             }else{
@@ -431,16 +408,14 @@ class TimeStampComponent extends Component{
                     message = `${this.state.prev_timelist.start_time}:00:00` 
                 }
             }
-        //}
+        }
         this.setState({
             prev_timelist: data,
             dueTime: message,
         })
-        console.log("callback2", this.state.dueTime, message)
     }
     
     render(){
-        console.log("parent state", this.state)
         const getHeader = () => {
             return (
             <View>
@@ -489,13 +464,7 @@ class TimeStampComponent extends Component{
                                 <SummaryList/>
                             </View>
                         </View>
-                        {/* pass condition */}
-                        
-
-                        {/* total information text about walking */}
-                        
-
-                        {/* average information text about walking */}
+{/************************* 부가 설명 : 아마 채팅에서 필요 없을 부분****************************************** */}
                         <Information
                         informationName={'통과하기 위한 다음 마감 시간'}
                         showData={[
@@ -504,7 +473,8 @@ class TimeStampComponent extends Component{
                                 data:`${this.state.dueTime}` // 마지막 누른 시간
                             },
                         ]}/>
-                    
+{/**************************************************************************************** */}
+ 
                         {/* 채팅에서는 이 부분을 요일 구분 없이 모든 누른 시간 목록으로 받아와도 됨 */}
                         <View style={[styles.container_background,styles.textInformation_container]}>
                             <Text style={styles.subTitle}> 
