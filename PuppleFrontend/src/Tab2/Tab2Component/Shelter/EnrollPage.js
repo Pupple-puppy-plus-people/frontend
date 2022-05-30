@@ -105,14 +105,17 @@ function EnrollPage({navigation,route}) {
                 <View style={[styles.board,{flex:9,backgroundColor:'#E1BEE7',borderRadius:20, padding:10, alignSelf:'center'}]}>
                     <View style={{flex:1, flexDirection:'row', justifyContent:'space-between', marginTop:10}}>
                         <Text style={styles.title}> </Text>
-                        <Text style={styles.title}>반려견에 대한 인증절차</Text>
+                        <Text style={styles.title}>반려견에 대한 인증진행률</Text>
+                        <Text style={[styles.title, {color:'purple', backgroundColor:'white', marginBottom:10}]}>{wishlist.total}%</Text>
                     </View>
                     <View style={{flex:5, padding:10,justifyContent:'flex-start'}}>
                         <Text style={styles.subtitle}>반려견 인증절차 수행 및 견적사항 확인</Text>
-                        <Text style={[styles.title, {color:'purple', backgroundColor:'white', marginBottom:10}]}>{wishlist.total}%</Text>
+                    </View>
+                    <View style={{flex:4, flexDirection:'column',justifyContent:'center'}}>
                     </View>
                 </View>
-            </View>
+                <View style={{flex:1.5}}/>
+            </View>       
         );
     };
 
