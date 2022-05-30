@@ -231,8 +231,8 @@ const styles = StyleSheet.create({
         //justifyContent:"flex-end"
     },
     modalView: {
-        marginTop:'15%',width:'90%',height:'80%',alignSelf:'center',backgroundColor:'#E9E0FF',
-        backgroundColor: '#E9E0FF',
+        marginTop:'15%',width:'90%',height:'80%',alignSelf:'center',
+        //backgroundColor:'#E9E0FF',
         borderRadius: 20,
         alignItems: "center",
         shadowColor: "#000",
@@ -265,6 +265,9 @@ const styles = StyleSheet.create({
     menu: {
         justifyContent: 'center',
         alignItems: 'center',
+    },conatiner_background:{
+        backgroundColor: "#eedbff",
+        borderRadius:15,
     },
 })
 
