@@ -40,6 +40,7 @@ const HandleTemplateReqeust = ({navigation, aboutDog, setWishList}) => { // setW
             res.data.map((oneRequest)=>{
                 setAllRequest(allRequest=>([...allRequest,oneRequest]))
             })
+            console.log(allRequest)
         })
         .catch(function(error){
             // console.log(error)
@@ -94,6 +95,7 @@ const HandleTemplateReqeust = ({navigation, aboutDog, setWishList}) => { // setW
                 listKey={new Date().getTime().toString()}
             />
             <EvaluateRequest 
+                aboutDog={aboutDog}
                 modalVisible={modalVisible}
                 setModalVisible={setModalVisible}
                 requestItem={requestItem}

@@ -538,7 +538,7 @@ class TimeStampComponent extends Component{
                             </View>
 
                             <View style={styles.summary_column}>
-                                <WeekComponent/>
+                                <WeekComponent chevronColor={'#eedbff'}/>
                                 {/* status */}
                                 <SummaryList evalType={'day'} parentState={this.state.parentState}/>
                             </View>

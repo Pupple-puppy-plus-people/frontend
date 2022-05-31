@@ -20,18 +20,22 @@ let temp_image = [
 ]
 
 export default function EvaluateRequest({
+    aboutDog,
     modalVisible,
     setModalVisible,
     requestItem,
     allRequest,
     setAllRequest}) {
-    const renderImage = ({item}) =>(
-        <View
-        style={{alignSelf:'center',marginVertical:10,borderColor:'black',borderWidth:3}}>
-            <Image style={{width:responsiveScreenWidth(70),height:responsiveScreenWidth(40)}} 
-                    source={{uri:`data:image/jpeg;base64,${item}`}}/>
-        </View>
-    )
+    const renderImage = ({item}) =>{
+        item = item.trim().slice(1,-1)
+        return (
+            <View
+                style={{alignSelf:'center',marginVertical:10,borderColor:'black',borderWidth:3}}>
+                <Image style={{width:responsiveScreenWidth(70),height:responsiveScreenWidth(40)}} 
+                        source={{uri:`data:image/jpeg;base64,${item}`}}/>
+            </View>
+        )
+    }
     function removeElement(){
         let newRequest=[]
         for(var i=0;i<allRequest.length; i++){
@@ -51,15 +55,15 @@ export default function EvaluateRequest({
                 <TouchableOpacity
                 style={{backgroundColor:'#c452d1',borderRadius:30,paddingVertical:10,paddingHorizontal:20}}
                 onPress={()=>{
-                    setAllRequest(allRequest=>(removeElement()))
                     // fail axios
-                    axios.post(`${HS_API_END_POINT}/api/housephoto/update/pass/`,{"user_id":USER_INFO.USER_ID,"dog_id":item.id,"pass":false})
+                    axios.post(`${HS_API_END_POINT}/api/housephoto/update/pass/`,{"user_id":requestItem.user,"dog_id":aboutDog.id,"pass":false})
                     .then(function(res){
                         
                     })
                     .catch(function(error){
                         console.log(error);
                     });
+                    setAllRequest(allRequest=>(removeElement()))
                     setModalVisible(!modalVisible)
                 }}>
                     <Text style={{color:'#eae8eb',fontSize:35}}>Fail</Text>
@@ -67,15 +71,15 @@ export default function EvaluateRequest({
                 <TouchableOpacity
                 style={{backgroundColor:'#c452d1',borderRadius:30,paddingVertical:10,paddingHorizontal:20}}
                 onPress={()=>{
-                    setAllRequest(allRequest=>(removeElement()))
                     // pass axios
-                    axios.post(`${HS_API_END_POINT}/api/housephoto/update/pass/`,{"user_id":USER_INFO.USER_ID,"dog_id":item.id,"pass":true})
+                    axios.post(`${HS_API_END_POINT}/api/housephoto/update/pass/`,{"user_id":requestItem.user,"dog_id":aboutDog.id,"pass":true})
                     .then(function(res){
                         
                     })
                     .catch(function(error){
                         console.log(error);
                     });
+                    setAllRequest(allRequest=>(removeElement()))
                     setModalVisible(!modalVisible)
                 }}>
                     <Text style={{color:'#eae8eb',fontSize:35}}>Pass</Text>
@@ -110,7 +114,7 @@ export default function EvaluateRequest({
                     style={styles.title}>충분할까요?</Text>
                 </View>
                 <FlatList
-                    data={requestItem?.photo.split(',')}
+                    data={requestItem?.photo.slice(1,-1).split(',')}
                     renderItem={renderImage}
                     listKey={new Date().getTime().toString()}
                     ListFooterComponent={getFooter}

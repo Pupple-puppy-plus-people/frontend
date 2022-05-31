@@ -27,6 +27,7 @@ import {navigation, useIsFocused} from '@react-navigation/native';
 import { Divider } from 'react-native-paper';
 import Icon from 'react-native-vector-icons//MaterialCommunityIcons';
 
+import MatDetector from '../../Template/MatDetector';
 import RoomCheck from '../../Template/RoomCheck';
 import Agreement from '../../Template/Survey/Agreement';
 import Survey from '../../Template/Survey/Survey';
@@ -190,12 +191,12 @@ const AdoptionStep = ({navigation,aboutDog,setWishList})=>{
                     </Pressable>
                     
                     {console.log("setSelectedAuth", selectedAuth)}
-                    {selectedAuth==0?<Survey dog_id={aboutDog.id}></Survey>:null}
-                    {selectedAuth==1?<Agreement dog_id={aboutDog.id}></Agreement>:null}
-                    {selectedAuth==2?<Walk dog_id={aboutDog.id}></Walk>:null}
-                    {selectedAuth==3?<TimeStamp dog_id={aboutDog.id} ts_check_time={passCondition.ts_check_time} ts_total_count={passCondition.ts_total_count} startTime={startTime} setStartTime={setStartTime}></TimeStamp>:null}
-                    {selectedAuth==4?<Walk dog_id={aboutDog.id}></Walk>:null}
-                    {selectedAuth==5?<RoomCheck></RoomCheck>:null}
+                    {selectedAuth==0?<Survey dog_id={aboutDog.id} setModalVisible={setModalVisible}></Survey>:null}
+                    {selectedAuth==1?<Agreement dog_id={aboutDog.id} setModalVisible={setModalVisible}></Agreement>:null}
+                    {selectedAuth==2?<Walk dog_id={aboutDog.id} setModalVisible={setModalVisible}></Walk>:null}
+                    {selectedAuth==3?<TimeStamp dog_id={aboutDog.id} setModalVisible={setModalVisible} ts_check_time={passCondition.ts_check_time} ts_total_count={passCondition.ts_total_count} startTime={startTime} setStartTime={setStartTime}></TimeStamp>:null}
+                    {selectedAuth==4?<MatDetector dog_id={aboutDog.id} setModalVisible={setModalVisible}></MatDetector>:null}
+                    {selectedAuth==5?<RoomCheck dog_id={aboutDog.id} setModalVisible={setModalVisible}></RoomCheck>:null}
 
                 </View>
             </Modal>

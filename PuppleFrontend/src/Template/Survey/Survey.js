@@ -97,7 +97,7 @@ const Survey=(props)=> {
         .then(function(res){
             if(res.data.response==="success"){
                 Alert.alert("응답이 전송되었습니다!");
-                
+                props.setModalVisible(false)
             }
         })
         .catch(function (error) {

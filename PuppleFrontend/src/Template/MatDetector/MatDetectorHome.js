@@ -11,8 +11,8 @@ import {
     TouchableOpacity,
     TouchableWithoutFeedback,
     ScrollView,
-    Modal
-
+    Modal,
+    Alert,
 } from 'react-native';
 import RNCamera from 'react-native-camera'
 import { CameraScreen } from 'react-native-camera-kit';
@@ -25,19 +25,19 @@ import { NavigationContainer } from '@react-navigation/native';
 import axios from 'axios';
 import { HS_API_END_POINT, USER_INFO } from '../../Shared/env';
 
-const MatDetectorHome=({navigation, route})=> {
+const MatDetectorHome=({navigation, route, dog_id, setModalVisible})=> {
     const [photoUri,setPhotoUri] = useState([]);
-    const [photoData,setPhotoData] = useState([]);
+    const [photoData,setPhotoData] = useState();
 
 
     const [pickerResponse, setPickerResponse] = useState(null);
-    useEffect(() => {
-        if(route.params){
-            setPhotoUri([...photoUri,...route.params.photoUri])
-            console.log("route image : ",route.params.photoUri)
-            console.log(photoUri)
-        }
-      }, [route.params]);
+    // useEffect(() => {
+    //     if(route.params){
+    //         setPhotoUri([...photoUri,...route.params.photoUri])
+    //         console.log("route image : ",route.params.photoUri)
+    //         console.log(photoUri)
+    //     }
+    //   }, [route.params]);
     
     const openCamera = () => {
         
@@ -71,14 +71,20 @@ const MatDetectorHome=({navigation, route})=> {
             else {
                 console.log('Response uri = ', response.assets[0].uri)
                 // console.log("base64 = ",response.assets[0].base64);
-                setPhotoData([...photoData,response.assets[0].base64]) //access like this
+                setPhotoData(response.assets[0].base64) //access like this
             }
         });
         //launchImageLibrary(options, setPickerResponse);
         console.log(pickerResponse);
     };
     const uploadImage = () => {
-        axios.post(`${HS_API_END_POINT}/api/matdetector/evaluate/`,{"user_name":USER_INFO.USER_USERNAME,"dog_id":route.params.dog_id,"image":photoData})
+        // axios.post(`${HS_API_END_POINT}/api/housephoto/add/`,{"email":USER_INFO.USER_EMAIL,"dog_id":route.params.dog_id,"image":photoData})
+        if (photoData) {
+            axios.post(`${HS_API_END_POINT}/api/matdetector/evaluate/`,{"user_name":USER_INFO.USER_USERNAME,"dog_id":dog_id,"image":photoData})
+            setModalVisible(false)
+        } else {
+            Alert.alert('사진을 찍어주세요!')
+        }
     }
 
     const renderItem = useCallback(({item}) => (
@@ -92,7 +98,7 @@ const MatDetectorHome=({navigation, route})=> {
         <SafeAreaView style={{flex:1}}>
             <View style={{margin:9,flex:9,backgroundColor:'white',borderRadius:15}}>
                 <View style={{margin:10,flex:1}}>
-                    <Text style={{fontWeight:'bold',fontSize:responsiveScreenFontSize(3)}}> 애견매트 탐지 </Text>
+                    <Text style={{fontWeight:'bold',fontSize:responsiveScreenFontSize(3)}}> 애견매트 측정 </Text>
                     <Text style={{fontSize:responsiveScreenFontSize(2),fontWeight:'bold'}}> 애견매트의 사진을 찍어서 업로드해주세요!</Text>
 
                 </View>

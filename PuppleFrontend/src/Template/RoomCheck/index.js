@@ -1,14 +1,13 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
-import CameraPage from './CameraPage';
 import RoomCheckHome from './RoomCheckHome';
 
 const Stack = createStackNavigator();
 
-function RoomCheck(){
+function RoomCheck({dog_id,setModalVisible}){
     return (
-        <RoomCheckHome></RoomCheckHome>
+        <RoomCheckHome dog_id={dog_id} setModalVisible={setModalVisible}></RoomCheckHome>
         // <NavigationContainer>
         //     <Stack.Navigator>
         //         <Stack.Screen

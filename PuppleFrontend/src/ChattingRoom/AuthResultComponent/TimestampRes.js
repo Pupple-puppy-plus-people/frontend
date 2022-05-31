@@ -451,7 +451,7 @@ class TimeStampRes extends Component{
                             </View>
 
                             <View style={styles.summary_column}>
-                                <WeekComponent/>
+                                <WeekComponent chevronColor={'white'}/>
                                 {/* status */}
                                 <SummaryList/>
                             </View>

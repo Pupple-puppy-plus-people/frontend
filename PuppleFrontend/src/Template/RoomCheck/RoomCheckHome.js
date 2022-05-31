@@ -25,7 +25,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import axios from 'axios';
 import { HS_API_END_POINT, USER_INFO } from '../../Shared/env';
 
-const RoomCheckHome=({navigation, route})=> {
+const RoomCheckHome=({navigation, route, dog_id})=> {
     const [photoUri,setPhotoUri] = useState([]);
     const [photoData,setPhotoData] = useState([]);
 
@@ -79,36 +79,15 @@ const RoomCheckHome=({navigation, route})=> {
     };
     const uploadImage = () => {
         // axios.post(`${HS_API_END_POINT}/api/housephoto/add/`,{"email":USER_INFO.USER_EMAIL,"dog_id":route.params.dog_id,"image":photoData})
-        axios.post(`${HS_API_END_POINT}/api/housephoto/add/`,{"email":USER_INFO.USER_EMAIL,"dog_id":45,"image":photoData})
+        axios.post(`${HS_API_END_POINT}/api/housephoto/add/`,{"email":USER_INFO.USER_EMAIL,"dog_id":dog_id,"image":photoData})
         .then(function(res){
-            
+            setModalVisible(false)  
             console.log(res.data);
         })
         .catch(function(error) {
             console.log("error : ",error);
         })
     }
-    const getImage = () => {
-        // route.params.dog_id=1
-        axios.post(`${HS_API_END_POINT}/api/housephoto/get/mydog/`,{"email":USER_INFO.USER_EMAIL})
-        .then(function(res){
-            console.log(res.data);
-        })
-        .catch(function(error) {
-            console.log("error : ",error);
-        })
-    }
-    const getOneImage = () => {
-        // route.params.dog_id=1
-        axios.post(`${HS_API_END_POINT}/api/housephoto/get/mydog/onlyone/`,{"dog_id":44})
-        .then(function(res){
-            console.log(res.data);
-        })
-        .catch(function(error) {
-            console.log("error : ",error);
-        })
-    }
-
     const renderItem = useCallback(({item}) => (
         <View style={{justifyContent:'center',margin:3}}>
             <Image style={{marginHorizontal:5,width:responsiveScreenWidth(24),height:responsiveScreenWidth(24)}} source={{uri:`data:image/jpeg;base64,${item}`}}/>
@@ -152,20 +131,6 @@ const RoomCheckHome=({navigation, route})=> {
                         onPress={uploadImage}
                         style={{margin:3,backgroundColor:'purple',width:'80%',height:'70%',justifyContent:'center',borderRadius:20}}>
                             <Text style={{fontWeight:'bold',fontSize:responsiveScreenFontSize(2.5),textAlign:'center',color:'white'}}>업로드</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{flex:1,justifyContent:'center',margin:3,alignItems:'center'}}>
-                        <TouchableOpacity 
-                        onPress={getImage}
-                        style={{margin:3,backgroundColor:'purple',width:'80%',height:'70%',justifyContent:'center',borderRadius:20}}>
-                            <Text style={{fontWeight:'bold',fontSize:responsiveScreenFontSize(2.5),textAlign:'center',color:'white'}}>받기테스트</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{flex:1,justifyContent:'center',margin:3,alignItems:'center'}}>
-                        <TouchableOpacity 
-                        onPress={getOneImage}
-                        style={{margin:3,backgroundColor:'purple',width:'80%',height:'70%',justifyContent:'center',borderRadius:20}}>
-                            <Text style={{fontWeight:'bold',fontSize:responsiveScreenFontSize(2.5),textAlign:'center',color:'white'}}>한마리 받기테스트</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

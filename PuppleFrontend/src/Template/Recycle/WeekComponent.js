@@ -18,7 +18,8 @@ class DayComponent extends Component{
             <View style={styles.column}>
                 {today == this.props.dayNumber ?
                 <MaterialCommunityIcons name="chevron-down" size={30}/>:
-                <MaterialCommunityIcons name="chevron-down" color={'#eedbff'} size={30}/> }
+                // <MaterialCommunityIcons name="chevron-down" color={'#eedbff'} size={30}/> }
+                <MaterialCommunityIcons name="chevron-down" color={this.props.chevronColor} size={30}/> }
                 <Text style={styles.daytext}>
                     {this.props.dayName}
                 </Text>
@@ -37,13 +38,13 @@ class WeekComponent extends Component{
         return(
             <View style={styles.container}>
                 <View style={styles.row}>
-                    <DayComponent dayNumber={0} dayName={'S'}/>
-                    <DayComponent dayNumber={1} dayName={'M'}/>
-                    <DayComponent dayNumber={2} dayName={'T'}/>
-                    <DayComponent dayNumber={3} dayName={'W'}/>
-                    <DayComponent dayNumber={4} dayName={'T'}/>
-                    <DayComponent dayNumber={5} dayName={'F'}/>
-                    <DayComponent dayNumber={6} dayName={'S'}/>
+                    <DayComponent chevronColor={this.props.chevronColor} dayNumber={0} dayName={'S'}/>
+                    <DayComponent chevronColor={this.props.chevronColor} dayNumber={1} dayName={'M'}/>
+                    <DayComponent chevronColor={this.props.chevronColor} dayNumber={2} dayName={'T'}/>
+                    <DayComponent chevronColor={this.props.chevronColor} dayNumber={3} dayName={'W'}/>
+                    <DayComponent chevronColor={this.props.chevronColor} dayNumber={4} dayName={'T'}/>
+                    <DayComponent chevronColor={this.props.chevronColor} dayNumber={5} dayName={'F'}/>
+                    <DayComponent chevronColor={this.props.chevronColor} dayNumber={6} dayName={'S'}/>
                 </View>
             </View>
         );

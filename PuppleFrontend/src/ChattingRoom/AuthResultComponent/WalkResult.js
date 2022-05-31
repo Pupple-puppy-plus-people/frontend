@@ -21,7 +21,7 @@ const today = new Date().getDay();
 let baseUrl = `${HS_API_END_POINT}`
 let userdog = 'dddd'
 let dog_id = 0
-function walkGet({dog_id,userId}) {
+function walkGet(dog_id,userId) {
     return new Promise((resolve,reject)=>{
         // axios
         // .all([axios.get(baseUrl+'/api/walkauth/'+userdog)
@@ -477,7 +477,7 @@ class WalkResult extends Component{
                 </View>
 
                 <View style={styles.summary_column}>
-                    <WeekComponent/>
+                    <WeekComponent chevronColor={'#eedbff'}/>
                     {/* status */}
                     <SummaryList evalType={'time'}/>
                     <SummaryList evalType={'distance'}/>
