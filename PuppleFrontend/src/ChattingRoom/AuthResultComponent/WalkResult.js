@@ -9,21 +9,19 @@ import {
     FlatList,
     TouchableWithoutFeedback,
 } from 'react-native';
+import Geolocation from 'react-native-geolocation-service';
+import {getDistance} from 'geolib';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import { HS_API_END_POINT, USER_INFO } from '../../Shared/env';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { HS_API_END_POINT } from '../../Shared/env';
-import { Divider } from 'react-native-paper';
-import { ScrollView } from 'react-native-gesture-handler';
 import WeekComponent from '../../Template/Recycle/WeekComponent';
-import Geolocation from 'react-native-geolocation-service';
-
 const today = new Date().getDay();
 let baseUrl = `${HS_API_END_POINT}`
 let userdog = 'dddd'
-let dog_id = 13
-function walkGet() {
+let dog_id = 0
+function walkGet(dog_id) {
     return new Promise((resolve,reject)=>{
         // axios
         // .all([axios.get(baseUrl+'/api/walkauth/'+userdog)
@@ -36,10 +34,11 @@ function walkGet() {
         //     })
         // )
         // .catch((error)=>console.log(error))
-        axios.get(baseUrl+'/api/walkauth/'+userdog)
+        axios.get(baseUrl+'/api/walkauth/'+USER_INFO.USER_ID+'&'+dog_id)
         .then(function(response){
             // handle success
             myData = response.data
+            console.log("myData ===========",myData)
             axios.get(baseUrl+'/api/passcondition/'+dog_id)
             .then(function(response){
                 pass_condition = response.data[0]
@@ -55,25 +54,22 @@ function walkGet() {
         });
     });
 }
-function walkDelete() {
-    axios.delete(baseUrl+'/api/walkauth/'+userdog+'/'+deleteData.userdog);
-
-}
-function postData2server(timer){
+function postData2server(timer,dog_id){
     walkauthData.elapsed_time = Math.floor(timer / 60)
     walkauthData.day = today
-    axios.post(baseUrl+'/api/walkauth/'+userdog+'/',walkauthData)
+    axios.post(baseUrl+'/api/walkauth/'+USER_INFO.USER_ID+'&'+dog_id+'/',walkauthData)
     .then(function (response){
         console.log(response.status);
     })
     .then(function (error){
         console.log(error);
     });
+    // progress update here
 }
 
 // 산책 시작시 django server로 보낼 데이터
 let walkauthData = {
-    userdog : userdog,
+    userdog : USER_INFO.USER_ID+'&'+dog_id,
     day : 0,
     start_time : 0,
     elapsed_time : 0,
@@ -91,7 +87,7 @@ let pass_condition = {
 }
 let myData = [
     {
-        userdog : userdog,
+        userdog : USER_INFO.USER_ID+'&'+dog_id,
         day : 0,
         start_time : 0,
         elapsed_time : 0,
@@ -100,7 +96,7 @@ let myData = [
         evaluate : false
     },
     {
-        userdog : userdog,
+        userdog : USER_INFO.USER_ID+'&'+dog_id,
         day : 0,
         start_time : 0,
         elapsed_time : 0,
@@ -109,7 +105,7 @@ let myData = [
         evaluate : false
     },
     {
-        userdog : userdog,
+        userdog : USER_INFO.USER_ID+'&'+dog_id,
         day : 0,
         start_time : 0,
         elapsed_time : 0,
@@ -118,7 +114,7 @@ let myData = [
         evaluate : false
     },
     {
-        userdog : userdog,
+        userdog : USER_INFO.USER_ID+'&'+dog_id,
         day : 0,
         start_time : 0,
         elapsed_time : 0,
@@ -127,7 +123,7 @@ let myData = [
         evaluate : false
     },
     {
-        userdog : userdog,
+        userdog : USER_INFO.USER_ID+'&'+dog_id,
         day : 0,
         start_time : 0,
         elapsed_time : 0,
@@ -136,7 +132,7 @@ let myData = [
         evaluate : false
     },
     {
-        userdog : userdog,
+        userdog : USER_INFO.USER_ID+'&'+dog_id,
         day : 0,
         start_time : 0,
         elapsed_time : 0,
@@ -145,7 +141,7 @@ let myData = [
         evaluate : false
     },
     {
-        userdog : userdog,
+        userdog : USER_INFO.USER_ID+'&'+dog_id,
         day : 0,
         start_time : 0,
         elapsed_time : 0,
@@ -195,7 +191,7 @@ class SummaryList extends Component{
 
         const timeEval = day_num.map((oneday)=>
             <View>
-                <Text>{day_index}</Text>
+                {/* <Text>{day_index}</Text>
                 {
                     myData[day_index].day == oneday&&
                     myData[oneday].elapsed_time>=pass_condition.min_per_walk&&
@@ -213,8 +209,22 @@ class SummaryList extends Component{
                     name='close-circle-outline'
                     color={'red'}
                     size={25}/>
-                }
+                } */}
                 {/* {myData[day_index].day == oneday && this.setDayIndex(this.state.dayIndex+1)} */}
+                {myData[oneday].elapsed_time>=pass_condition.min_per_walk&&
+                    <MaterialCommunityIcons
+                    key={'time'+oneday}
+                    name='check-circle-outline'
+                    color={'green'}
+                    size={25}/>
+                }
+                {myData[oneday].elapsed_time<pass_condition.min_per_walk&&
+                    <MaterialCommunityIcons
+                    key={'time'+oneday}
+                    name='close-circle-outline'
+                    color={'red'}
+                    size={25}/>
+                }
             </View>    
         );
         const distanceEval = day_num.map((oneday)=>
@@ -286,7 +296,7 @@ const Information = ({informationName,showData}) => {
 }
 // FlatList 종료
 
-const StopWatch = ({changeState}) => {
+const StopWatch = ({changeState,dog_id}) => {
     const [timer, setTimer] = useState(0)
     const [isActive, setIsActive] = useState(false)
     const increment = useRef(null)
@@ -295,6 +305,7 @@ const StopWatch = ({changeState}) => {
       setIsActive(!isActive)
       {
           if (!isActive) {
+              walkauthData.userdog = USER_INFO.USER_ID+'&'+dog_id
                 Geolocation.getCurrentPosition(
                     posision => {
                         lastLocation = posision.coords
@@ -319,7 +330,7 @@ const StopWatch = ({changeState}) => {
                     );
                 }, 1000);
           } else {
-              postData2server(timer)
+              postData2server(timer,dog_id)
               clearInterval(increment.current)
               stopAndload()
               changeState()
@@ -423,7 +434,7 @@ class WalkResult extends Component{
         this.loadData();
     }
     async loadData(){
-        await walkGet();
+        await walkGet(this.props.dog_id);
         extract();
         this.setState({
             total_count : myData.length,
@@ -556,14 +567,7 @@ class WalkResult extends Component{
                     </Text>}
                 </View>
             </View>
-            {/* 산책 시작 버튼 */}
             
-            {/* <View style={[styles.container_background,styles.textInformation_container]}>
-                <Text style={styles.subTitle}>
-                    Walk Now!
-                </Text>
-                <StopWatch changeState={this.changeState}/>
-            </View> */}
                         
             </View>
             </TouchableWithoutFeedback>
@@ -587,9 +591,6 @@ class WalkResult extends Component{
 
 const styles=StyleSheet.create({
     main_container:{
-        flex:1,
-        flexDirection:'column',
-        marginTop:30,
     },
     title:{
         textAlign:'left',
@@ -606,7 +607,7 @@ const styles=StyleSheet.create({
     },
     summary_container:{
         flexDirection:'row',
-        paddingHorizontal:10,
+        marginHorizontal:20,
     },
     summary_element_list:{
         // marginTop(70) = day_chevron size(30) + dayText_fontSize(30) + marginBottom(5)

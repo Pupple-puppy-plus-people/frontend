@@ -27,7 +27,7 @@ import axios from 'axios';
 import { HS_API_END_POINT, USER_INFO } from '../../Shared/env';
 import { TextInput } from 'react-native-gesture-handler';
 
-const Survey=({navigation, route})=> {
+const Survey=(props)=> {
     // dog id 제대로 들어가는지 확인하기!!!!!!!!!!!!!!!!
 
     const [reason, setReason] = useState("")
@@ -77,7 +77,7 @@ const Survey=({navigation, route})=> {
         }
         sendData = {
             user_id:USER_INFO.USER_ID,
-            dog_id:4, 
+            dog_id:props.dog_id, 
             reason:reason,
             num_family:numfamily,
             family:family,

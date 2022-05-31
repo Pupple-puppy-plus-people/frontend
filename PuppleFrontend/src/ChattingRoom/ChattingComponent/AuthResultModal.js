@@ -69,7 +69,7 @@ const AuthResultModal = (props) => {
         <View style={{flex:1}}>
             {props.selectedTitle==='설문지' && <SurveyResult dogId={props.dogID} userId={props.customerID}/>}
             {props.selectedTitle==='동의서' && <AgreementResult dogId={props.dogID} userId={props.customerID}/>}
-            {props.selectedTitle==='산책량 측정' && <WalkResult dogId={props.dogID} userId={props.customerID}/>}
+            {props.selectedTitle==='산책량 측정' && <WalkResult dog_id={props.dogID} userId={props.customerID}/>}
             {props.selectedTitle==='생활패턴 검증' && <TimestampResult  dog_id={props.dogID} ts_check_time={passCondition.ts_check_time} ts_total_count={passCondition.ts_total_count} startTime={startTime} setStartTime={setStartTime}/>}
             {props.selectedTitle==='집 바닥재질 평가' && <Text style={{fontSize:50}}>5555555555</Text>}
             {props.selectedTitle==='반려견 생활환경 평가' && <HousePhotoResult dogId={props.dogID} userId={props.customerID}/>}

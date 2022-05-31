@@ -31,7 +31,14 @@ function Item({item, navigation, icon, nextPage}) {
 
     const [parentHeight, setParentHeight] = useState({height:0}); // 동적인 값 관리
     const [imagePos, setimagePos] = useState({X:0, Y:0}); // 동적인 값 관리
-  
+    const [imageSrc, setImageSrc] = useState("");
+    React.useEffect(()=>{
+      if(item.image[0]==='h'){
+        setImageSrc({uri: item.image})
+      } else {
+        setImageSrc({uri: `data:image/jpeg;base64,${item.image}`})
+      }
+    },[])
     const onLayout=(event)=> {
       const {x, y, height, width} = event.nativeEvent.layout; // position (x, y), size (height, width)
       setParentHeight({height:height});
@@ -56,7 +63,7 @@ function Item({item, navigation, icon, nextPage}) {
               
               { 
                 // `data:image/jpeg;base64,${item.image.substring(2, item.image.length-1)}`
-                <Image source={{uri: item.image}} onLayout={onLayoutImage} 
+                <Image source={imageSrc} onLayout={onLayoutImage} 
                 style={ {width: parentHeight.height/2,
                 height:parentHeight.height/2,
                 borderRadius:50,

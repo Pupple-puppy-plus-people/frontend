@@ -188,9 +188,9 @@ const AdoptionStep = ({navigation,aboutDog,setWishList})=>{
                     </Pressable>
                     
                     {console.log("setSelectedAuth", selectedAuth)}
-                    {selectedAuth==0?<Survey></Survey>:null}
-                    {selectedAuth==1?<Agreement></Agreement>:null}
-                    {selectedAuth==2?<Walk></Walk>:null}
+                    {selectedAuth==0?<Survey dog_id={aboutDog.id}></Survey>:null}
+                    {selectedAuth==1?<Agreement dog_id={aboutDog.id}></Agreement>:null}
+                    {selectedAuth==2?<Walk dog_id={aboutDog.id}></Walk>:null}
                     {selectedAuth==3?<TimeStamp dog_id={aboutDog.id} ts_check_time={passCondition.ts_check_time} ts_total_count={passCondition.ts_total_count} startTime={startTime} setStartTime={setStartTime}></TimeStamp>:null}
                     {selectedAuth==4?<Walk dog_id={aboutDog.id}></Walk>:null}
                     {selectedAuth==5?<RoomCheck></RoomCheck>:null}

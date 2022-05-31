@@ -38,6 +38,7 @@ function walkGet(dog_id) {
         .then(function(response){
             // handle success
             myData = response.data
+            console.log("myData ===========",myData)
             axios.get(baseUrl+'/api/passcondition/'+dog_id)
             .then(function(response){
                 pass_condition = response.data[0]

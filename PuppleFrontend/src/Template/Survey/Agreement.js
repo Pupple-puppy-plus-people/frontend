@@ -28,7 +28,7 @@ import axios from 'axios';
 import { HS_API_END_POINT, USER_INFO } from '../../Shared/env';
 import { TextInput } from 'react-native-gesture-handler';
 
-const Agreement=({navigation, route})=> {
+const Agreement=(props)=> {
 
     const [personalInfo, setPersonalInfo] = useState(false)
     const [location, setLocation] = useState(false)
@@ -41,7 +41,7 @@ const Agreement=({navigation, route})=> {
         // route.params.dog_id = 1;
         sendData = {
             user_id:USER_INFO.USER_ID, 
-            dog_id:4 , 
+            dog_id:props.dog_id, 
             person_info:personalInfo, 
             location_info:location, 
             chit_penalty:other, 
