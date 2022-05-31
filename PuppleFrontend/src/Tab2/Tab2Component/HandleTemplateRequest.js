@@ -20,7 +20,7 @@ let temp_image = [
 ]
 
 
-const HandleTemplateReqeust = ({navigation, aboutDog}) => {
+const HandleTemplateReqeust = ({navigation, aboutDog, setWishList}) => { // setWishList 추가한 부분
     const [modalVisible, setModalVisible] = useState(false);
     const [requestItem, setRequestItem] = useState(null);
     const [parentWidth, setParentWidth] = useState({width:0});
@@ -45,6 +45,19 @@ const HandleTemplateReqeust = ({navigation, aboutDog}) => {
             // console.log(error)
             console.log('fail get onlyone dog')
         })
+
+        // 반려견 신청인원 받아오기 - 추가한 코드 
+        axios.post(`${HS_API_END_POINT}/api/users/wishlist/`,{
+            "dog_id":aboutDog.id})
+        .then(function(res){   
+            wishlist = res.data
+            console.log("여기서 받아옵니다->", res.data, res.data.length)
+            setWishList(wishlist)
+        })
+        .catch(function(error){
+            console.log(error);
+        });
+
     },[]);
     const onPressRequest = (item)=>{
         setRequestItem(item)        

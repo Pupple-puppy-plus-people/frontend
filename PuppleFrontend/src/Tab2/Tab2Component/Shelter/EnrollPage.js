@@ -65,7 +65,7 @@ function TopTabs({aboutDog, setWishList}) {
                 return(
                     <View style={{flex:1}}>
                     {USER_INFO.USER_TYPE==='customer'&&<AdoptionStep aboutDog={aboutDog} setWishList={setWishList}/>}
-                    {USER_INFO.USER_TYPE==='seller'&&<HandleTemplateReqeust aboutDog={aboutDog}/>}
+                    {USER_INFO.USER_TYPE==='seller'&&<HandleTemplateReqeust aboutDog={aboutDog} setWishList={setWishList}/>} 
                     </View>
                 )}} 
              options={{
@@ -98,10 +98,13 @@ function EnrollPage({navigation,route}) {
         const {x, y, height, width} = event.nativeEvent.layout; // position (x, y), size (height, width)
         setParentHeight({height:height});
     };
-   
+    console.log("wishlist", wishlist);
+
     const getHeader = () => {
         return (
             <View style={{flex:0.5,flexDirection:'column', padding:'3%',backgroundColor:'#fff'}}>
+                {USER_INFO.USER_TYPE==='customer'?
+                // 구매자면 인증진행률 보여주고 
                 <View style={[styles.board,{flex:9,backgroundColor:'#E1BEE7',borderRadius:20, padding:10, alignSelf:'center'}]}>
                     <View style={{flex:1, flexDirection:'row', justifyContent:'space-between', marginTop:10}}>
                         <Text style={styles.title}> </Text>
@@ -114,6 +117,52 @@ function EnrollPage({navigation,route}) {
                     <View style={{flex:4, flexDirection:'column',justifyContent:'center'}}>
                     </View>
                 </View>
+                : // 판매자면 신청한 인원 보여주기 
+                <View style={[styles.board,{flex:9,backgroundColor:'#E1BEE7',borderRadius:20, padding:10}]}>
+                <View style={{flex:1, flexDirection:'row', justifyContent:'space-between', marginTop:10}}>
+                    <Text style={styles.title}>반려견 입양 신청인원</Text>
+                    <Text style={[styles.title, {color:'purple', backgroundColor:'white', marginBottom:10}]}>{wishlist.length}명</Text>
+                </View>
+                <View style={{flex:5,justifyContent:'flex-start'}}>
+                    <Text style={styles.subtitle}>반려견 인증 및 견적사항 확인</Text>
+                </View>
+                <View style={{flex:4, flexDirection:'column',justifyContent:'center'}}>
+                </View>
+                <TouchableOpacity
+                    onPress={()=>{
+                        // console.log('here',item)
+                        Alert.alert(
+                            "반려견 입양을 마감하시나요?",
+                            "마감하면 더 이상 입양 신청자를 받지 않아요.",
+                            [
+                            {
+                                text: "아니요",
+                                style: "default",
+                            },
+                            {
+                                text: "네",
+                                onPress: () => {Alert.alert("입양을 마감합니다.")}, // 여기 dogs에 adpation_status나 approval을 업데이트 -> 이 dogs는 인증절차 수행기능에 empty page 로 띄워주기 
+                                style: "default",
+                            },
+                            ],
+                        );
+                    }}
+                    style={{
+                        borderColor:'purple',
+                        borderWidth:3,
+                        borderRadius:10,
+                        marginVertical:10,
+                        backgroundColor:'purple',
+                        width:responsiveWidth(50),
+                        height:responsiveHeight(4),
+                        alignSelf:'flex-start',
+                        justifyContent:'center',
+                        alignItems:'center',
+                        }}>
+                        <Text
+                        style={{fontSize:responsiveFontSize(2),color:'white', fontWeight:'bold'}}>입양 마감하기</Text>
+                    </TouchableOpacity>
+                </View>}
                 <View style={{flex:1.5}}/>
             </View>       
         );
