@@ -192,7 +192,7 @@ const AdoptionStep = ({navigation,aboutDog,setWishList})=>{
                     {selectedAuth==1?<Agreement></Agreement>:null}
                     {selectedAuth==2?<Walk></Walk>:null}
                     {selectedAuth==3?<TimeStamp dog_id={aboutDog.id} ts_check_time={passCondition.ts_check_time} ts_total_count={passCondition.ts_total_count} startTime={startTime} setStartTime={setStartTime}></TimeStamp>:null}
-                    {selectedAuth==4?<Walk></Walk>:null}
+                    {selectedAuth==4?<Walk dog_id={aboutDog.id}></Walk>:null}
                     {selectedAuth==5?<RoomCheck></RoomCheck>:null}
 
                 </View>

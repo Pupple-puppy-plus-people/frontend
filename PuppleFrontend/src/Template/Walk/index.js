@@ -15,7 +15,8 @@ class Walk extends Component{
     render(){
         return(
             <View style={styles.container}>
-                <WalkAuthComponent/>
+                {console.log('Walk:   '+this.props.dog_id)}
+                <WalkAuthComponent dog_id={this.props.dog_id}/>
             </View>
             // 화면 반응성(spring) && 돌아가기 추가
         );
