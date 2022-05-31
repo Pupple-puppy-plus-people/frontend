@@ -21,7 +21,7 @@ const today = new Date().getDay();
 let baseUrl = `${HS_API_END_POINT}`
 let userdog = 'dddd'
 let dog_id = 0
-function walkGet(dog_id) {
+function walkGet({dog_id,userId}) {
     return new Promise((resolve,reject)=>{
         // axios
         // .all([axios.get(baseUrl+'/api/walkauth/'+userdog)
@@ -34,7 +34,7 @@ function walkGet(dog_id) {
         //     })
         // )
         // .catch((error)=>console.log(error))
-        axios.get(baseUrl+'/api/walkauth/'+USER_INFO.USER_ID+'&'+dog_id)
+        axios.get(baseUrl+'/api/walkauth/'+userId+'&'+dog_id)
         .then(function(response){
             // handle success
             myData = response.data
@@ -434,7 +434,7 @@ class WalkResult extends Component{
         this.loadData();
     }
     async loadData(){
-        await walkGet(this.props.dog_id);
+        await walkGet(this.props.dog_id, this.props.userId);
         extract();
         this.setState({
             total_count : myData.length,

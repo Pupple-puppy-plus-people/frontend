@@ -37,8 +37,8 @@ const AgreementResult = (props) =>{
     const [accept, setAccept] = useState(false)
     const [moreInfo, setMoreInfo] = useState(false)
     React.useEffect(()=>{
-        //sendData={user_id:props.userId, dog_id:props.dogId}
-        sendData={user_id:2, dog_id:1}
+        sendData={user_id:props.userId, dog_id:props.dogId}
+        // sendData={user_id:2, dog_id:1}
         
         axios.post(`${HS_API_END_POINT}/api/survey/agreement/get`,sendData)
         .then((res)=>{

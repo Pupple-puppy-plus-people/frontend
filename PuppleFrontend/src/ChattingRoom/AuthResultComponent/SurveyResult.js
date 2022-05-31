@@ -57,7 +57,7 @@ const SurveyResult=(props)=> {
             setHouseForm("ownHouse")
         }
         //sendData={user_id:props.userId, dog_id:props.dogId}
-        sendData={user_id:2, dog_id:1}
+        sendData={user_id:props.userId, dog_id:props.dogId}
 
         axios.post(`${HS_API_END_POINT}/api/survey/survey/get`,sendData)
         .then((res)=>{
