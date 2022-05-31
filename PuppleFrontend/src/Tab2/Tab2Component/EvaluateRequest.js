@@ -53,6 +53,13 @@ export default function EvaluateRequest({
                 onPress={()=>{
                     setAllRequest(allRequest=>(removeElement()))
                     // fail axios
+                    axios.post(`${HS_API_END_POINT}/api/housephoto/update/pass/`,{"user_id":USER_INFO.USER_ID,"dog_id":item.id,"pass":false})
+                    .then(function(res){
+                        
+                    })
+                    .catch(function(error){
+                        console.log(error);
+                    });
                     setModalVisible(!modalVisible)
                 }}>
                     <Text style={{color:'#eae8eb',fontSize:35}}>Fail</Text>
@@ -62,6 +69,13 @@ export default function EvaluateRequest({
                 onPress={()=>{
                     setAllRequest(allRequest=>(removeElement()))
                     // pass axios
+                    axios.post(`${HS_API_END_POINT}/api/housephoto/update/pass/`,{"user_id":USER_INFO.USER_ID,"dog_id":item.id,"pass":true})
+                    .then(function(res){
+                        
+                    })
+                    .catch(function(error){
+                        console.log(error);
+                    });
                     setModalVisible(!modalVisible)
                 }}>
                     <Text style={{color:'#eae8eb',fontSize:35}}>Pass</Text>

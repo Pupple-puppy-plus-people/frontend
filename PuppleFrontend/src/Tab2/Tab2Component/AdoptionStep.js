@@ -53,7 +53,8 @@ const AdoptionStep = ({navigation,aboutDog})=>{
                         <Text
                         style={{fontSize:20,color:'#006ef9'}}>{'←'}돌아가기</Text>
                     </Pressable>
-                    <Walk/>
+                    {console.log('adoptionstep:  '+aboutDog.id)}
+                    <Walk dog_id={aboutDog.id}/>
                 </View>
             </Modal>
             <Pressable
@@ -95,7 +96,7 @@ const AdoptionStep = ({navigation,aboutDog})=>{
                         <Text
                         style={{fontSize:20,color:'#006ef9'}}>{'←'}돌아가기2</Text>
                     </Pressable>
-                    <Walk/>
+                    <Walk dog_id={aboutDog.id}/>
                 </View>
             </Modal>
             <Pressable
