@@ -99,6 +99,7 @@ const AdoptionStep = ({navigation,aboutDog,setWishList})=>{
     }
 
     const [startTime, setStartTime] = useState([]);
+    const [startDay, setStartDay] = useState([]);
 
    
     React.useEffect(()=> { // useCallback?
@@ -122,13 +123,13 @@ const AdoptionStep = ({navigation,aboutDog,setWishList})=>{
             authlist[3].progress = wishlist.template2
             authlist[4].progress = wishlist.template3
             authlist[5].progress = wishlist.template4
-            console.log("->",authlist)
+            console.log("여기서 받아옵니다->",authlist)
             setWishList(wishlist)
         })
         .catch(function(error){
             console.log(error);
         });
-        
+
         // timestamp 시작시간 
         axios.get(`${HS_API_END_POINT}/api/timestamp/get/?user=${USER_INFO.USER_ID}&dog=${aboutDog.dog_id}&day=${-1}`) 
         .then((res)=> {      
@@ -137,6 +138,7 @@ const AdoptionStep = ({navigation,aboutDog,setWishList})=>{
                 setStartTime(0)
             }else{
                 setStartTime(res.data[0]['start_time'])
+                setStartDay(res.data[0]['press_time'])
             }
             console.log("TimeStamp start time", startTime); // 왜 timeList에 안들어가지 
         })
