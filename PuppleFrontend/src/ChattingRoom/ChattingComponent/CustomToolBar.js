@@ -53,7 +53,7 @@ const Item = (props) => {
                                 <AuthResultModal 
                                 selectedTitle={props.selectedTitle}
                                 customerID={props.customerID}
-                                dogId={props.dogId}
+                                dogID={props.dogID}
                                 >
 
                                 </AuthResultModal>
@@ -119,8 +119,8 @@ const CustomToolBar = (props)=>  {
             setSelectedTitle(item.title)
         }}
         selectedTitle={selectedTitle}
-        customerId={props.customerID}
-        dogId={props.aboutDog.id}
+        customerID={props.customerID}
+        dogID={props.aboutDog.id}
         setModalVisible={setModalVisible} 
         modalVisible={modalVisible}
         
@@ -242,7 +242,10 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.25,
         shadowRadius: 4,
-        elevation: 5
+        elevation: 5,
+
+        backgroundColor: "#eedbff",
+        borderRadius:15,
     },
     closeButton: {
         justifyContent: 'center',
@@ -265,7 +268,9 @@ const styles = StyleSheet.create({
     menu: {
         justifyContent: 'center',
         alignItems: 'center',
-    },conatiner_background:{
+        
+    },
+    conatiner_background:{
         backgroundColor: "#eedbff",
         borderRadius:15,
     },

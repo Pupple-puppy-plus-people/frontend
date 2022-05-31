@@ -40,13 +40,14 @@ const DogDetail = ({item,id, heart}) => {
         genderStr = "남";
     }
     var imageStr = {uri: 'http://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
-        if(item.image){
-            imageStr = {uri: item.image};
-            //imageStr = {uri: 'https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
-
-        }else{
-            imageStr = {uri: 'https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
-        }
+    if(item.image[0]==='h'){
+        //`data:image/jpeg;base64,${item.image.substring(2, item.image.length-1)}`
+        imageStr = {uri: item.image};
+        //imageStr = {uri: 'https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
+        // console.log("->", imageStr)
+    }else{
+        imageStr = {uri: `data:image/jpeg;base64,${item.image}`}
+    }
     PressHeart =() => {
         
         if(!isHeart){

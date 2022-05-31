@@ -42,7 +42,7 @@ const DogListHome = ({ navigation,route }) => {
     const [selectedDogId, setSelectedDogId] = useState({});
     const [heartDogId, setHeartDogId] = useState([]);
     const [backBoard, setBackBoard] = useState({backgroundColor:'white'})
-    const [dogs, setDogs] = useState([{}])
+    const [dogs, setDogs] = useState()
     
 
     React.useEffect(()=> {
@@ -87,22 +87,23 @@ const DogListHome = ({ navigation,route }) => {
         // const base64Image = 'data:image/jpeg;base64,' + item.bookCoverResource;
         const [isHeart, setIsHeart] = useState((heartDogId.indexOf(item.id)<0)?false:true);
         var genderStr="";
-        if (item.gender=="암컷"){
-            genderStr = "여";
-        } else{
-            genderStr = "남";
-        }
-        var imageStr;
-        if(item.image){
-            //`data:image/jpeg;base64,${item.image.substring(2, item.image.length-1)}`
-            imageStr = {uri: item.image};
-            //imageStr = {uri: 'https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
-            // console.log("->", imageStr)
-        }else{
-            imageStr = {uri: 'https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
-        }
-        // console.log(item.image);
         if(item){
+            if (item.gender=="암컷"){
+                genderStr = "여";
+            } else{
+                genderStr = "남";
+            }
+            var imageStr;
+            if(item.image[0]==='h'){
+                //`data:image/jpeg;base64,${item.image.substring(2, item.image.length-1)}`
+                imageStr = {uri: item.image};
+                //imageStr = {uri: 'https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
+                // console.log("->", imageStr)
+            }else{
+                imageStr = {uri: `data:image/jpeg;base64,${item.image}`}
+            }
+        // console.log(item.image);
+        
             // console.log("imageStr", dogs);
 
             return (

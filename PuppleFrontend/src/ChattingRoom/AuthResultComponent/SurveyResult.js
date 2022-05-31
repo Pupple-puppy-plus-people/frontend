@@ -25,7 +25,6 @@ import { responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth
 import { NavigationContainer } from '@react-navigation/native';
 import axios from 'axios';
 import { HS_API_END_POINT, USER_INFO } from '../../Shared/env';
-import { TextInput } from 'react-native-gesture-handler';
 
 const SurveyResult=(props)=> {
     // dog id 제대로 들어가는지 확인하기!!!!!!!!!!!!!!!!
@@ -49,7 +48,7 @@ const SurveyResult=(props)=> {
     const [houseForm,setHouseForm]=useState("")
 
     React.useEffect(()=>{
-        
+        console.log(props.userId,props.dogId)
         if(apart===true){
             setHouseForm("apart")
         } else if(villa===true){
@@ -57,24 +56,6 @@ const SurveyResult=(props)=> {
         } else if(ownHouse===true){
             setHouseForm("ownHouse")
         }
-        // sendData = {
-        //     user_id:USER_INFO.USER_ID,
-        //     dog_id:4, 
-        //     reason:reason,
-        //     num_family:numfamily,
-        //     family:family,
-        //     family_agree:familyagreeCheckBox,
-        //     experience:growDogCheckBox,
-        //     house_form:houseForm,
-        //     noise_issue:noiseIssue,
-        //     move_issue:moveIssue,
-        //     empty_issue:emptyIssue,
-        //     family_issue:familyIssue,
-        //     neutering:neuteringCheckBox,
-        //     main_person:mainPerson,
-        //     vaccin_cost:vaccinCost,
-        //     food_cost:foodCost
-        // }
         //sendData={user_id:props.userId, dog_id:props.dogId}
         sendData={user_id:2, dog_id:1}
 
