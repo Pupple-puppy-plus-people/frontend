@@ -493,10 +493,11 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = L27H2SJZMT;
+				DEVELOPMENT_TEAM = XZUF9G4YLZ;
 				ENABLE_BITCODE = NO;
 				EXCLUDED_ARCHS = "";
 				"EXCLUDED_ARCHS[sdk=*]" = "";
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				INFOPLIST_FILE = PuppleFrontend/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -507,7 +508,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.Pupple2;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.Pupplelast;
 				PRODUCT_NAME = PuppleFrontend;
 				SWIFT_OBJC_BRIDGING_HEADER = "PuppleFrontend-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -524,8 +525,8 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = L27H2SJZMT;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "";
+				DEVELOPMENT_TEAM = XZUF9G4YLZ;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				INFOPLIST_FILE = PuppleFrontend/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -536,7 +537,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.Pupple2;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.example.Pupplelast;
 				PRODUCT_NAME = PuppleFrontend;
 				SWIFT_OBJC_BRIDGING_HEADER = "PuppleFrontend-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
