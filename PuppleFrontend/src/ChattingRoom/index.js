@@ -7,7 +7,7 @@ const Stack = createStackNavigator();
 
 
 
-function ChattingRoom({user_info}){
+function ChattingPage({user_info}){
 
     return (
         <Stack.Navigator>
@@ -36,4 +36,4 @@ function ChattingRoom({user_info}){
 //   });
 
 // export default connect(mapStateToProps)(BookShelf);
-export default ChattingRoom;
+export default ChattingPage;

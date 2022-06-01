@@ -12,16 +12,16 @@ import {
 import Geolocation from 'react-native-geolocation-service';
 import {getDistance} from 'geolib';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import { HS_API_END_POINT, USER_INFO } from '../../../Shared/env';
+import { HS_API_END_POINT, USER_INFO } from '../../Shared/env';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import WeekComponent from '../../Recycle/WeekComponent';
+import WeekComponent from '../../Template/Recycle/WeekComponent';
 const today = new Date().getDay();
 let baseUrl = `${HS_API_END_POINT}`
 let userdog = 'dddd'
 let dog_id = 0
-function walkGet(dog_id) {
+function walkGet(dog_id,userId) {
     return new Promise((resolve,reject)=>{
         // axios
         // .all([axios.get(baseUrl+'/api/walkauth/'+userdog)
@@ -34,7 +34,7 @@ function walkGet(dog_id) {
         //     })
         // )
         // .catch((error)=>console.log(error))
-        axios.get(baseUrl+'/api/walkauth/'+USER_INFO.USER_ID+'&'+dog_id)
+        axios.get(baseUrl+'/api/walkauth/'+userId+'&'+dog_id)
         .then(function(response){
             // handle success
             myData = response.data
@@ -418,7 +418,7 @@ function extract(){
     }
 }
 
-class WalkAuthComponent extends Component{
+class WalkResult extends Component{
     constructor(props){
         Geolocation.requestAuthorization('always');
         super(props);
@@ -434,7 +434,7 @@ class WalkAuthComponent extends Component{
         this.loadData();
     }
     async loadData(){
-        await walkGet(this.props.dog_id);
+        await walkGet(this.props.dog_id, this.props.userId);
         extract();
         this.setState({
             total_count : myData.length,
@@ -567,15 +567,7 @@ class WalkAuthComponent extends Component{
                     </Text>}
                 </View>
             </View>
-            {/* 산책 시작 버튼 */}
             
-            <View style={[styles.container_background,styles.textInformation_container]}>
-                <Text style={styles.subTitle}>
-                    Walk Now!
-                </Text>
-                {console.log('walkauth:   '+this.props.dog_id)}
-                <StopWatch changeState={this.changeState} dog_id={this.props.dog_id}/>
-            </View>
                         
             </View>
             </TouchableWithoutFeedback>
@@ -599,9 +591,6 @@ class WalkAuthComponent extends Component{
 
 const styles=StyleSheet.create({
     main_container:{
-        flex:1,
-        flexDirection:'column',
-        marginTop:30,
     },
     title:{
         textAlign:'left',
@@ -618,7 +607,7 @@ const styles=StyleSheet.create({
     },
     summary_container:{
         flexDirection:'row',
-        paddingHorizontal:10,
+        marginHorizontal:20,
     },
     summary_element_list:{
         // marginTop(70) = day_chevron size(30) + dayText_fontSize(30) + marginBottom(5)
@@ -678,4 +667,4 @@ const styles=StyleSheet.create({
     }
 });
 
-export default WalkAuthComponent;
+export default WalkResult;
