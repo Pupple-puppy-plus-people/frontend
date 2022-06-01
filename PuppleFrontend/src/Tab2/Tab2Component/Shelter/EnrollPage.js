@@ -1,6 +1,6 @@
 import React, {useState, createRef} from 'react';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs'
-import { NavigationContainer, useScrollToTop } from '@react-navigation/native';
+import { NavigationContainer, useScrollToTop, useIsFocused } from '@react-navigation/native';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {
@@ -16,15 +16,19 @@ import {
   ScrollView,
   Dimensions,
   Alert,
+  FlatList,
 } from 'react-native';
 import LottieView from 'lottie-react-native';
-import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
+import { responsiveFontSize, responsiveHeight, responsiveScreenHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import Animation from 'lottie-react-native';
 import symbolicateStackTrace from 'react-native/Libraries/Core/Devtools/symbolicateStackTrace';
 // import Loader from './Components/Loader';
 
 import DogInfo from '../DogInfo';
 import AdoptionStep from '../AdoptionStep'
+import axios from 'axios';
+import { HS_API_END_POINT, USER_INFO } from '../../../Shared/env';
+import HandleTemplateReqeust from '../HandleTemplateRequest';
 
 const screenWidth = Dimensions.get('screen').width;
 const screenHeight = Dimensions.get('screen').height;
@@ -33,20 +37,20 @@ const smallOne = screenWidth < screenHeight ? screenWidth:screenHeight;
 
 import "react-native-gesture-handler";
 
-
 const Tab = createMaterialTopTabNavigator();
 
-function TopTabs() {
-
+function TopTabs({aboutDog, setWishList}) {
+   
     return (
       <NavigationContainer 
          screenOptions={{ tabBarScrollEnabled: true,tabBarIndicatorStyle:{
         } }}
       independent={true}>  
         <Tab.Navigator>
-            <Tab.Screen name="DogInfo" component={DogInfo} 
+            <Tab.Screen name="DogInfo" children={()=><DogInfo aboutDog={aboutDog}/>}
                  options={{
-                //tabBarLabel: '인증',
+                // tabBarLabel: '인증',
+                // tabBarLabel: aboutDog.title,
                 //tabBarLabelPosition: 'beside-icon', -> ipad에서 전형적인 것임
                 
                 headerShown: false,
@@ -55,17 +59,23 @@ function TopTabs() {
                 tabBarIcon: ()=>(
                     
                     <Icon name = "dog" size={25}/>
-                )
+                ),
             }}/>
-            <Tab.Screen name="AdoptionStep" component={AdoptionStep} 
+            <Tab.Screen name="AdoptionStep" children={()=>{
+                return(
+                    <View style={{flex:1}}>
+                    {USER_INFO.USER_TYPE==='customer'&&<AdoptionStep aboutDog={aboutDog} setWishList={setWishList}/>}
+                    {USER_INFO.USER_TYPE==='seller'&&<HandleTemplateReqeust aboutDog={aboutDog} setWishList={setWishList}/>} 
+                    </View>
+                )}} 
              options={{
-                
+                    
                 headerShown: false,
                 animationEnabled: false,
                 tabBarLabel:() => {return null},
                 tabBarIcon: ()=>(
                     
-                    <Icon name = "grid" size={25}/> // 아이콘 추천 받아요
+                    <Icon name = "grid" size={25}/> 
                 )
             }}/>
         </Tab.Navigator>
@@ -74,54 +84,116 @@ function TopTabs() {
   }
   
 
-function EnrollPage({navigation}) {
+function EnrollPage({navigation,route}) {
     const ref = React.useRef(null);
+    const isFocused = useIsFocused();
 
     useScrollToTop(ref);
 
     const [parentHeight, setParentHeight] = useState({height:0}); // 동적인 값 관리
+    const [parentHeight2, setParentHeight2] = useState({height:0}); // 동적인 값 관리
+    const [wishlist, setWishList] = useState({}); // AdoptionStep에서 받아옴
 
     const onLayout=(event)=> {
         const {x, y, height, width} = event.nativeEvent.layout; // position (x, y), size (height, width)
         setParentHeight({height:height});
     };
-   
-    return (
-        <SafeAreaView style={styles.container} onLayout={onLayout}>  
-             
-            <ScrollView ref = {ref} style={styles.scrollView} >
+    console.log("wishlist", wishlist);
 
-             <> 
+    const getHeader = () => {
+        return (
             <View style={{flex:0.5,flexDirection:'column', padding:'3%',backgroundColor:'#fff'}}>
-                <View style={{flex:0.5}}/>
-                <View style={[styles.board,{flex:9,backgroundColor:'#E1BEE7',borderRadius:20}]}>
-                    <View style={{flex:1,justifyContent:'flex-end'}}>
-                        {/* <LottieView style={{width:'100%',height:'100%',margin:0}} source={require('../../Assets/json/42476-register.json')} autoPlay loop /> */}
-                        {/* <Text style={styles.title}>Step 1.</Text> */}
+                {USER_INFO.USER_TYPE==='customer'?
+                // 구매자면 인증진행률 보여주고 
+                <View style={[styles.board,{flex:9,backgroundColor:'#E1BEE7',borderRadius:20, padding:10, alignSelf:'center'}]}>
+                    <View style={{flex:1, flexDirection:'row', justifyContent:'space-between', marginTop:10}}>
                         <Text style={styles.title}> </Text>
-                        <Text style={styles.title}>반려견에 대한 인증절차</Text>
+                        <Text style={styles.title}>반려견에 대한 인증진행률</Text>
+                        <Text style={[styles.title, {color:'purple', backgroundColor:'white', marginBottom:10}]}>{wishlist.total}%</Text>
                     </View>
-                    <View style={{flex:0.5, padding:10,justifyContent:'flex-start'}}>
+                    <View style={{flex:5, padding:10,justifyContent:'flex-start'}}>
                         <Text style={styles.subtitle}>반려견 인증절차 수행 및 견적사항 확인</Text>
-
                     </View>
                     <View style={{flex:4, flexDirection:'column',justifyContent:'center'}}>
-                       
                     </View>
                 </View>
-
+                : // 판매자면 신청한 인원 보여주기 
+                <View style={[styles.board,{flex:9,backgroundColor:'#E1BEE7',borderRadius:20, padding:10}]}>
+                <View style={{flex:1, flexDirection:'row', justifyContent:'space-between', marginTop:10}}>
+                    <Text style={styles.title}>반려견 입양 신청인원</Text>
+                    <Text style={[styles.title, {color:'purple', backgroundColor:'white', marginBottom:10}]}>{wishlist.length}명</Text>
+                </View>
+                <View style={{flex:5,justifyContent:'flex-start'}}>
+                    <Text style={styles.subtitle}>반려견 인증 및 견적사항 확인</Text>
+                </View>
+                <View style={{flex:4, flexDirection:'column',justifyContent:'center'}}>
+                </View>
+                <TouchableOpacity
+                    onPress={()=>{
+                        // console.log('here',item)
+                        Alert.alert(
+                            "반려견 입양을 마감하시나요?",
+                            "마감하면 더 이상 입양 신청자를 받지 않아요.",
+                            [
+                            {
+                                text: "아니요",
+                                style: "default",
+                            },
+                            {
+                                text: "네",
+                                onPress: () => {Alert.alert("입양을 마감합니다.")}, // 여기 dogs에 adpation_status나 approval을 업데이트 -> 이 dogs는 인증절차 수행기능에 empty page 로 띄워주기 
+                                style: "default",
+                            },
+                            ],
+                        );
+                    }}
+                    style={{
+                        borderColor:'purple',
+                        borderWidth:3,
+                        borderRadius:10,
+                        marginVertical:10,
+                        backgroundColor:'purple',
+                        width:responsiveWidth(50),
+                        height:responsiveHeight(4),
+                        alignSelf:'flex-start',
+                        justifyContent:'center',
+                        alignItems:'center',
+                        }}>
+                        <Text
+                        style={{fontSize:responsiveFontSize(2),color:'white', fontWeight:'bold'}}>입양 마감하기</Text>
+                    </TouchableOpacity>
+                </View>}
                 <View style={{flex:1.5}}/>
-            </View>
-            
+            </View>       
+        );
+    };
+
+    const renderItem = ({item}) =>{
+        return(
             <View style={{ flex:1, 
                 // 여기 크기 다시다시 !
-                height: (parentHeight.height)}} /**(Dimensions.get('window').width)/(0.4) */>  
-                <TopTabs></TopTabs>
+                height: responsiveScreenHeight(150)
+                }} /**(Dimensions.get('window').width)/(0.4) */>  
+                <TopTabs 
+                aboutDog={route.params?.aboutDog}
+                setWishList={setWishList}
+                ></TopTabs>
             </View>
-            </>
+        );
+    };
 
-            </ScrollView>
-
+    return (
+        <SafeAreaView style={styles.container} onLayout={onLayout}>  
+            
+            <FlatList
+            ref={ref}
+            style={styles.scrollView}
+            data={[{id:0}]}
+            renderItem={renderItem}
+            listKey={new Date().getTime().toString()}
+            ListHeaderComponent={getHeader}
+            />
+            
         </SafeAreaView>
         
     );
@@ -134,7 +206,7 @@ const styles = StyleSheet.create({
         
     },
     scrollView: {
-        backgroundColor: 'pink',
+        backgroundColor: 'white',
         marginHorizontal: 0,
         flex: 1,
         flexGrow: 1,
@@ -148,20 +220,22 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.25,
         shadowRadius: 4,
-        elevation: 5
+        elevation: 5,
+        //justifyContent:'center',
+        //alignContent:'baseline',
     },
     title: {
         fontSize: bigOne*0.03,
         fontWeight:'bold',
         textAlign:'left',
-        marginLeft:30
+        marginLeft:10,
     },
     subtitle:{
-
         fontSize: bigOne*0.02,
         color:'rgba(0,0,0,0.7)',
         textAlign:'left',
-        marginLeft:30
+        marginLeft:10,
+
     },
     activityIndicator: {
       alignItems: 'center',

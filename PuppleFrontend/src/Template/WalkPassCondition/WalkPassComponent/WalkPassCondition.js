@@ -4,6 +4,7 @@ import {
     StyleSheet,
     View,
     Text,
+    Alert, // 디버깅 용으로 잠깐 추가
     
 } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
@@ -11,10 +12,26 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ScrollView } from 'react-native-gesture-handler';
 import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
 import { HS_API_END_POINT } from '../../../Shared/env';
-const WalkPassComponent = ({setAllData}) => {
+
+const WalkPassComponent = ({onWalkDay, onWalkTime, onWalkDistance}) => {
     const [walkDay, setWalkDay] = useState(7);
     const [walkTime, setWalkTime] = useState(30);
     const [walkDistance, setWalkDistance] = useState(2500)
+
+    // 추가한 사항
+    const setDay = (number) => {
+        setWalkDay(number);
+        onWalkDay(number);    
+    }
+    const setTime = (number) => {
+        setWalkTime(number);
+        onWalkTime(number);    
+    }
+    const setDistance = (number) => {
+        setWalkDistance(number);
+        onWalkDistance(number);    
+    }
+    
     const putTest=()=>{
         console.log('putTest')
         axios.patch(HS_API_END_POINT+'/api/passcondition/13',{
@@ -30,7 +47,6 @@ const WalkPassComponent = ({setAllData}) => {
         });
     }
     return(
-        <SafeAreaView style={[]}>
             <ScrollView>
             <Text style={styles.title}>산책 통과 기준</Text>
             <View style={[styles.conatiner_background,styles.textInformation_container]}>
@@ -43,7 +59,7 @@ const WalkPassComponent = ({setAllData}) => {
                     <Picker
                     selectedValue={walkDay}
                     onValueChange={(itemValue, itemIndex) =>
-                        setWalkDay(itemValue)
+                        setDay(itemValue) // 
                     }>
                         <Picker.Item label="1" value={1} />
                         <Picker.Item label="2" value={2} />
@@ -65,7 +81,7 @@ const WalkPassComponent = ({setAllData}) => {
                     <Picker
                     selectedValue={walkTime}
                     onValueChange={(itemValue, itemIndex) =>
-                        setWalkTime(itemValue)
+                        setTime(itemValue) //
                     }>
                         <Picker.Item label="30분 이상" value={30} />
                         <Picker.Item label="40분 이상" value={40} />
@@ -84,7 +100,7 @@ const WalkPassComponent = ({setAllData}) => {
                     <Picker
                     selectedValue={walkDistance}
                     onValueChange={(itemValue, itemIndex) =>
-                        setWalkDistance(itemValue)
+                        setDistance(itemValue) //
                     }>
                         <Picker.Item label="2000m 이상" value={2000} />
                         <Picker.Item label="2500m 이상" value={2500} />
@@ -92,17 +108,19 @@ const WalkPassComponent = ({setAllData}) => {
                         <Picker.Item label="4000m 이상" value={4000} />
                     </Picker>
                 </View>
-                <Pressable 
+                {/*<Pressable 
                 style={[]}
                 onPress={()=>{
                     // setAllData(walkDay,walkTime,walkDistance)
+                    Alert.alert( // 디버깅 용으로 잠깐 추가
+                        "입력완료!"
+                    );
                     setAllData(walkDay,walkTime,walkDistance)
                     }}>
                     <Text style={{ fontSize: 30 ,paddingVertical:10}}>asdf</Text>
-                </Pressable>
+                </Pressable>*/}
             </View>
             </ScrollView>
-        </SafeAreaView>
     );
 }
 

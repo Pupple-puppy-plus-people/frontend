@@ -15,21 +15,19 @@ import {
 
 } from 'react-native';
 import { responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
+
+import DogDetailwithoutScroll from '../../DogList/DogListComponent/DogDetailwithoutScroll';
 //import * as RNFS from 'react-native-fs'
 //import axios from 'axios';
 //import { HS_API_END_POINT } from '../../Shared/env';
 //import { setJwt,setUserInfo } from '../Store/Actions';
 //import { connect } from 'react-redux';
 
-const DogInfo = ({navigation})=>{
-      
+const DogInfo = ({navigation,aboutDog})=>{
     return (
               
         <View style={styles.container}>
-            <Text>
-                헬로~~
-            </Text>
-
+            <DogDetailwithoutScroll item={aboutDog} id={aboutDog.id} />
         </View>
   
     );

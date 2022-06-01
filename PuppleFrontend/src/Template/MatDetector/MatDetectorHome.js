@@ -11,8 +11,8 @@ import {
     TouchableOpacity,
     TouchableWithoutFeedback,
     ScrollView,
-    Modal
-
+    Modal,
+    Alert,
 } from 'react-native';
 import RNCamera from 'react-native-camera'
 import { CameraScreen } from 'react-native-camera-kit';
@@ -25,9 +25,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import axios from 'axios';
 import { HS_API_END_POINT, USER_INFO } from '../../Shared/env';
 
-const RoomCheckHome=({navigation, route, dog_id})=> {
+const MatDetectorHome=({navigation, route, dog_id, setModalVisible})=> {
     const [photoUri,setPhotoUri] = useState([]);
-    const [photoData,setPhotoData] = useState([]);
+    const [photoData,setPhotoData] = useState();
 
 
     const [pickerResponse, setPickerResponse] = useState(null);
@@ -71,7 +71,7 @@ const RoomCheckHome=({navigation, route, dog_id})=> {
             else {
                 console.log('Response uri = ', response.assets[0].uri)
                 // console.log("base64 = ",response.assets[0].base64);
-                setPhotoData([...photoData,response.assets[0].base64]) //access like this
+                setPhotoData(response.assets[0].base64) //access like this
             }
         });
         //launchImageLibrary(options, setPickerResponse);
@@ -79,15 +79,14 @@ const RoomCheckHome=({navigation, route, dog_id})=> {
     };
     const uploadImage = () => {
         // axios.post(`${HS_API_END_POINT}/api/housephoto/add/`,{"email":USER_INFO.USER_EMAIL,"dog_id":route.params.dog_id,"image":photoData})
-        axios.post(`${HS_API_END_POINT}/api/housephoto/add/`,{"email":USER_INFO.USER_EMAIL,"dog_id":dog_id,"image":photoData})
-        .then(function(res){
-            setModalVisible(false)  
-            console.log(res.data);
-        })
-        .catch(function(error) {
-            console.log("error : ",error);
-        })
+        if (photoData) {
+            axios.post(`${HS_API_END_POINT}/api/matdetector/evaluate/`,{"user_name":USER_INFO.USER_USERNAME,"dog_id":dog_id,"image":photoData})
+            setModalVisible(false)
+        } else {
+            Alert.alert('사진을 찍어주세요!')
+        }
     }
+
     const renderItem = useCallback(({item}) => (
         <View style={{justifyContent:'center',margin:3}}>
             <Image style={{marginHorizontal:5,width:responsiveScreenWidth(24),height:responsiveScreenWidth(24)}} source={{uri:`data:image/jpeg;base64,${item}`}}/>
@@ -99,8 +98,8 @@ const RoomCheckHome=({navigation, route, dog_id})=> {
         <SafeAreaView style={{flex:1}}>
             <View style={{margin:9,flex:9,backgroundColor:'white',borderRadius:15}}>
                 <View style={{margin:10,flex:1}}>
-                    <Text style={{fontWeight:'bold',fontSize:responsiveScreenFontSize(3)}}> 방 크기 측정 </Text>
-                    <Text style={{fontSize:responsiveScreenFontSize(2),fontWeight:'bold'}}> 방 사진을 모두 찍어서 업로드해주세요!</Text>
+                    <Text style={{fontWeight:'bold',fontSize:responsiveScreenFontSize(3)}}> 애견매트 측정 </Text>
+                    <Text style={{fontSize:responsiveScreenFontSize(2),fontWeight:'bold'}}> 애견매트의 사진을 찍어서 업로드해주세요!</Text>
 
                 </View>
                 <View style={{margin:9,flex:8,backgroundColor:'#E9E0FF',borderRadius:15,padding:10}}>
@@ -143,4 +142,4 @@ const RoomCheckHome=({navigation, route, dog_id})=> {
     )
  
 }
-export default React.memo(RoomCheckHome);
+export default React.memo(MatDetectorHome);

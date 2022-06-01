@@ -5,6 +5,7 @@ import Agreement from '../Template/Survey/Agreement';
 import Survey from '../Template/Survey/Survey';
 import DogListHome from './DogListComponent/DogListHome';
 import FilterDogList from './FilterComponent/FilterDogList';
+import MatDetectorHome from '../Template/MatDetector/MatDetectorHome';
 // import { connect } from 'react-redux';
 const Stack = createStackNavigator();
 
@@ -28,14 +29,18 @@ function DogList({user_info}){
                 title: '찾으시는 강아지가 있으신가요?',
             }}/>
 
-
-
-
             <Stack.Screen 
             name="RoomCheck" 
             component={RoomCheckHome}
             options={{
                 title: '카메라 테스트',
+            }}
+            />
+            <Stack.Screen 
+            name="MatDetector" 
+            component={MatDetectorHome}
+            options={{
+                title: '애견매트 탐지',
             }}
             />
             <Stack.Screen 

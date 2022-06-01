@@ -40,13 +40,14 @@ const DogDetail = ({item,id, heart}) => {
         genderStr = "남";
     }
     var imageStr = {uri: 'http://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
-        if(item.image){
-            imageStr = {uri: item.image};
-            //imageStr = {uri: 'https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
-
-        }else{
-            imageStr = {uri: 'https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
-        }
+    if(item.image[0]==='h'){
+        //`data:image/jpeg;base64,${item.image.substring(2, item.image.length-1)}`
+        imageStr = {uri: item.image};
+        //imageStr = {uri: 'https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
+        // console.log("->", imageStr)
+    }else{
+        imageStr = {uri: `data:image/jpeg;base64,${item.image}`}
+    }
     PressHeart =() => {
         
         if(!isHeart){
@@ -196,8 +197,8 @@ const DogDetail = ({item,id, heart}) => {
                     <View style={{flexDirection: 'row', justifyContent: 'flex-start', flexWrap:'wrap',marginBottom:20,marginHorizontal:10}}>
                         <Chip style={styles.chip} textStyle={styles.chipText}> 산책량 측정 </Chip>
                         <Chip style={styles.chip} textStyle={styles.chipText}>  생활패턴 검증 </Chip>
-                        <Chip style={styles.chip} textStyle={styles.chipText}>  집 바닥재질 평가 </Chip>
-                        <Chip style={styles.chip} textStyle={styles.chipText}>  반려견 생활환경 평가 </Chip>
+                        {item.floor_auth && <Chip style={styles.chip} textStyle={styles.chipText}>  집 바닥재질 평가 </Chip>}
+                        {item.house_auth && <Chip style={styles.chip} textStyle={styles.chipText}>  반려견 생활환경 평가 </Chip>}
                     </View> 
                 </View>
 

@@ -20,7 +20,7 @@ import {
 //import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import Icon2 from 'react-native-vector-icons/Feather';
-import { responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth, responsiveWidth } from 'react-native-responsive-dimensions';
+import { responsiveFontSize, responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth, responsiveWidth } from 'react-native-responsive-dimensions';
 import DogDetail from './DogDetail';
 import axios from 'axios';
 import { HS_API_END_POINT, USER_INFO } from '../../Shared/env';
@@ -42,7 +42,7 @@ const DogListHome = ({ navigation,route }) => {
     const [selectedDogId, setSelectedDogId] = useState({});
     const [heartDogId, setHeartDogId] = useState([]);
     const [backBoard, setBackBoard] = useState({backgroundColor:'white'})
-    const [dogs, setDogs] = useState([{}])
+    const [dogs, setDogs] = useState()
     
 
     React.useEffect(()=> {
@@ -50,10 +50,12 @@ const DogListHome = ({ navigation,route }) => {
             setDogs(route.params?.dogs)
         }
         else{
-            axios.get(`${HS_API_END_POINT}/api/dogs/`)
+            axios.get(`${HS_API_END_POINT}/api/dogs/list/`)
             .then((res)=> {      
                 console.log("dogs Data 받음.");
                 setDogs(res.data);
+                // console.log("처음 받은 개들", res.data);
+
                 //console.log(dogs.image);
                 // handleBookObj("allBook",res.data.data);
                 // handleBookObj("workBook", res.data.data.filter(item => item.category === '문제집'))
@@ -85,21 +87,25 @@ const DogListHome = ({ navigation,route }) => {
         // const base64Image = 'data:image/jpeg;base64,' + item.bookCoverResource;
         const [isHeart, setIsHeart] = useState((heartDogId.indexOf(item.id)<0)?false:true);
         var genderStr="";
-        if (item.gender=="암컷"){
-            genderStr = "여";
-        } else{
-            genderStr = "남";
-        }
-        var imageStr;
-        if(item.image){
-            imageStr = {uri: item.image};
-            //imageStr = {uri: 'https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
-
-        }else{
-            imageStr = {uri: 'https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
-        }
-        // console.log(item.image);
         if(item){
+            if (item.gender=="암컷"){
+                genderStr = "여";
+            } else{
+                genderStr = "남";
+            }
+            var imageStr;
+            if(item.image[0]==='h'){
+                //`data:image/jpeg;base64,${item.image.substring(2, item.image.length-1)}`
+                imageStr = {uri: item.image};
+                //imageStr = {uri: 'https://animal.seoul.go.kr/comm/getImage?srvcId=MEDIA&upperNo=1584&fileTy=ADOPTTHUMB&fileNo=2&thumbTy=L'}
+                // console.log("->", imageStr)
+            }else{
+                imageStr = {uri: `data:image/jpeg;base64,${item.image}`}
+            }
+        // console.log(item.image);
+        
+            // console.log("imageStr", dogs);
+
             return (
                 
                 <TouchableOpacity 
@@ -213,36 +219,23 @@ const DogListHome = ({ navigation,route }) => {
 
                 <View style={{flexDirection:'row'}}>
                     <Pressable
-                        style={[styles.button, styles.buttonOpen]}
+                        style={{...styles.buttonOpen,flex:1,
+                            marginHorizontal: 5,
+                            borderRadius: 15,
+                            elevation: 2}}
                     // onPress={() => setModal(true)}
                         onPress={() =>
                         navigation.navigate('FilterDogList')}
                     >
-                        <Icon2 name="menu" size={30} color="red" />
+                        <View style={{borderRadius:20,alignItems:'center',flexDirection:'row',padding:10, backgroundColor:'#E9E0FF'}}>
+                            
+                            <Icon2 name="menu" size={30} color="purple" style={{alignSelf:'center',marginHorizontal:10}} />
+                            <Text style={{fontSize:responsiveFontSize(2),fontWeight:'bold',alignSelf:'center'}}>
+                                원하는 조건의 강아지를 선택해 보세요!
+                            </Text>
+                        </View>
                     </Pressable>
                     
-                    <Pressable
-                    style={[styles.button, styles.buttonOpen]}
-                    onPress={() => 
-                    navigation.navigate('RoomCheck')}
-                    > 
-                       <Icon2 name="camera" size={30} color="purple" />
-                    </Pressable>
-
-                    <Pressable
-                    style={[styles.button, styles.buttonOpen]}
-                    onPress={() => 
-                    navigation.navigate('Survey')}
-                    > 
-                       <Icon2 name="file-text" size={30} color="purple" />
-                    </Pressable>
-                    <Pressable
-                    style={[styles.button, styles.buttonOpen]}
-                    onPress={() => 
-                    navigation.navigate('Agreement')}
-                    > 
-                       <Icon2 name="file" size={30} color="purple" />
-                    </Pressable>
                 </View>
 
                 <SafeAreaView style={{ alignItems: 'center', width: '100%', marginTop: '3%' }}>

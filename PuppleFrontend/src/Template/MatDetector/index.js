@@ -1,18 +1,18 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
-import RoomCheckHome from './RoomCheckHome';
+import MatDetectorHome from './MatDetectorHome';
 
 const Stack = createStackNavigator();
 
-function RoomCheck({dog_id,setModalVisible}){
+function MatDetector({dog_id,setModalVisible}){
     return (
-        <RoomCheckHome dog_id={dog_id} setModalVisible={setModalVisible}></RoomCheckHome>
+        <MatDetectorHome dog_id={dog_id} setModalVisible={setModalVisible}></MatDetectorHome>
         // <NavigationContainer>
         //     <Stack.Navigator>
         //         <Stack.Screen
-        //         name = "RoomCheckHome"
-        //         component={RoomCheckHome}
+        //         name = "MatDetectorHome"
+        //         component={MatDetectorHome}
         //         options={{
         //             title: '',
         //         }}
@@ -24,4 +24,4 @@ function RoomCheck({dog_id,setModalVisible}){
         
     )
 }
-export default RoomCheck;
+export default MatDetector;
