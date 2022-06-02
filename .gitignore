@@ -54,4 +54,8 @@ output.json
 # API 인증키
 secret.json
 /src/Shared/env.js
+
 /ios
+package-lock.json
+/src2
+package2.json

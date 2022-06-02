@@ -34,12 +34,12 @@ function walkGet(dog_id) {
         //     })
         // )
         // .catch((error)=>console.log(error))
-        axios.get(baseUrl+'/api/walkauth/'+USER_INFO.USER_ID+'&'+dog_id)
+        axios.get(baseUrl+'/api/walkauth/'+USER_INFO.USER_ID+'&'+dog_id+'/info/')
         .then(function(response){
             // handle success
             myData = response.data
             console.log("myData ===========",myData)
-            axios.get(baseUrl+'/api/passcondition/'+dog_id)
+            axios.get(baseUrl+'/api/passcondition/'+dog_id+'/')
             .then(function(response){
                 pass_condition = response.data[0]
                 resolve();
@@ -55,9 +55,7 @@ function walkGet(dog_id) {
     });
 }
 function postData2server(timer,dog_id){
-    walkauthData.elapsed_time = Math.floor(timer / 60)
-    walkauthData.day = today
-    axios.post(baseUrl+'/api/walkauth/'+USER_INFO.USER_ID+'&'+dog_id+'/',walkauthData)
+    axios.post(baseUrl+'/api/walkauth/update/',walkauthData)
     .then(function (response){
         console.log(response.status);
     })
@@ -65,6 +63,17 @@ function postData2server(timer,dog_id){
         console.log(error);
     });
     // progress update here
+    axios.post(baseUrl+'/api/users/wishlist/updateprogress/',{
+        email: USER_INFO.USER_EMAIL,
+        dog_id: dog_id,
+        template1: 0,
+        pass_count:pass_condition.walk_total_count,
+        pass_time:pass_condition.min_per_walk,
+        pass_distance:pass_condition.meter_per_walk,
+        my_count_total : myTotal.count,
+        my_time_total: myTotal.time+walkauthData.elapsed_time,
+        my_distance_total: myTotal.distance+walkauthData.distance,
+    })
 }
 
 // 산책 시작시 django server로 보낼 데이터
@@ -177,19 +186,7 @@ class SummaryList extends Component{
         let day_index = 0;
         // const [dayIndex, setDayIndex] = useState(0);
         const day_num = [0,1,2,3,4,5,6];
-        const dayEval = day_num.map((oneday)=>
-            <MaterialCommunityIcons 
-            key={oneday}
-            name={myData[oneday].day == oneday ?
-                (myData[oneday].evaluate?"check-circle-outline":"close-circle-outline")
-            :   ("progress-question")}
-            color={myData[oneday].day == oneday ?
-                (myData[oneday].evaluate?'green':'red')
-            :   ("purple")}
-            size={25}/>
-        );
-
-        const timeEval = day_num.map((oneday)=>
+               const timeEval = day_num.map((oneday)=>
             <View>
                 {/* <Text>{day_index}</Text>
                 {
@@ -321,7 +318,7 @@ const StopWatch = ({changeState,dog_id}) => {
                     posision => {
                         walkauthData.distance += getDistance(lastLocation,posision.coords)
                         lastLocation = posision.coords
-                        console.log("lastLocation",lastLocation)
+                        // console.log("lastLocation",lastLocation)
                     },
                     error => {
                         console.log(error.code,error.messages);
@@ -330,27 +327,18 @@ const StopWatch = ({changeState,dog_id}) => {
                     );
                 }, 1000);
           } else {
-              postData2server(timer,dog_id)
-              clearInterval(increment.current)
-              stopAndload()
-              changeState()
-        .then(function(response){
-            // handle success
-            myData = response.data
-            resolve();
-        })
-        .catch(function (error) {
-            //handle error
-            console.log(error);
-        })
-        .then(function(){
-            //always executed
-        });
-          }
+            walkauthData.elapsed_time = timer
+            walkauthData.day = today
+            postData2server(timer,dog_id)
+            clearInterval(increment.current)
+            stopAndload()
+            changeState()
+        }
       }
     }
   
     const handleReset = () => {
+        walkauthData.distance = 0
       clearInterval(increment.current)
       setIsActive(false)
       setTimer(0)
@@ -404,15 +392,19 @@ async function stopAndload(){
     extract()
 }
 function extract(){
+    let extract_total =0;
     let extract_elapsed_time = 0;
     let extract_distance = 0;
     for (let i = 0; i < myData.length; i++) {
         const element = myData[i];
+        if (element.elapsed_time) {
+            extract_total += 1;
+        }
         extract_elapsed_time += element.elapsed_time;
         extract_distance += element.distance;
     }
     myTotal = {
-        count : myData.length,
+        count : extract_total,
         time : extract_elapsed_time,
         distance : extract_distance
     }
@@ -436,8 +428,9 @@ class WalkAuthComponent extends Component{
     async loadData(){
         await walkGet(this.props.dog_id);
         extract();
+
         this.setState({
-            total_count : myData.length,
+            total_count : myTotal.count,
             total_time :  myTotal.time,
             total_distance :  myTotal.distance,
             pass_count : pass_condition.walk_total_count,

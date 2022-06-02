@@ -42,7 +42,8 @@ const DogListHome = ({ navigation,route }) => {
     const [selectedDogId, setSelectedDogId] = useState({});
     const [heartDogId, setHeartDogId] = useState([]);
     const [backBoard, setBackBoard] = useState({backgroundColor:'white'})
-    const [dogs, setDogs] = useState([])
+    const [dogs, setDogs] = useState()
+    
 
     React.useEffect(()=> {
         if(route.params?.dogs){

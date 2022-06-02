@@ -28,7 +28,7 @@ const EnterHouse = ({navigation,route}) => {
     const [isModal, setModal] = useState(false);
     
     const gotoNextScreen = (data) => {
-        alert(data.address);
+        // alert(data.address);
         setModal(!isModal);
         navigation.navigate('EnterEmail',{types: route.params.types, names: route.params.names, address: data.address});
     }

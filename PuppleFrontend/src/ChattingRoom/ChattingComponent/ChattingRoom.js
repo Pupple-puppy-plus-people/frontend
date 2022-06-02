@@ -146,7 +146,10 @@ function ChattingRoom({navigation, route}) {
         if(!ws.current){ // 소켓이 있으면
         // 채팅방 key = 반려견ID/구매자ID/판매자ID로 식별함
         ws.current = (new WebSocket(`wss://${HOST_IP}/ws/chat/${roomNumber}/`));
+<<<<<<< HEAD
         console.log("ws.current", ws.current)
+=======
+>>>>>>> 6107085e70f7a4c9707670935b0b43069be221f3
         // 페이지 헤더의 title을 반려견 이름으로 설정
 
         navigation.setOptions({

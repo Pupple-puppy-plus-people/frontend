@@ -27,6 +27,7 @@ import SurveyResult from '../AuthResultComponent/SurveyResult';
 import TimestampResult from '../AuthResultComponent/TimestampResult';
 import WalkResult from '../AuthResultComponent/WalkResult';
 import HousePhotoResult from '../AuthResultComponent/HousePhotoResult';
+import MatPhotoResult from '../AuthResultComponent/MatPhotoResult';
 
 
 
@@ -51,10 +52,9 @@ const AuthResultModal = (props) => {
         axios.get(`${HS_API_END_POINT}/api/timestamp/get/?user=${props.customerID}&dog=${props.dogID}&day=${-1}`) 
         .then((res)=> {      
             if(Object.keys(res.data).length==0){ // Object.keys(this.timelist).length==0
-                console.log("HI2")
+                console.log("HI")
                 setStartTime(0)
             }else{
-                console.log("HI???2")
                 setStartTime(res.data[0]['start_time'])
             }
             console.log("TimeStamp start time", startTime); // 왜 timeList에 안들어가지 
@@ -72,7 +72,7 @@ const AuthResultModal = (props) => {
             {props.selectedTitle==='동의서' && <AgreementResult dogId={props.dogID} userId={props.customerID}/>}
             {props.selectedTitle==='산책량 측정' && <WalkResult dog_id={props.dogID} userId={props.customerID}/>}
             {props.selectedTitle==='생활패턴 검증' && <TimestampResult  dog_id={props.dogID} ts_check_time={passCondition.ts_check_time} ts_total_count={passCondition.ts_total_count} startTime={startTime} setStartTime={setStartTime}/>}
-            {props.selectedTitle==='집 바닥재질 평가' && <Text style={{fontSize:50}}>5555555555</Text>}
+            {props.selectedTitle==='집 바닥재질 평가' && <MatPhotoResult  dogId={props.dogID} userId={props.customerID}/>}
             {props.selectedTitle==='반려견 생활환경 평가' && <HousePhotoResult dogId={props.dogID} userId={props.customerID}/>}
         </View>
     );
