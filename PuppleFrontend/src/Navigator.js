@@ -35,6 +35,7 @@ const BottomNavigation = ({navigation}) => {
               component={DogList}
               options={{
                   tabBarLabel: '반려견리스트',
+                  unmountOnBlur: true,
                   headerShown: false,
                   animationEnabled: false,
                   tabBarIcon: ()=> (

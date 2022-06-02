@@ -1,6 +1,6 @@
-// export const HS_API_END_POINT = 'http://52.79.229.200:8000';
+export const HS_API_END_POINT = 'https://066c-219-255-207-99.jp.ngrok.io';
 
-export const HS_API_END_POINT = 'https://a0d5-219-255-207-99.jp.ngrok.io'
+//export const HS_API_END_POINT = 'https://9a20-110-70-51-250.jp.ngrok.io'
 import {useState} from 'react'
 export const USER_INFO=()=>{
     var USER_EMAIL=""
@@ -12,4 +12,4 @@ export const USER_INFO=()=>{
     // };
 };
 
-export const HOST_IP = 'a0d5-219-255-207-99.jp.ngrok.io';
+export const HOST_IP = '066c-219-255-207-99.jp.ngrok.io';

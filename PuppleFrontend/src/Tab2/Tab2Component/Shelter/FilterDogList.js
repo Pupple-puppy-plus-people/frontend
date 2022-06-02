@@ -9,6 +9,7 @@ import {
     BackHandler,
 } from 'react-native';
 import { responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
+import { HS_API_END_POINT, USER_INFO } from '../../../Shared/env';
 import { FlatList } from "react-native-gesture-handler";
 
 const baseUrl = 'http:127.0.0.1:8000';
