@@ -52,7 +52,7 @@ const HandleTemplateReqeust = ({navigation, aboutDog, setWishList}) => { // setW
             "dog_id":aboutDog.id})
         .then(function(res){   
             wishlist = res.data
-            console.log("여기서 받아옵니다->", res.data, res.data.length)
+            console.log("이 반려견을 신청한 사람들의 찜목록->", res.data, res.data.length)
             setWishList(wishlist)
         })
         .catch(function(error){

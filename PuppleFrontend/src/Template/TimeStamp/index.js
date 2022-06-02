@@ -13,6 +13,7 @@ import { HS_API_END_POINT, USER_INFO } from '../../Shared/env';
 import {Picker} from '@react-native-picker/picker';
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { NavigationHelpersContext } from '@react-navigation/native';
 
 
 /************************* 부가 설명 : 채팅에서 필요 없을 부분****************************************** */
@@ -119,6 +120,7 @@ class TimeStamp extends Component{
             .then((res)=> {     
                 this.props.setStartTime(number)
                 console.log("SET TIMESTAMP START TIME", res); // 왜 timeList에 안들어가지 
+                navigation.navigate('EnrollPage')
             })
             .catch((err)=> {
                 console.log(err);
@@ -131,7 +133,7 @@ class TimeStamp extends Component{
 {/************************* 부가 설명 : 채팅에서 필요 없을 부분****************************************** */}
         // 다음 5줄은 채팅에서는 필요없는 코드
         let initMenu;
-        console.log("끝")
+        console.log("끝", this.state.start_time)
         {this.state.start_time===0
         ? initMenu = <SetStartTime onStartTime={this.setInitStartTime}/> // 시작 시간 설정하기 
         : initMenu = null}

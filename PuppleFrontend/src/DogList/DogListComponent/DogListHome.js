@@ -242,15 +242,21 @@ const DogListHome = ({ navigation,route }) => {
                     
                     <View style={{ width: '100%', borderBottomWidth: 1, borderBottomColor: 'gray' }} />
                     
-                    <FlatList
+                    {dogs.length == 0? 
+                        <Text style={{color:'#C9C9C9',fontWeight:'bold',textAlign:'center', alignSelf:'center', justifyContent:'center', marginTop:responsiveScreenHeight(30)}}>
+                        <Icon name="search" size={50}/>
+                        {'\n\n'} 검색된 반려견이 없어요. {'\n'} 다른 조건의 반려견도 만나보세요!
+                        </Text>
+                    : 
+                        <FlatList
                         data={dogs}
                         renderItem={renderItem}
                         keyExtractor={item => item.id}
                         numColumns={2}
-                        style={{alignSelf:'center',height:'93%'}}
-                        
-                    />
-
+                        style={{alignSelf:'center',height:'93%'}}  
+                        />
+                    }
+                    
                 </SafeAreaView>
             </View>
             {/* </ScrollView>  */}

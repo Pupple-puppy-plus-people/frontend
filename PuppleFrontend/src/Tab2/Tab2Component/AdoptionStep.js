@@ -1,6 +1,6 @@
 
 //import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
     View, 
     Text, 
@@ -65,8 +65,9 @@ const Item = ({ item, setModalVisible, setSelectedAuth }) => {
                     <Icon size={responsiveScreenFontSize(3)} name={item.icon} style={{marginLeft:responsiveScreenWidth(5)}}></Icon>
                     <Text
                     style={{fontSize:responsiveScreenFontSize(3), }}>{item.title}</Text>
-                    <Text
-                    style={{fontSize:responsiveScreenFontSize(2), marginRight:responsiveScreenWidth(2), fontWeight:'bold', color:'purple'}}>| {item.progress}%</Text>
+                    {item.id == 0 || item.id == 1 ? <Text style={{marginRight:responsiveScreenWidth(2)}}>        </Text>
+                    : <Text style={{fontSize:responsiveScreenFontSize(2), marginRight:responsiveScreenWidth(2), fontWeight:'bold', color:'purple'}}>| {item.progress}%</Text>
+                    }
                 </Pressable>
             </View>
         );
@@ -104,6 +105,7 @@ const AdoptionStep = ({navigation,aboutDog,setWishList})=>{
 
    
     React.useEffect(()=> { // useCallback?
+        console.log("다시 초점이 맞춰짐", isFocused)
         // pass condition 받아오기 - 1번만 받아오는게 좋은데 
         axios.get(`${HS_API_END_POINT}/api/passcondition/${aboutDog.id}/`)
         .then(function (response) {
@@ -132,7 +134,7 @@ const AdoptionStep = ({navigation,aboutDog,setWishList})=>{
         });
 
         // timestamp 시작시간 
-        axios.get(`${HS_API_END_POINT}/api/timestamp/get/?user=${USER_INFO.USER_ID}&dog=${aboutDog.dog_id}&day=${-1}`) 
+        axios.get(`${HS_API_END_POINT}/api/timestamp/get/?user=${USER_INFO.USER_ID}&dog=${aboutDog.id}&day=${-1}`) //aboutDog.dog_id 였는데, 사용자 따라서 달라지는 건가 
         .then((res)=> {      
             if(Object.keys(res.data).length==0){ // Object.keys(this.timelist).length==0
                 console.log("HI")
@@ -146,8 +148,14 @@ const AdoptionStep = ({navigation,aboutDog,setWishList})=>{
         .catch((err)=> {
             console.log(err);
         })
+    
 
     },[isFocused]);
+
+    const onCloseModal = useCallback(() => {
+        setModalVisible(!modalVisible)
+      }, []);
+
 
     const renderItem = ({ item }) => (
         <Item item={item} setModalVisible={setModalVisible} setSelectedAuth={setSelectedAuth}/>
@@ -172,7 +180,8 @@ const AdoptionStep = ({navigation,aboutDog,setWishList})=>{
             transparent={false}
             visible={modalVisible}
             onRequestClose={()=>{
-                setModalVisible(!modalVisible)
+                //setModalVisible(!modalVisible)
+                onCloseModal()
             }}>
                 <View
                 style={{flexDirection:'column',flex:1}}>
@@ -182,6 +191,23 @@ const AdoptionStep = ({navigation,aboutDog,setWishList})=>{
                         zIndex:1,}}
                     onPress={()=>{
                         setModalVisible(!modalVisible)
+                        // 반려견 진행률 update
+                        axios.post(`${HS_API_END_POINT}/api/users/wishlist/`,{
+                            "email":USER_INFO.USER_EMAIL,"dog_id":aboutDog.id})
+                        .then(function(res){   
+                            wishlist = res.data[0] 
+                            authlist[0].progress = wishlist.survey
+                            authlist[1].progress = wishlist.agreement
+                            authlist[2].progress = wishlist.template1
+                            authlist[3].progress = wishlist.template2
+                            authlist[4].progress = wishlist.template3
+                            authlist[5].progress = wishlist.template4
+                            console.log("여기서 받아옵니다->",authlist)
+                            setWishList(wishlist)
+                        })
+                        .catch(function(error){
+                            console.log(error);
+                        });
                     }}>
                         <View style={{margin:"1%"}} />
 
@@ -194,7 +220,7 @@ const AdoptionStep = ({navigation,aboutDog,setWishList})=>{
                     {selectedAuth==0?<Survey dog_id={aboutDog.id} setModalVisible={setModalVisible}></Survey>:null}
                     {selectedAuth==1?<Agreement dog_id={aboutDog.id} setModalVisible={setModalVisible}></Agreement>:null}
                     {selectedAuth==2?<Walk dog_id={aboutDog.id} setModalVisible={setModalVisible}></Walk>:null}
-                    {selectedAuth==3?<TimeStamp dog_id={aboutDog.id} setModalVisible={setModalVisible} ts_check_time={passCondition.ts_check_time} ts_total_count={passCondition.ts_total_count} startTime={startTime} setStartTime={setStartTime}></TimeStamp>:null}
+                    {selectedAuth==3?<TimeStamp dog_id={aboutDog.id} setModalVisible={setModalVisible} ts_check_time={passCondition.ts_check_time} ts_total_count={passCondition.ts_total_count} startTime={startTime} setStartTime={setStartTime} startDay={startDay}></TimeStamp>:null}
                     {selectedAuth==4?<MatDetector dog_id={aboutDog.id} setModalVisible={setModalVisible}></MatDetector>:null}
                     {selectedAuth==5?<RoomCheck dog_id={aboutDog.id} setModalVisible={setModalVisible}></RoomCheck>:null}
 

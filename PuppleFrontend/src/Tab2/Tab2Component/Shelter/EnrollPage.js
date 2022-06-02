@@ -105,13 +105,13 @@ function EnrollPage({navigation,route}) {
             <View style={{flex:0.5,flexDirection:'column', padding:'3%',backgroundColor:'#fff'}}>
                 {USER_INFO.USER_TYPE==='customer'?
                 // 구매자면 인증진행률 보여주고 
-                <View style={[styles.board,{flex:9,backgroundColor:'#E1BEE7',borderRadius:20, padding:10, alignSelf:'center'}]}>
-                    <View style={{flex:1, flexDirection:'row', justifyContent:'space-between', marginTop:10}}>
+                <View style={[styles.board,{flex:9,backgroundColor:'#E1BEE7',borderRadius:20, padding:10}]}>
+                    <View style={{flex:1, flexDirection:'row', justifyContent:'space-between', marginTop:10, alignSelf:'center'}}>
                         <Text style={styles.title}> </Text>
-                        <Text style={styles.title}>반려견에 대한 인증진행률</Text>
-                        <Text style={[styles.title, {color:'purple', backgroundColor:'white', marginBottom:10}]}>{wishlist.total}%</Text>
+                        <Text style={styles.title}>반려견에 대한 인증진행률 </Text>
+                        <Text style={[styles.title, {color:'purple', marginBottom:10}]}>{wishlist.total}%</Text>
                     </View>
-                    <View style={{flex:5, padding:10,justifyContent:'flex-start'}}>
+                    <View style={{flex:5, padding:10,justifyContent:'flex-start', alignItems:'center'}}>
                         <Text style={styles.subtitle}>반려견 인증절차 수행 및 견적사항 확인</Text>
                     </View>
                     <View style={{flex:4, flexDirection:'column',justifyContent:'center'}}>
@@ -119,11 +119,11 @@ function EnrollPage({navigation,route}) {
                 </View>
                 : // 판매자면 신청한 인원 보여주기 
                 <View style={[styles.board,{flex:9,backgroundColor:'#E1BEE7',borderRadius:20, padding:10}]}>
-                <View style={{flex:1, flexDirection:'row', justifyContent:'space-between', marginTop:10}}>
-                    <Text style={styles.title}>반려견 입양 신청인원</Text>
-                    <Text style={[styles.title, {color:'purple', backgroundColor:'white', marginBottom:10}]}>{wishlist.length}명</Text>
+                <View style={{flex:1, flexDirection:'row', justifyContent:'space-between', marginTop:10, alignSelf:'center'}}>
+                    <Text style={styles.title}>반려견 입양 신청인원 </Text>
+                    <Text style={[styles.title, {color:'purple', marginBottom:10}]}>{wishlist.length}명</Text>
                 </View>
-                <View style={{flex:5,justifyContent:'flex-start'}}>
+                <View style={{flex:5,justifyContent:'flex-start', alignSelf:'center'}}>
                     <Text style={styles.subtitle}>반려견 인증 및 견적사항 확인</Text>
                 </View>
                 <View style={{flex:4, flexDirection:'column',justifyContent:'center'}}>
@@ -141,7 +141,7 @@ function EnrollPage({navigation,route}) {
                             },
                             {
                                 text: "네",
-                                onPress: () => {Alert.alert("입양을 마감합니다.")}, // 여기 dogs에 adpation_status나 approval을 업데이트 -> 이 dogs는 인증절차 수행기능에 empty page 로 띄워주기 
+                                onPress: () => {Alert.alert("입양을 마감합니다.")}, // 여기 dogs에 adpation_status를 P로 업데이트하기 
                                 style: "default",
                             },
                             ],
@@ -155,7 +155,7 @@ function EnrollPage({navigation,route}) {
                         backgroundColor:'purple',
                         width:responsiveWidth(50),
                         height:responsiveHeight(4),
-                        alignSelf:'flex-start',
+                        alignSelf:'center',
                         justifyContent:'center',
                         alignItems:'center',
                         }}>
@@ -228,14 +228,11 @@ const styles = StyleSheet.create({
         fontSize: bigOne*0.03,
         fontWeight:'bold',
         textAlign:'left',
-        marginLeft:10,
     },
     subtitle:{
         fontSize: bigOne*0.02,
         color:'rgba(0,0,0,0.7)',
         textAlign:'left',
-        marginLeft:10,
-
     },
     activityIndicator: {
       alignItems: 'center',

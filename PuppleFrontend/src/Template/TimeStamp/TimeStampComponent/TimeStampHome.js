@@ -114,10 +114,10 @@ class SummaryList extends Component{
     
             startDay = new Date(Number(this.state.startDay)).getDay();
             endDay = new Date().getDay();
-            console.log("startDAY ===== ", startDay, endDay)
+            //console.log("startDAY ===== ", startDay, endDay)
     
             res.forEach((dayHistory, index) => {
-                console.log(dayHistory.data)
+                //console.log(dayHistory.data)
                 
                 if(dayHistory.data.length==0){ // 특정 요일 누른 값이 없으면
                     copy = JSON.parse(JSON.stringify(empty)) //deepcopy
@@ -134,7 +134,7 @@ class SummaryList extends Component{
                     
                 }else{  // 특정 요일 결과가 있으면 그대로
                     myData2.push(dayHistory.data[dayHistory.data.length-1])
-                    console.log("put", dayHistory.data[dayHistory.data.length-1])
+                    //console.log("put", dayHistory.data[dayHistory.data.length-1])
 
                     if(dayHistory.data[dayHistory.data.length-1].evaluate){
                         passDay = Number(passDay) + Number(1)
@@ -148,15 +148,29 @@ class SummaryList extends Component{
         .catch((err)=> {
             console.log(err);
         }) 
-        console.log("Summary list 받기 ",myData2.length, passDay); 
+        //console.log("Summary list 받기 ",myData2.length, passDay); 
 
         this.setState({
             myData: myData2,
         })
 
         var progress =  Number(passDay)/Number(this.props.parentState.ts_total_count)*Number(100)
-        console.log("progeress", progress)
-
+        //console.log("progeress", progress)
+        this.props.progress = progress
+        // 진행율 바뀐거 있으면 올리기 
+        axios.post(`${HS_API_END_POINT}/api/users/wishlist/updateprogress/`,{
+            email : USER_INFO.USER_EMAIL,
+            dog_id : this.state.dogID,
+            template2 : String(progress)
+        })
+        .then(function (response){
+            // post done
+            //console.log("==> response", response)
+            
+        })
+        .then(function (error){
+            // error
+        });
 
     }
     componentDidMount(){    // this.setState 는 다시 렌더링을 유발하므로 render() 안에 들어가면 무한루프를 돌게 됨. 
@@ -304,7 +318,7 @@ const TimeStamp = ({info, getlist}) => {
             compare.setHours(start_time, 0, 0, 0); // 시작 시간으로 
             if(Math.floor(time - compare)/1000 < 0 ){
                 // 시작 시간 이전에 누른 경우
-                Alert.alert("시작 시간이 전이에요:)");
+                Alert.alert("시작 시간 전이에요:)");
                 return 0;
             }
             if(Math.floor(time - compare)/1000 <= 3600*ts_check_time){
@@ -455,6 +469,7 @@ class TimeStampComponent extends Component{
             prev_timelist : [],
             parentState: this.props.parentState,
             dueTime: ``,
+            progress: 0,
         };
         this.getlist = this.getlist.bind(this)
     }
@@ -485,21 +500,32 @@ class TimeStampComponent extends Component{
     
     render(){
 
-        START_DAY = new Date(Number(this.state.parentState.start_day))
-        let DAY = ['일', '월', '화', '수', '목', '금', '토']
-        const year = START_DAY.getFullYear();
-        const month = ('0' + (START_DAY.getMonth() + 1)).slice(-2);
-        const day = ('0' + START_DAY.getDate()).slice(-2);
-        const dateString = year + '-' + month  + '-' + day;
+        let DAY = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
+        var dateString;
+        var dayString;
+
+        if(this.state.parentState.start_day.length!=0){
+            const START_DAY = new Date(Number(this.state.parentState.start_day))
+            const year = START_DAY.getFullYear();
+            const month = ('0' + (START_DAY.getMonth() + 1)).slice(-2);
+            const day = ('0' + START_DAY.getDate()).slice(-2);
+
+            dayString = DAY[START_DAY.getDay()];
+            dateString = year + '-' + month  + '-' + day;
+        }else{
+            dayString = '';
+            dateString = '인증을 시작해주세요!';
+        }
+        
 
         const getHeader = () => {
-            console.log("HEADER", this.state.parentState)
+            console.log("HEADER", this.state.parentState, this.props.parentState)
             return (
             <View>
                 <Text style={styles.title}>타임스탬프 검증</Text>
                 <Text style={styles.subtitle}>* 통과 기준: 검사 주기 {this.state.parentState.ts_check_time}시간  | 횟수 {this.state.parentState.ts_total_count}일/7일</Text>
                 <Text style={styles.subtitle}>* 사용자 설정 시작 시간: 오전 {this.state.parentState.start_time}시</Text>
-                <Text style={styles.subtitle}>* 인증 시작 날짜: {DAY[START_DAY.getDay()]}요일 {dateString}</Text>
+                <Text style={styles.subtitle}>* 인증 시작 날짜: {dayString} {dateString}</Text>
             </View>
             );
         };
@@ -540,7 +566,7 @@ class TimeStampComponent extends Component{
                             <View style={styles.summary_column}>
                                 <WeekComponent chevronColor={'#eedbff'}/>
                                 {/* status */}
-                                <SummaryList evalType={'day'} parentState={this.state.parentState}/>
+                                <SummaryList evalType={'day'} parentState={this.state.parentState} progress={this.state.progress}/>
                             </View>
                         </View>
 {/************************* 부가 설명 : 아마 채팅에서 필요 없을 부분****************************************** */}

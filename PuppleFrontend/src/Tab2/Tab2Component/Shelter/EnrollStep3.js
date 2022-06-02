@@ -44,6 +44,9 @@ function EnrollStep3({route, navigation}) {
     const [meter_per_walk, setmeter_per_walk] = useState(null);
     const [dogID, setdogID] = useState("");
 
+    const [isFloor, setIsFloor] = useState(false);
+    const [isHousePhoto, setIsHousePhoto] = useState(false);
+
     useEffect(()=>{
         console.log("---navigated to EnrollStep3---> ", route.params);
 
@@ -55,18 +58,17 @@ function EnrollStep3({route, navigation}) {
         setmin_per_walk(route.params?.walkTime);
         setmeter_per_walk(route.params?.walkDistance);
     }, []);
-    
-    
 
+    
     navigation.setOptions({
         headerRight: () => (
             <Text style={{margin:"7%", color:'dodgerblue', fontWeight:'bold', fontSize:smallOne*0.04}}
                 onPress={() => {
 
                     // dogs DB에 등록하기
-                    axios.post(`${HS_API_END_POINT}/api/dogs/list/`,{
+                    axios.post(`${HS_API_END_POINT}/api/dogs/add/`,{
                         registration_number : dogRegInfo[4].value ,
-                        image :"http", //dogImage
+                        image : dogImage,
                         name:dogRegInfo[0].value,
                         gender:dogRegInfo[1].value,
                         kind:dogRegInfo[2].value,
@@ -82,28 +84,34 @@ function EnrollStep3({route, navigation}) {
                         introduction:dogText,
                         approval:'승인',
                         user_id:USER_INFO.USER_ID, 
-                        house_auth:true, // 버튼의 isActive 변수로 
-                        floor_auth:true,    // 버튼의 isActive 변수로 
+                        house_auth:isHousePhoto,
+                        floor_auth:isFloor,    
                     }).then(function (response) {
                         // get 응답에서 pk 값 받아옴
                         setdogID(JSON.parse(response.request._response).id);
                         
+                        //console.log("dogID>>>>>>", response.config.data)
+
+                        console.log("dogID>>>>>213123>", response.data.pk)
+
+
+                        // 인증 템플릿 설정에 post 하기 --> get 안에 넣기 
+                        axios.post(`${HS_API_END_POINT}/api/passcondition/${response.data.pk}/`,{
+                            dog_id: response.data.pk, 
+                            walk_total_count:walk_total_count,
+                            min_per_walk:min_per_walk,
+                            meter_per_walk:meter_per_walk,
+                            ts_total_count: input.checkDay,
+                            ts_check_time:input.setTime,
+                        }).then(function (response) {console.log(response);})
+                        .catch(error => {console.log('error : ',error.response)});
+
+                        
                     }).catch(error => {console.log('error : ',error.response)});
 
-                    console.log("dogID", dogID)
-                    // 인증 템플릿 설정에 post 하기 --> get 안에 넣기 
-                    axios.post(`${HS_API_END_POINT}/api/passcondition/${40}/`,{
-                        dog_id: dogID, 
-                        walk_total_count:walk_total_count,
-                        min_per_walk:min_per_walk,
-                        meter_per_walk:meter_per_walk,
-                        ts_total_count: input.checkDay,
-                        ts_check_time:input.setTime,
-                    }).then(function (response) {console.log(response);})
-                    .catch(error => {console.log('error : ',error.response)});
-
+                    
                     alert('게시글이 등록 되었습니다.');
-                    // navigation.navigate('Tab2Home',{}); // Tab2Home
+                    navigation.navigate('Tab2Home',{}); // Tab2Home
 
             }}>완료</Text>
         ),
@@ -134,19 +142,23 @@ function EnrollStep3({route, navigation}) {
                     <View style={{flex:0.2}}/>
                     <>
                     <TouchableOpacity 
-                        //onPress={}
-                        style={styles.nextBtn} 
+                        onPress={() => 
+                            setIsFloor(!isFloor)
+                        }
+                        style={[isFloor? styles.selectedCard : styles.card]} 
                         //activeOpacity={0.5}
                     >   
-                        <Text style={[styles.botText, {color: 'white'}]}>바닥재질 검사</Text> 
+                        <Text style={[styles.botText]}>바닥재질 검사</Text> 
                     </TouchableOpacity>
                     <View style={{flex:0.2}}/>
-                    <TouchableOpacity 
-                        //onPress={}
-                        style={styles.nextBtn} 
-                        //activeOpacity={0.5}
+                    <TouchableOpacity  
+                        onPress={() => 
+                            setIsHousePhoto(!isHousePhoto)
+                        }
+                        style={[isHousePhoto? styles.selectedCard : styles.card]} 
+                        //activeOpacity={0.5} '#d3a4fc'
                     >
-                        <Text style={[styles.botText, {color: 'white'}]}>집인증 검사</Text>
+                        <Text style={[styles.botText]}>집인증 검사</Text>
                     </TouchableOpacity>
                     </> 
                     <View style={{flex:0.2}}/>
@@ -215,15 +227,53 @@ const styles = StyleSheet.create({
         fontSize: bigOne*0.03,
         fontWeight:'bold',
     },
-    nextBtn: {
+    basicBtn: {
     flex:1,
     width:'90%',
     // maxHeight:50,
     borderRadius:10,
-    backgroundColor:'#9C27B0',
+    backgroundColor:'#FBEDFD',
     justifyContent: 'center',
     alignSelf: 'center',
-},  
+},selectedBtn: {
+    flex:1,
+    width:'90%',
+    // maxHeight:50,
+    borderRadius:10,
+    backgroundColor:'#9C27B0', // d3a4fc
+    justifyContent: 'center',
+    alignSelf: 'center',
+},card: {
+    backgroundColor: '#FBEDFD',
+    flex: 1,
+    borderRadius: 15, // to provide rounded corners
+    margin:20,
+    justifyContent:'center',
+    alignItems:'center',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 9
+},selectedCard: {
+    backgroundColor: '#d3a4fc',
+    flex: 1,
+    borderRadius: 15, // to provide rounded corners
+    margin:20,
+    justifyContent:'center',
+    alignItems:'center',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 9
+},     
 input: {
     height: bigOne*0.1,
     margin: 12,
