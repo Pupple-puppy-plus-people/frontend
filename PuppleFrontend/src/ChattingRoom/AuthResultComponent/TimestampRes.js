@@ -20,100 +20,182 @@ import { Divider } from 'react-native-paper';
 import { ScrollView } from 'react-native-gesture-handler';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 
-// 아직 구현 안함
+
+var myData = [
+    {
+        user : 0,
+        dog : 0,
+        day : -1,
+        press_time : 0, // char
+        start_time : 0,
+        evaluate : true
+    },
+    {
+        user : 0,
+        dog : 0,
+        day : 0,
+        press_time : 0, // char
+        start_time : 0,
+        evaluate : false
+    },
+    {
+        user : 0,
+        dog : 0,
+        day : 0,
+        press_time : 0, // char
+        start_time : 0,
+        evaluate : false
+    },
+    {
+        user : 0,
+        dog : 0,
+        day : 0,
+        press_time : 0, // char
+        start_time : 0,
+        evaluate : false
+    },
+    {
+        user : 0,
+        dog : 0,
+        day : 0,
+        press_time : 0, // char
+        start_time : 0,
+        evaluate : false
+    },
+    {
+        user : 0,
+        dog : 0,
+        day : 0,
+        press_time : 0, // char
+        start_time : 0,
+        evaluate : false
+    },
+    {
+        user : 0,
+        dog : 0,
+        day : 0,
+        press_time : 0, // char
+        start_time : 0,
+        evaluate : false
+    },
+]
+
+
+
+
+// mydata에 각 날짜들의 마지막 날 저장하기 총 7개, 없으면 넘김 
 class SummaryList extends Component{
     constructor(props){
         super(props);
-    }
-    render(){
-        return(
-            <View style={styles.summary_row}>
-                <MaterialCommunityIcons name="check-circle-outline" color={'green'}   size={25}/>
-                <MaterialCommunityIcons name="check-circle-outline" color={'green'}   size={25}/>
-                <MaterialCommunityIcons name="progress-question"    color={'#eedbff'} size={25}/>
-                <MaterialCommunityIcons name="close-circle-outline" color={'red'}     size={25}/>
-                <MaterialCommunityIcons name="check-circle-outline" color={'green'}   size={25}/>
-                <MaterialCommunityIcons name="check-circle-outline" color={'green'}   size={25}/>
-                <MaterialCommunityIcons name="check-circle-outline" color={'green'}   size={25}/>
-            </View>
-        );
-    }
-}
-
-// 아직 안 구현함 
-class SummaryList2 extends Component{
-    constructor(props){
-        super(props);
         this.state={
-            dayIndex : 0
+            dayIndex : 0,
+            day_num : [0,1,2,3,4,5,6],
+            myData : myData,
+            dogID : this.props.parentState.dog_id,
+            startDay : this.props.parentState.start_day,
         }
     }
-    setDayIndex(newIndex) {
-        this.setState({dayIndex:newIndex})    
+
+    async getResult(){
+        let empty = {
+            user : 0,
+            dog : 0,
+            day : 0,
+            press_time : 0, // char
+            start_time : 0,
+            evaluate : false
+        }
+        var myData2 = []
+        var passDay = 0
+        await axios.all(this.state.day_num.map((endpoint) => 
+        axios.get(`${HS_API_END_POINT}/api/timestamp/get/?user=${USER_INFO.USER_ID}&dog=${this.state.dogID}&day=${endpoint}`)))
+        .then((res)=> { 
+    
+            startDay = new Date(Number(this.state.startDay)).getDay();
+            endDay = new Date().getDay();
+            //console.log("startDAY ===== ", startDay, endDay)
+    
+            res.forEach((dayHistory, index) => {
+                //console.log(dayHistory.data)
+                
+                if(dayHistory.data.length==0){ // 특정 요일 누른 값이 없으면
+                    copy = JSON.parse(JSON.stringify(empty)) //deepcopy
+                    copy.id = 0 // id 컬럼 추가
+                    
+                    copy.day = -1 // 아직 결과를 모르는 날짜 
+    
+                    //for(a in this.state.day_num){   // 수행을 하지 않은 날짜라면 -> reset 기회라고 생각하기 
+                        //(Number(startDay) + Number(a))
+                    //}
+
+                    //copy.day = index // 그 day로 
+                    myData2.push(copy)
+                    
+                }else{  // 특정 요일 결과가 있으면 그대로
+                    myData2.push(dayHistory.data[dayHistory.data.length-1])
+                    //console.log("put", dayHistory.data[dayHistory.data.length-1])
+
+                    if(dayHistory.data[dayHistory.data.length-1].evaluate){
+                        passDay = Number(passDay) + Number(1)
+                    }
+                }
+            });
+           
+            console.log("1TimeStamp Data 받음."); 
+            
+        })
+        .catch((err)=> {
+            console.log(err);
+        }) 
+        //console.log("Summary list 받기 ",myData2.length, passDay); 
+
+        this.setState({
+            myData: myData2,
+        })
+
+        var progress =  Number(passDay)/Number(this.props.parentState.ts_total_count)*Number(100)
+        //console.log("progeress", progress)
+        this.props.progress = progress
+        // 진행율 바뀐거 있으면 올리기 
+        axios.post(`${HS_API_END_POINT}/api/users/wishlist/updateprogress/`,{
+            email : USER_INFO.USER_EMAIL,
+            dog_id : this.state.dogID,
+            template2 : String(progress)
+        })
+        .then(function (response){
+            // post done
+            //console.log("==> response", response)
+            
+        })
+        .then(function (error){
+            // error
+        });
+
+    }
+    componentDidMount(){    // this.setState 는 다시 렌더링을 유발하므로 render() 안에 들어가면 무한루프를 돌게 됨. 
+        // 값이 달라진 경우 render
+        this.getResult()    
     }
     render(){
-        let day_index = 0;
-        // const [dayIndex, setDayIndex] = useState(0);
-        const day_num = [0,1,2,3,4,5,6];
-        const dayEval = day_num.map((oneday)=>
-            <MaterialCommunityIcons 
-            key={oneday}
-            name={myData[oneday].day == oneday ?
-                (myData[oneday].evaluate?"check-circle-outline":"close-circle-outline")
-            :   ("progress-question")}
-            color={myData[oneday].day == oneday ?
-                (myData[oneday].evaluate?'green':'red')
-            :   ("purple")}
-            size={25}/>
+        
+        const dayEval = this.state.day_num.map((oneday)=>
+        <MaterialCommunityIcons 
+        key={oneday}
+        name={this.state.myData[oneday].day == oneday ?
+            (this.state.myData[oneday].evaluate?"check-circle-outline":"close-circle-outline")
+        :   ("progress-question")}
+        color={this.state.myData[oneday].day == oneday ?
+            (this.state.myData[oneday].evaluate?'green':'red')
+        :   ("purple")}
+        size={25}
+        />
         );
-
-        const timeEval = day_num.map((oneday)=>
-            <View>
-                <Text>{day_index}</Text>
-                {
-                    myData[day_index].day == oneday&&
-                    myData[oneday].elapsed_time>=pass_condition.min_per_walk&&
-                    <MaterialCommunityIcons
-                    key={'time'+oneday}
-                    name='check-circle-outline'
-                    color={'green'}
-                    size={25}/>
-                }
-                {
-                    myData[day_index].day == oneday&&
-                    myData[oneday].elapsed_time<pass_condition.min_per_walk&&
-                    <MaterialCommunityIcons
-                    key={'time'+oneday}
-                    name='close-circle-outline'
-                    color={'red'}
-                    size={25}/>
-                }
-                {/* {myData[day_index].day == oneday && this.setDayIndex(this.state.dayIndex+1)} */}
-            </View>    
-        );
-        const distanceEval = day_num.map((oneday)=>
-            <View>
-                {myData[oneday].distance>=pass_condition.meter_per_walk&&
-                    <MaterialCommunityIcons
-                    key={'distance'+oneday}
-                    name='check-circle-outline'
-                    color={'green'}
-                    size={25}/>
-                }
-                {myData[oneday].distance<pass_condition.meter_per_walk&&
-                    <MaterialCommunityIcons
-                    key={'distance'+oneday}
-                    name='close-circle-outline'
-                    color={'red'}
-                    size={25}/>
-                }
-            </View>
-        );
+        
         // #eedbff background color
         return(
             <View style={styles.summary_row}>
-                {this.props.evalType==='time'&&timeEval}
-                {this.props.evalType==='distance'&&distanceEval}
+                
+                {this.props.evalType==='day'&&dayEval}
             </View>
         );
     }
@@ -453,7 +535,7 @@ class TimeStampRes extends Component{
                             <View style={styles.summary_column}>
                                 <WeekComponent chevronColor={'white'}/>
                                 {/* status */}
-                                <SummaryList/>
+                                <SummaryList evalType={'day'} parentState={this.state.parentState} progress={this.state.progress}/>
                             </View>
                         </View>
 {/************************* 부가 설명 : 아마 채팅에서 필요 없을 부분****************************************** */}
