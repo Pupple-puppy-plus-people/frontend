@@ -12,6 +12,7 @@ import {
 import { FlatList } from "react-native-gesture-handler";
 import { HS_API_END_POINT } from '../../Shared/env';
 import { responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
+import { HS_API_END_POINT, USER_INFO } from '../../Shared/env';
 
 const baseUrl = HS_API_END_POINT;
 let query = '?';
@@ -232,10 +233,10 @@ const FilterDogList = ({navigation}) => {
                             {filter:'activity',value : ""},
                             {filter:'person_personality',value : ""},
                         ]
-                        axios.get(baseUrl+'/api/dogs/list/'+query)
+                        axios.get(`${HS_API_END_POINT}/api/dogs/list/`+query)
                         .then(function (response){
                             //success
-                            console.log(baseUrl+'/api/dogs/list/'+query)
+                            console.log(`${HS_API_END_POINT}/api/dogs/list/`+query)
                             console.log(response.data);
 
                             navigation.navigate({

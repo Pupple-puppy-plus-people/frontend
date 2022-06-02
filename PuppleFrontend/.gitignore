@@ -67,3 +67,4 @@ buck-out/
 secret.json
 
 /src/Shared/env.js
+/ios

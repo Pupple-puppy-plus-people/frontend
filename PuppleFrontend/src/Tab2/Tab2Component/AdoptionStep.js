@@ -83,16 +83,17 @@ const AdoptionStep = ({navigation,aboutDog,setWishList})=>{
     const [modalVisible, setModalVisible] = useState(false);
     const [selectedAuth, setSelectedAuth] = useState(null);
     const [passCondition, setPassCondition] = useState(null);
-        
-    // 1) dog에서 인증 절차 개수, 종류 확인 
-    let authlist = [ 
-    { title : '설문지', bool : true, id:0, icon:'file-document', progress:0},
-    { title : '동의서', bool : true, id:1, icon:'file-sign', progress:0},
-    { title : '산책량 측정', bool : true, id:2, icon:'walk', progress:0},
-    { title : '생활패턴 검증', bool : true, id:3, icon:'alarm', progress:0},
-    { title : '집 바닥재질 평가', bool : true, id:4, icon:'floor-plan', progress:0},
-    { title : '반려견 생활환경 평가', bool : true, id:5, icon:'home', progress:0},
-    ];
+    const [authlist, setAuthlist] = useState([]);
+    
+    let initAuthlist = [ 
+        { title : '설문지', bool : true, id:0, icon:'file-document', progress:0},
+        { title : '동의서', bool : true, id:1, icon:'file-sign', progress:0},
+        { title : '산책량 측정', bool : true, id:2, icon:'walk', progress:0},
+        { title : '생활패턴 검증', bool : true, id:3, icon:'alarm', progress:0},
+        { title : '집 바닥재질 평가', bool : true, id:4, icon:'floor-plan', progress:0},
+        { title : '반려견 생활환경 평가', bool : true, id:5, icon:'home', progress:0},
+        ];
+    
     if(!aboutDog.floor_auth){
         authlist[4].bool=false
     } 
@@ -105,6 +106,9 @@ const AdoptionStep = ({navigation,aboutDog,setWishList})=>{
 
    
     React.useEffect(()=> { // useCallback?
+        // 1) dog에서 인증 절차 개수, 종류 확인 
+        setSelectedAuth(initAuthlist)
+
         console.log("다시 초점이 맞춰짐", isFocused)
         // pass condition 받아오기 - 1번만 받아오는게 좋은데 
         axios.get(`${HS_API_END_POINT}/api/passcondition/${aboutDog.id}/`)
@@ -128,6 +132,7 @@ const AdoptionStep = ({navigation,aboutDog,setWishList})=>{
             authlist[5].progress = res.data[0].template4
             console.log("여기서 받아옵니다->",authlist)
             setWishList(wishlist)
+            setAuthlist(initAuthlist)
         })
         .catch(function(error){
             console.log(error);
@@ -196,14 +201,15 @@ const AdoptionStep = ({navigation,aboutDog,setWishList})=>{
                             "email":USER_INFO.USER_EMAIL,"dog_id":aboutDog.id})
                         .then(function(res){   
                             wishlist = res.data[0] 
-                            authlist[0].progress = wishlist.survey
-                            authlist[1].progress = wishlist.agreement
-                            authlist[2].progress = wishlist.template1
-                            authlist[3].progress = wishlist.template2
-                            authlist[4].progress = wishlist.template3
-                            authlist[5].progress = wishlist.template4
-                            console.log("여기서 받아옵니다->",authlist)
+                            initAuthlist[0].progress = wishlist.survey
+                            initAuthlist[1].progress = wishlist.agreement
+                            initAuthlist[2].progress = wishlist.template1
+                            initAuthlist[3].progress = wishlist.template2
+                            initAuthlist[4].progress = wishlist.template3
+                            initAuthlist[5].progress = wishlist.template4
+                            console.log("여기서 받아옵니다->",initAuthlist)
                             setWishList(wishlist)
+                            setAuthlist(initAuthlist)
                         })
                         .catch(function(error){
                             console.log(error);
