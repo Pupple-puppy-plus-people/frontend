@@ -52,16 +52,17 @@ const MatPhotoResult=(props)=> {
 
     React.useEffect(()=>{
         console.log(props.userId,props.dogId)
-        axios.post(`${HS_API_END_POINT}/api/mat_detector/getimage/`,{
+        axios.post(`${HS_API_END_POINT}/api/matdetector/getimage/`,{
             user_id:props.userId,
             dog_id:props.dogId,
         })
         .then(function(res){
-            console.log(res.data[0].username)
+            // console.log(res)
+            console.log("image :::: ",res.data.image)
             // res.data.map((oneRequest)=>{
             //     setAllRequest(allRequest=>([...allRequest,oneRequest]))
             // })
-            setPhotoArr(res.data[0].photo)
+            setPhotoArr(res.data.image)
             // for (var i = 0; i < photoStr.length; i++) { // 배열 arr의 모든 요소의 인덱스(index)를 출력함.
             //     var arr=[]
             //     setPhotodict({"id":i,"img":photoStr[i].trim().slice(1,-1)})

@@ -40,7 +40,7 @@ const AgreementResult = (props) =>{
         sendData={user_id:props.userId, dog_id:props.dogId}
         // sendData={user_id:2, dog_id:1}
         
-        axios.post(`${HS_API_END_POINT}/api/survey/agreement/get`,sendData)
+        axios.post(`${HS_API_END_POINT}/api/survey/agreement/get`,{user_id:props.userId, dog_id:props.dogId})
         .then((res)=>{
             if(res.data.response==="success"){
                 // console.log(res.data)
