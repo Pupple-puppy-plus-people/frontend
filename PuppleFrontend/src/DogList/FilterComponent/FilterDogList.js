@@ -10,7 +10,7 @@ import {
     
 } from 'react-native';
 import { FlatList } from "react-native-gesture-handler";
-import { HS_API_END_POINT } from '../../Shared/env';
+// import { HS_API_END_POINT } from '../../Shared/env';
 import { responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
 import { HS_API_END_POINT, USER_INFO } from '../../Shared/env';
 
