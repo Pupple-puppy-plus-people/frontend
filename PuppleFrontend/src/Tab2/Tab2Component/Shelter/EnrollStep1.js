@@ -135,8 +135,8 @@ const AnimalNumberAPI = (props) => {
             // var queryParams = `?` + encodeURIComponent('dog_reg_no') + '=' + encodeURIComponent(animalNumber); /* */
             // queryParams += `&` + encodeURIComponent('owner_nm') + '=' + encodeURIComponent(ownerName); /* */
             // queryParams += `&` + encodeURIComponent('ServiceKey') + '=' + API_KEY; /* Service Key*/
-            // setUrl(`http://apis.data.go.kr/1543061/animalInfoSrvc/animalInfo`+`?` + encodeURIComponent('dog_reg_no') + '=' + encodeURIComponent(animalNumber)+`&` + encodeURIComponent('owner_nm') + '=' + encodeURIComponent(ownerName)+`&` + encodeURIComponent('ServiceKey') + '=' + API_KEY)
-            // console.log("******* url + query = ",url)
+            setUrl(`http://apis.data.go.kr/1543061/animalInfoSrvc/animalInfo`+`?` + encodeURIComponent('dog_reg_no') + '=' + encodeURIComponent(animalNumber)+`&` + encodeURIComponent('owner_nm') + '=' + encodeURIComponent(ownerName)+`&` + encodeURIComponent('ServiceKey') + '=' + API_KEY)
+            console.log("******* url + query = ",url)
             await axios.get(`http://apis.data.go.kr/1543061/animalInfoSrvc/animalInfo`+`?` + encodeURIComponent('dog_reg_no') + '=' + encodeURIComponent(animalNumber)+`&` + encodeURIComponent('owner_nm') + '=' + encodeURIComponent(ownerName)+`&` + encodeURIComponent('ServiceKey') + '=' + API_KEY)
             .then(function(response){
                 // handle success
@@ -147,13 +147,13 @@ const AnimalNumberAPI = (props) => {
                 var xml = response.data
                 parseString(xml, function (err, result) {
                     console.log("********res ::: ",result.response.body[0].item[0]);
-                    setDog(dog=>({
+                    setDog({
                         dogNm:result.response.body[0].item[0].dogNm[0],
                         kindNm:result.response.body[0].item[0].kindNm[0],
                         neuterYn:result.response.body[0].item[0].neuterYn[0],
                         orgNm:result.response.body[0].item[0].orgNm[0],
                         sexNm: result.response.body[0].item[0].sexNm[0]
-                    }))
+                    })
                     console.log(dog)
                     sendDogInfo([{
                         dogNm:result.response.body[0].item[0].dogNm[0],

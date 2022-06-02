@@ -10,10 +10,11 @@ import {
     
 } from 'react-native';
 import { FlatList } from "react-native-gesture-handler";
+import { HS_API_END_POINT } from '../../Shared/env';
 import { responsiveScreenFontSize, responsiveScreenHeight, responsiveScreenWidth } from 'react-native-responsive-dimensions';
 import { HS_API_END_POINT, USER_INFO } from '../../Shared/env';
 
-const baseUrl = 'http:127.0.0.1:8000';
+const baseUrl = HS_API_END_POINT;
 let query = '?';
 function filterRequest(){
 

@@ -124,13 +124,13 @@ const AdoptionStep = ({navigation,aboutDog,setWishList})=>{
             "email":USER_INFO.USER_EMAIL,"dog_id":aboutDog.id})
         .then(function(res){   
             wishlist = res.data[0] 
-            initAuthlist[0].progress = wishlist.survey
-            initAuthlist[1].progress = wishlist.agreement
-            initAuthlist[2].progress = wishlist.template1
-            initAuthlist[3].progress = wishlist.template2
-            initAuthlist[4].progress = wishlist.template3
-            initAuthlist[5].progress = wishlist.template4
-            console.log("여기서 받아옵니다->",initAuthlist)
+            authlist[0].progress = res.data[0].survey
+            authlist[1].progress = res.data[0].agreement
+            authlist[2].progress = res.data[0].template1
+            authlist[3].progress = res.data[0].template2
+            authlist[4].progress = res.data[0].template3
+            authlist[5].progress = res.data[0].template4
+            console.log("여기서 받아옵니다->",authlist)
             setWishList(wishlist)
             setAuthlist(initAuthlist)
         })
