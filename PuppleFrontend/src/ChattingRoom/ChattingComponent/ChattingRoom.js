@@ -146,7 +146,7 @@ function ChattingRoom({navigation, route}) {
         if(!ws.current){ // 소켓이 있으면
         // 채팅방 key = 반려견ID/구매자ID/판매자ID로 식별함
         ws.current = (new WebSocket(`wss://${HOST_IP}/ws/chat/${roomNumber}/`));
-
+        // console.log('ws.current : ',ws.current)
         // 페이지 헤더의 title을 반려견 이름으로 설정
         navigation.setOptions({
             title: route.params?.aboutDog.name
@@ -176,7 +176,7 @@ function ChattingRoom({navigation, route}) {
  
          ws.current.onerror = (e) => {
              // an error occurred
-             console.log(e.message);
+             console.log("error :::::: ",e.message);
          };
  
          ws.current.onclose = (e) => {

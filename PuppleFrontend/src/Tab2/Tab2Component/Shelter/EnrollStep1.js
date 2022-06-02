@@ -2,7 +2,8 @@ import React, {useState, createRef} from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-
+// import 'react-xml-parser'
+import 'react-native-xml2js'
 import {
   StyleSheet,
   TextInput,
@@ -97,6 +98,9 @@ const AnimalNumberAPI = (props) => {
     const [RFID, setRFID] = useState('');
     const [ownerBirth, setOwnerBirth] = useState('');
     const [ownerName, setOwnerName] = useState("");
+    const [url,setUrl] = useState("");
+    const [xml,setXml] = useState();
+    const [dog,setDog] = useState({});
 
 
     const passwordInputRef = createRef();
@@ -110,7 +114,9 @@ const AnimalNumberAPI = (props) => {
     }
 
     const sendDogInfo = (dogInfo) => {
-        props.onChangeDogInfo(dogInfo, animalNumber)
+        props.setDogInfo(dogInfo)
+        props.setAnimalNumber(animalNumber)
+        // props.onChangeDogInfo(dogInfo, animalNumber)
         console.log("** ************************** ** ");
     }
 
@@ -125,19 +131,63 @@ const AnimalNumberAPI = (props) => {
 
             console.log("** 입력 정보: ", animalNumber, ownerName);
 
-            var url = `http://openapi.animal.go.kr/openapi/service/rest/animalInfoSrvc/animalInfo`;
-            var queryParams = `?` + encodeURIComponent('dog_reg_no') + '=' + encodeURIComponent(animalNumber); /* */
-            queryParams += `&` + encodeURIComponent('owner_nm') + '=' + encodeURIComponent(ownerName); /* */
-            queryParams += `&` + encodeURIComponent('ServiceKey') + '=' + API_KEY; /* Service Key*/
-            
-           
-            Promise.all([animalGET(url+queryParams)]) 
-            .then(dogInfo => {
-                console.log("dogInfo:",dogInfo)
-                sendDogInfo(dogInfo)
-            }).catch(function (error) {
+            // var url = `https://apis.data.go.kr/1543061/animalInfoSrvc/animalInfo`;
+            // var queryParams = `?` + encodeURIComponent('dog_reg_no') + '=' + encodeURIComponent(animalNumber); /* */
+            // queryParams += `&` + encodeURIComponent('owner_nm') + '=' + encodeURIComponent(ownerName); /* */
+            // queryParams += `&` + encodeURIComponent('ServiceKey') + '=' + API_KEY; /* Service Key*/
+            // setUrl(`http://apis.data.go.kr/1543061/animalInfoSrvc/animalInfo`+`?` + encodeURIComponent('dog_reg_no') + '=' + encodeURIComponent(animalNumber)+`&` + encodeURIComponent('owner_nm') + '=' + encodeURIComponent(ownerName)+`&` + encodeURIComponent('ServiceKey') + '=' + API_KEY)
+            // console.log("******* url + query = ",url)
+            await axios.get(`http://apis.data.go.kr/1543061/animalInfoSrvc/animalInfo`+`?` + encodeURIComponent('dog_reg_no') + '=' + encodeURIComponent(animalNumber)+`&` + encodeURIComponent('owner_nm') + '=' + encodeURIComponent(ownerName)+`&` + encodeURIComponent('ServiceKey') + '=' + API_KEY)
+            .then(function(response){
+                // handle success
+                console.log("** LOG: Success");
+                //console.log(response);
+                console.log("------------");
+                var parseString = require('react-native-xml2js').parseString;
+                var xml = response.data
+                parseString(xml, function (err, result) {
+                    console.log("********res ::: ",result.response.body[0].item[0]);
+                    setDog(dog=>({
+                        dogNm:result.response.body[0].item[0].dogNm[0],
+                        kindNm:result.response.body[0].item[0].kindNm[0],
+                        neuterYn:result.response.body[0].item[0].neuterYn[0],
+                        orgNm:result.response.body[0].item[0].orgNm[0],
+                        sexNm: result.response.body[0].item[0].sexNm[0]
+                    }))
+                    console.log(dog)
+                    sendDogInfo([{
+                        dogNm:result.response.body[0].item[0].dogNm[0],
+                        kindNm:result.response.body[0].item[0].kindNm[0],
+                        neuterYn:result.response.body[0].item[0].neuterYn[0],
+                        orgNm:result.response.body[0].item[0].orgNm[0],
+                        sexNm: result.response.body[0].item[0].sexNm[0]
+                    }])
+                });
+                // console.log(response.data)
+                // // var XMLparser = require('react-xml-parser');
+                // // setXml(new require('react-xml-parser')().parseFromString(response.data))
+                // // console.log(xml)
+                // // console.log(xml.getElementsByTagName('*'))
+                // sendDogInfo(response.data.response.body.item)
+                // console.log(response.data.response.body.item);
+    
+                //showCheckBox(dogInfo)
+    
+            })
+            .catch(function (error) {
+                //handle error
+                //console.log("** Error:", urls);
+                //showCheckBox(dogInfo)
+                dogInfo = null
                 console.log(error);
             });
+            // Promise.all([animalGET(url)]) 
+            // .then(dogInfo => {
+            //     console.log("dogInfo:",dogInfo)
+            //     sendDogInfo(dogInfo)
+            // }).catch(function (error) {
+            //     console.log(error);
+            // });
         }
     }
 
@@ -289,7 +339,7 @@ function EnrollStep1({navigation}) {
                     <Text style={styles.title}>Step 1. 반려견 정보 작성하기{'\n'}</Text>
                     <Text style={[styles.subtitle]}>반려견 분양을 위해 동물등록 조회가 필요해요. </Text>
                     
-                    <AnimalNumberAPI onChangeDogInfo={onChangeDogInfo} >  </AnimalNumberAPI>
+                    <AnimalNumberAPI setAnimalNumber={setAnimalNumber} setDogInfo={setDogInfo} onChangeDogInfo={onChangeDogInfo} />
 
                     <Text>{dogInfo === null ? null : 
                     

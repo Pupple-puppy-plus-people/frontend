@@ -392,15 +392,19 @@ async function stopAndload(){
     extract()
 }
 function extract(){
+    let extract_total =0;
     let extract_elapsed_time = 0;
     let extract_distance = 0;
     for (let i = 0; i < myData.length; i++) {
         const element = myData[i];
+        if (element.elapsed_time) {
+            extract_total += 1;
+        }
         extract_elapsed_time += element.elapsed_time;
         extract_distance += element.distance;
     }
     myTotal = {
-        count : myData.length,
+        count : extract_total,
         time : extract_elapsed_time,
         distance : extract_distance
     }
@@ -424,8 +428,9 @@ class WalkAuthComponent extends Component{
     async loadData(){
         await walkGet(this.props.dog_id);
         extract();
+
         this.setState({
-            total_count : myData.length,
+            total_count : myTotal.count,
             total_time :  myTotal.time,
             total_distance :  myTotal.distance,
             pass_count : pass_condition.walk_total_count,
