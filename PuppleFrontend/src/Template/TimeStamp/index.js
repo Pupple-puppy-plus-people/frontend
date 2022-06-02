@@ -62,7 +62,7 @@ const SetStartTime = ({onStartTime}) => {
                                 <Picker.Item label="09:00" value={9} />
                                 <Picker.Item label="10:00" value={10} />
                                 <Picker.Item label="11:00" value={11} />
-                                <Picker.Item label="12:0" value={12} />
+                                <Picker.Item label="12:00" value={12} />
                             </Picker>
                         </View>
 
