@@ -21,6 +21,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 
 
+var ts_check_time = 0;
 var myData = [
     {
         user : 0,
@@ -108,7 +109,7 @@ class SummaryList extends Component{
         var myData2 = []
         var passDay = 0
         await axios.all(this.state.day_num.map((endpoint) => 
-        axios.get(`${HS_API_END_POINT}/api/timestamp/get/?user=${USER_INFO.USER_ID}&dog=${this.state.dogID}&day=${endpoint}`)))
+        axios.get(`${HS_API_END_POINT}/api/timestamp/get/?user=${this.props.parentState.user_id}&dog=${this.state.dogID}&day=${endpoint}`)))
         .then((res)=> { 
     
             startDay = new Date(Number(this.state.startDay)).getDay();
@@ -122,13 +123,8 @@ class SummaryList extends Component{
                     copy = JSON.parse(JSON.stringify(empty)) //deepcopy
                     copy.id = 0 // id 컬럼 추가
                     
-                    copy.day = -1 // 아직 결과를 모르는 날짜 
+                    copy.day = -1 
     
-                    //for(a in this.state.day_num){   // 수행을 하지 않은 날짜라면 -> reset 기회라고 생각하기 
-                        //(Number(startDay) + Number(a))
-                    //}
-
-                    //copy.day = index // 그 day로 
                     myData2.push(copy)
                     
                 }else{  // 특정 요일 결과가 있으면 그대로
@@ -156,20 +152,7 @@ class SummaryList extends Component{
         var progress =  Number(passDay)/Number(this.props.parentState.ts_total_count)*Number(100)
         //console.log("progeress", progress)
         this.props.progress = progress
-        // 진행율 바뀐거 있으면 올리기 
-        axios.post(`${HS_API_END_POINT}/api/users/wishlist/updateprogress/`,{
-            email : USER_INFO.USER_EMAIL,
-            dog_id : this.state.dogID,
-            template2 : String(progress)
-        })
-        .then(function (response){
-            // post done
-            //console.log("==> response", response)
-            
-        })
-        .then(function (error){
-            // error
-        });
+        
 
     }
     componentDidMount(){    // this.setState 는 다시 렌더링을 유발하므로 render() 안에 들어가면 무한루프를 돌게 됨. 
@@ -217,28 +200,7 @@ const Info_Item = ({dataInfo}) => (
         </Text>
     </View>
 );
-// FlatList를 담은 const & 그 안에 반복될 item을 render할 const 포함
-const Information = ({informationName,showData}) => {
-    const renderData = ({item}) =>(
-       <Info_Item dataInfo={item}/>
-    );
-    const panResponder = PanResponder.create({
-        onMoveShouldSetPanResponder: () => false
-    });
-    return(
-        <View style={[styles.textInformation_container,styles.container_background]}>
-            <Text
-            style={styles.subTitle}>
-                {informationName}
-            </Text>
-            <FlatList
-                data={showData}
-                renderItem={renderData}
-                listKey={new Date().getTime().toString()}
-            />
-        </View>
-    );
-}
+
 
 // 하루 동안 누른 시간 목록의 한 레코드
 const Item = ({ item }) => (
@@ -253,7 +215,6 @@ const Item = ({ item }) => (
 
 );
 
-// 하루 동안 누른 시간 목록 부분에 해당하는 컴포넌트
 const TimeStamp = ({info, getlist}) => {
     const isFocused = useIsFocused();
 
@@ -261,13 +222,10 @@ const TimeStamp = ({info, getlist}) => {
     const [timelist, setTimeList] = useState([{}])
     const today = new Date().getDay();
 
-    // 하루동안 누른 시간 목록 받아오기 
+
     React.useEffect(()=> {
 
-/************************* 부가 설명 : (모든 요일 누른 시각 전체를 받아오고 싶다면 ) ****************************************** */
-        // 맨처음 오늘 요일에 해당하는 누른 시간 가져옴 
-        // 채팅에서 모든 요일에 대한 값 받아오고 싶으면 url 맨 뒤에 day를 빼면 돼요!!!!!!!! 이 바로 밑 줄 ||
-        axios.get(`${HS_API_END_POINT}/api/timestamp/get/?user=${USER_INFO.USER_ID}&dog=${info.parentState.dog_id}&day=${Number(today)}`) 
+        axios.get(`${HS_API_END_POINT}/api/timestamp/get/?user=${info.parentState.user_id}&dog=${info.parentState.dog_id}`) 
         .then((res)=> { 
 
             list = []
@@ -282,9 +240,12 @@ const TimeStamp = ({info, getlist}) => {
             }
 
             for(idx in res.data){
+                if(idx==0){
+                    continue;
+                }
                 copy = JSON.parse(JSON.stringify(res.data[idx])) //deepcopy
                 copy.press_time=convertTimeFormat(copy.press_time)
-                copy.id = Number(idx)+Number(1)
+                copy.id = Number(idx)
                 list.push(copy)
             }
             setTimeList(list);
@@ -295,108 +256,6 @@ const TimeStamp = ({info, getlist}) => {
         })
     }, [isFocused]); 
 
-/************************* 부가 설명: (아마 채팅 모달에선 필요없을 코드) ****************************************** */
-    // 수행 시가나 통과 여부 계산 및 백엔드에 전송
-    function postserver(time){
-
-        dogID = info.parentState.dog_id // 개 아이디 
-        start_time = info.parentState.start_time // 사용자 설정 시작 시간
-        prev_start_time = start_time // 마직막에 누른 시간의 시작 시간
-        ts_check_time = info.parentState.ts_check_time // 공백 시간
-
-        var compare= new Date();
-
-        data = { 
-            user: USER_INFO.USER_ID,
-            dog: dogID,
-            day: today,
-            press_time: time.getTime().toString(), // 1/1000초의 string
-        }
-        
-        // 초 단위로 비교
-        if(info.prev_timelist.length==0){ // 이전에 누른 시간이 없을 때 
-            compare.setHours(start_time, 0, 0, 0); // 시작 시간으로 
-            if(Math.floor(time - compare)/1000 < 0 ){
-                // 시작 시간 이전에 누른 경우
-                Alert.alert("시작 시간이 전이에요:)");
-                return 0;
-            }
-            if(Math.floor(time - compare)/1000 <= 3600*ts_check_time){
-                // 시작 시간 + 공백 시간 전에 누른 경우 
-                data.start_time = start_time 
-                data.evaluate = true
-                Alert.alert("좋아요! 순조로운 시작:)");
-            }else{
-                // 시간 시간 + 공백 시간 후에 누른 경우
-                data.start_time = 0
-                data.evaluate = false
-                Alert.alert("오늘 하루는 늦은 시작이네요:(");
-            }
-        }else{ // 이전에 누른 시간이 있는 경운
-            prev_start_time = info.prev_timelist.start_time // 마직막에 누른 시간의 시작 시간
-            compare.setHours(prev_start_time, 0, 0, 0); // 검사할 시간
-
-            if(info.prev_timelist.evaluate){
-                // 이전에 누른게 true 일때 
-                if(Math.floor(time - compare)/1000 <= 3600*ts_check_time){
-                    // 이전 시간의 시작 시간 전에 누른 경우
-                    data.start_time = prev_start_time  
-                    data.evaluate = true
-                    Alert.alert("이미 통과에요! 다음 마감 시간까지 쉬어도 돼요:)");
-                }else{
-                    // 이전 시간의 시작 시간 후에 누른 경우
-                    if(Math.floor(time - compare)/1000 <= 3600*(prev_start_time+ts_check_time)){
-                        // 이전 시간의 시작 시간 + 공백 시간 보다 작을 때 
-                        data.start_time = prev_start_time + ts_check_time 
-                        data.evaluate = true
-                        Alert.alert("통과에요! 반려견이 기뻐해요:)");
-                    }else{
-                        // 이전 시간의 시작 시간 + 공백 시간 보다 클 때 
-                        data.start_time = 0   
-                        data.evaluate = false
-                        Alert.alert("늦었어요! 반려견과의 시간을 지켜주세요:(");
-                    }
-                }     
-            }else{
-                // 이전에 누른게 false 일때
-                //data.start_time = 0
-                //data.evaluate = false
-                Alert.alert("다음 기회에! 내일이 있어요:(");
-                return 0;
-            }
-           
-        }
-        getlist(data) // 부모 컴포넌트의로 가장 마지막에 누른 시간 데이터를 전송한다. 
-
-        // DB에 데이터 전송
-        axios.post(`${HS_API_END_POINT}/api/timestamp/add/`,data)
-        .then(function (response){
-            console.log(response);
-        })
-        .then(function (error){
-            console.log(error);
-        });
-
-        if(timelist.length==0){
-            data.id = 1
-            data.press_time=convertTimeFormat(data.press_time)
-            setTimeList([data])
-        }else{
-
-            data.id = Number(timelist[timelist.length-1].id)+Number(1)
-            data.press_time=convertTimeFormat(data.press_time)
-            // setTimeList(timelist.append(data))
-            timelist.push(data)
-            setTimeList(timelist)
-        }
-    }
-
-/************************* 부가 설명: (아마 채팅 모달에선 필요없을 코드) ****************************************** */
-    // press 버튼 누르면 서버로 보내는 함수
-    const handleStart = () => {
-        const date = new Date();
-        postserver(date) //timer
-    }
 
 /************************* 부가 설명 ****************************************** */
     // 12312493294501 같은 Date 객체를 hh:mm:ss yy-mm-dd 로 예쁘게 보여주는 코드
@@ -462,8 +321,12 @@ class TimeStampRes extends Component{
             prev_timelist : [],
             parentState: this.props.parentState,
             dueTime: ``,
+            ts_check_time:0,
+            ts_total_count:0,
+           
         };
         this.getlist = this.getlist.bind(this)
+        this.getTSINFO();
     }
     
     getlist=(data)=> {
@@ -489,12 +352,44 @@ class TimeStampRes extends Component{
         })
     }
     
+    
+    async getTSINFO(){
+        
+        await axios.get(`${HS_API_END_POINT}/api/passcondition/${this.state.parentState.dog_id}/`)
+        .then(function (response) {
+            ts_total_count = response.data[0]['ts_total_count']
+            ts_check_time = response.data[0]['ts_check_time']
+            console.log("pass condition: ",ts_check_time, ts_total_count);
+            
+
+        })
+        .catch(error => {console.log('error : ',error)});
+        
+        this.setState({
+            ts_total_count: ts_total_count,
+            ts_check_time: ts_check_time
+        })
+        
+    };
+
+    componentDidUpdate(){    // this.setState 는 다시 렌더링을 유발하므로 render() 안에 들어가면 무한루프를 돌게 됨. 
+        // 값이 달라진 경우 render
+
+        if(this.state.ts_check_time!==ts_check_time){
+            
+        }
+    
+    }
+
     render(){
+       
         const getHeader = () => {
+            console.log("야호~~~~~");
+
             return (
             <View>
             <Text style={styles.title}>타임스탬프 검증</Text>
-            <Text style={styles.subtitle}>* 통과 기준: 검사 주기 {this.state.parentState.ts_check_time}시간  | 횟수 {this.state.parentState.ts_total_count}일/7일</Text>
+            <Text style={styles.subtitle}>* 통과 기준: 검사 주기 {this.state.ts_check_time}시간  | 횟수 {this.state.ts_total_count}일/7일</Text>
             <Text style={styles.subtitle}>* 사용자 설정 시작 시간: 오전 {this.state.parentState.start_time}시 </Text>
             </View>
             );
@@ -538,21 +433,13 @@ class TimeStampRes extends Component{
                                 <SummaryList evalType={'day'} parentState={this.state.parentState} progress={this.state.progress}/>
                             </View>
                         </View>
-{/************************* 부가 설명 : 아마 채팅에서 필요 없을 부분****************************************** */}
-                        <Information
-                        informationName={'통과하기 위한 다음 마감 시간'}
-                        showData={[
-                            {
-                                dataName:'시간',
-                                data:`${this.state.dueTime}` // 마지막 누른 시간
-                            },
-                        ]}/>
+
 {/**************************************************************************************** */}
  
                         {/* 채팅에서는 이 부분을 요일 구분 없이 모든 누른 시간 목록으로 받아와도 됨 */}
                         <View style={[styles.container_background,styles.textInformation_container]}>
                             <Text style={styles.subTitle}> 
-                                하루동안 누른 시간 목록
+                                전체 누른 시간 목록
                             </Text>
                             <TimeStamp info={this.state} getlist={this.getlist}/>
 
