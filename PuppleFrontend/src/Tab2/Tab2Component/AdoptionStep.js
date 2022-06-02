@@ -95,10 +95,10 @@ const AdoptionStep = ({navigation,aboutDog,setWishList})=>{
         ];
     
     if(!aboutDog.floor_auth){
-        authlist[4].bool=false
+        initAuthlist[4].bool=false
     } 
     if(!aboutDog.house_auth){ 
-        authlist[5].bool=false
+        initAuthlist[5].bool=false
     }
 
     const [startTime, setStartTime] = useState([]);
@@ -124,13 +124,15 @@ const AdoptionStep = ({navigation,aboutDog,setWishList})=>{
             "email":USER_INFO.USER_EMAIL,"dog_id":aboutDog.id})
         .then(function(res){   
             wishlist = res.data[0] 
-            authlist[0].progress = res.data[0].survey
-            authlist[1].progress = res.data[0].agreement
-            authlist[2].progress = res.data[0].template1
-            authlist[3].progress = res.data[0].template2
-            authlist[4].progress = res.data[0].template3
-            authlist[5].progress = res.data[0].template4
-            console.log("여기서 받아옵니다->",authlist)
+            console.log("wishlist 여기서 받아옵니다->",wishlist.survey)
+
+            initAuthlist[0].progress = res.data[0].survey
+            initAuthlist[1].progress = res.data[0].agreement
+            initAuthlist[2].progress = res.data[0].template1
+            initAuthlist[3].progress = res.data[0].template2
+            initAuthlist[4].progress = res.data[0].template3
+            initAuthlist[5].progress = res.data[0].template4
+            console.log("여기서 받아옵니다->",initAuthlist)
             setWishList(wishlist)
             setAuthlist(initAuthlist)
         })
