@@ -58,16 +58,15 @@ function EnrollStep3({route, navigation}) {
         setmin_per_walk(route.params?.walkTime);
         setmeter_per_walk(route.params?.walkDistance);
     }, []);
-    
-    
 
+    
     navigation.setOptions({
         headerRight: () => (
             <Text style={{margin:"7%", color:'dodgerblue', fontWeight:'bold', fontSize:smallOne*0.04}}
                 onPress={() => {
 
                     // dogs DB에 등록하기
-                    axios.post(`${HS_API_END_POINT}/api/dogs/list/`,{
+                    axios.post(`${HS_API_END_POINT}/api/dogs/add/`,{
                         registration_number : dogRegInfo[4].value ,
                         image : dogImage,
                         name:dogRegInfo[0].value,
@@ -91,22 +90,28 @@ function EnrollStep3({route, navigation}) {
                         // get 응답에서 pk 값 받아옴
                         setdogID(JSON.parse(response.request._response).id);
                         
+                        //console.log("dogID>>>>>>", response.config.data)
+
+                        console.log("dogID>>>>>213123>", response.data.pk)
+
+
+                        // 인증 템플릿 설정에 post 하기 --> get 안에 넣기 
+                        axios.post(`${HS_API_END_POINT}/api/passcondition/${response.data.pk}/`,{
+                            dog_id: response.data.pk, 
+                            walk_total_count:walk_total_count,
+                            min_per_walk:min_per_walk,
+                            meter_per_walk:meter_per_walk,
+                            ts_total_count: input.checkDay,
+                            ts_check_time:input.setTime,
+                        }).then(function (response) {console.log(response);})
+                        .catch(error => {console.log('error : ',error.response)});
+
+                        
                     }).catch(error => {console.log('error : ',error.response)});
 
-                    console.log("dogID", dogID)
-                    // 인증 템플릿 설정에 post 하기 --> get 안에 넣기 
-                    axios.post(`${HS_API_END_POINT}/api/passcondition/${dogID}/`,{
-                        dog_id: dogID, 
-                        walk_total_count:walk_total_count,
-                        min_per_walk:min_per_walk,
-                        meter_per_walk:meter_per_walk,
-                        ts_total_count: input.checkDay,
-                        ts_check_time:input.setTime,
-                    }).then(function (response) {console.log(response);})
-                    .catch(error => {console.log('error : ',error.response)});
-
+                    
                     alert('게시글이 등록 되었습니다.');
-                    // navigation.navigate('Tab2Home',{}); // Tab2Home
+                    navigation.navigate('Tab2Home',{}); // Tab2Home
 
             }}>완료</Text>
         ),

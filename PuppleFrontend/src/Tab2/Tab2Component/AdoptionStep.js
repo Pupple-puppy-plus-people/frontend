@@ -1,6 +1,6 @@
 
 //import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
     View, 
     Text, 
@@ -105,6 +105,7 @@ const AdoptionStep = ({navigation,aboutDog,setWishList})=>{
 
    
     React.useEffect(()=> { // useCallback?
+        console.log("다시 초점이 맞춰짐", isFocused)
         // pass condition 받아오기 - 1번만 받아오는게 좋은데 
         axios.get(`${HS_API_END_POINT}/api/passcondition/${aboutDog.id}/`)
         .then(function (response) {
@@ -147,8 +148,14 @@ const AdoptionStep = ({navigation,aboutDog,setWishList})=>{
         .catch((err)=> {
             console.log(err);
         })
+    
 
     },[isFocused]);
+
+    const onCloseModal = useCallback(() => {
+        setModalVisible(!modalVisible)
+      }, []);
+
 
     const renderItem = ({ item }) => (
         <Item item={item} setModalVisible={setModalVisible} setSelectedAuth={setSelectedAuth}/>
@@ -173,7 +180,8 @@ const AdoptionStep = ({navigation,aboutDog,setWishList})=>{
             transparent={false}
             visible={modalVisible}
             onRequestClose={()=>{
-                setModalVisible(!modalVisible)
+                //setModalVisible(!modalVisible)
+                onCloseModal()
             }}>
                 <View
                 style={{flexDirection:'column',flex:1}}>
@@ -183,6 +191,23 @@ const AdoptionStep = ({navigation,aboutDog,setWishList})=>{
                         zIndex:1,}}
                     onPress={()=>{
                         setModalVisible(!modalVisible)
+                        // 반려견 진행률 update
+                        axios.post(`${HS_API_END_POINT}/api/users/wishlist/`,{
+                            "email":USER_INFO.USER_EMAIL,"dog_id":aboutDog.id})
+                        .then(function(res){   
+                            wishlist = res.data[0] 
+                            authlist[0].progress = wishlist.survey
+                            authlist[1].progress = wishlist.agreement
+                            authlist[2].progress = wishlist.template1
+                            authlist[3].progress = wishlist.template2
+                            authlist[4].progress = wishlist.template3
+                            authlist[5].progress = wishlist.template4
+                            console.log("여기서 받아옵니다->",authlist)
+                            setWishList(wishlist)
+                        })
+                        .catch(function(error){
+                            console.log(error);
+                        });
                     }}>
                         <View style={{margin:"1%"}} />
 

@@ -114,10 +114,10 @@ class SummaryList extends Component{
     
             startDay = new Date(Number(this.state.startDay)).getDay();
             endDay = new Date().getDay();
-            console.log("startDAY ===== ", startDay, endDay)
+            //console.log("startDAY ===== ", startDay, endDay)
     
             res.forEach((dayHistory, index) => {
-                console.log(dayHistory.data)
+                //console.log(dayHistory.data)
                 
                 if(dayHistory.data.length==0){ // 특정 요일 누른 값이 없으면
                     copy = JSON.parse(JSON.stringify(empty)) //deepcopy
@@ -134,7 +134,7 @@ class SummaryList extends Component{
                     
                 }else{  // 특정 요일 결과가 있으면 그대로
                     myData2.push(dayHistory.data[dayHistory.data.length-1])
-                    console.log("put", dayHistory.data[dayHistory.data.length-1])
+                    //console.log("put", dayHistory.data[dayHistory.data.length-1])
 
                     if(dayHistory.data[dayHistory.data.length-1].evaluate){
                         passDay = Number(passDay) + Number(1)
@@ -148,17 +148,29 @@ class SummaryList extends Component{
         .catch((err)=> {
             console.log(err);
         }) 
-        console.log("Summary list 받기 ",myData2.length, passDay); 
+        //console.log("Summary list 받기 ",myData2.length, passDay); 
 
         this.setState({
             myData: myData2,
         })
 
         var progress =  Number(passDay)/Number(this.props.parentState.ts_total_count)*Number(100)
-        console.log("progeress", progress)
-
+        //console.log("progeress", progress)
+        this.props.progress = progress
         // 진행율 바뀐거 있으면 올리기 
-
+        axios.post(`${HS_API_END_POINT}/api/users/wishlist/updateprogress/`,{
+            email : USER_INFO.USER_EMAIL,
+            dog_id : this.state.dogID,
+            template2 : String(progress)
+        })
+        .then(function (response){
+            // post done
+            //console.log("==> response", response)
+            
+        })
+        .then(function (error){
+            // error
+        });
 
     }
     componentDidMount(){    // this.setState 는 다시 렌더링을 유발하므로 render() 안에 들어가면 무한루프를 돌게 됨. 
@@ -457,6 +469,7 @@ class TimeStampComponent extends Component{
             prev_timelist : [],
             parentState: this.props.parentState,
             dueTime: ``,
+            progress: 0,
         };
         this.getlist = this.getlist.bind(this)
     }
@@ -553,7 +566,7 @@ class TimeStampComponent extends Component{
                             <View style={styles.summary_column}>
                                 <WeekComponent chevronColor={'#eedbff'}/>
                                 {/* status */}
-                                <SummaryList evalType={'day'} parentState={this.state.parentState}/>
+                                <SummaryList evalType={'day'} parentState={this.state.parentState} progress={this.state.progress}/>
                             </View>
                         </View>
 {/************************* 부가 설명 : 아마 채팅에서 필요 없을 부분****************************************** */}

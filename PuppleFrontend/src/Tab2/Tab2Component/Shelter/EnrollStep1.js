@@ -2,7 +2,8 @@ import React, {useState, createRef} from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-
+// import 'react-xml-parser'
+import 'react-native-xml2js'
 import {
   StyleSheet,
   TextInput,
@@ -97,6 +98,9 @@ const AnimalNumberAPI = (props) => {
     const [RFID, setRFID] = useState('');
     const [ownerBirth, setOwnerBirth] = useState('');
     const [ownerName, setOwnerName] = useState("");
+    const [url,setUrl] = useState("");
+    const [xml,setXml] = useState();
+    const [dog,setDog] = useState({});
 
 
     const passwordInputRef = createRef();
@@ -110,7 +114,9 @@ const AnimalNumberAPI = (props) => {
     }
 
     const sendDogInfo = (dogInfo) => {
-        props.onChangeDogInfo(dogInfo, animalNumber)
+        props.setDogInfo(dogInfo)
+        props.setAnimalNumber(animalNumber)
+        // props.onChangeDogInfo(dogInfo, animalNumber)
         console.log("** ************************** ** ");
     }
 
@@ -125,19 +131,63 @@ const AnimalNumberAPI = (props) => {
 
             console.log("** 입력 정보: ", animalNumber, ownerName);
 
-            var url = `http://openapi.animal.go.kr/openapi/service/rest/animalInfoSrvc/animalInfo`;
-            var queryParams = `?` + encodeURIComponent('dog_reg_no') + '=' + encodeURIComponent(animalNumber); /* */
-            queryParams += `&` + encodeURIComponent('owner_nm') + '=' + encodeURIComponent(ownerName); /* */
-            queryParams += `&` + encodeURIComponent('ServiceKey') + '=' + API_KEY; /* Service Key*/
-            
-           
-            Promise.all([animalGET(url+queryParams)]) 
-            .then(dogInfo => {
-                console.log("dogInfo:",dogInfo)
-                sendDogInfo(dogInfo)
-            }).catch(function (error) {
+            // var url = `https://apis.data.go.kr/1543061/animalInfoSrvc/animalInfo`;
+            // var queryParams = `?` + encodeURIComponent('dog_reg_no') + '=' + encodeURIComponent(animalNumber); /* */
+            // queryParams += `&` + encodeURIComponent('owner_nm') + '=' + encodeURIComponent(ownerName); /* */
+            // queryParams += `&` + encodeURIComponent('ServiceKey') + '=' + API_KEY; /* Service Key*/
+            // setUrl(`http://apis.data.go.kr/1543061/animalInfoSrvc/animalInfo`+`?` + encodeURIComponent('dog_reg_no') + '=' + encodeURIComponent(animalNumber)+`&` + encodeURIComponent('owner_nm') + '=' + encodeURIComponent(ownerName)+`&` + encodeURIComponent('ServiceKey') + '=' + API_KEY)
+            // console.log("******* url + query = ",url)
+            await axios.get(`http://apis.data.go.kr/1543061/animalInfoSrvc/animalInfo`+`?` + encodeURIComponent('dog_reg_no') + '=' + encodeURIComponent(animalNumber)+`&` + encodeURIComponent('owner_nm') + '=' + encodeURIComponent(ownerName)+`&` + encodeURIComponent('ServiceKey') + '=' + API_KEY)
+            .then(function(response){
+                // handle success
+                console.log("** LOG: Success");
+                //console.log(response);
+                console.log("------------");
+                var parseString = require('react-native-xml2js').parseString;
+                var xml = response.data
+                parseString(xml, function (err, result) {
+                    console.log("********res ::: ",result.response.body[0].item[0]);
+                    setDog(dog=>({
+                        dogNm:result.response.body[0].item[0].dogNm[0],
+                        kindNm:result.response.body[0].item[0].kindNm[0],
+                        neuterYn:result.response.body[0].item[0].neuterYn[0],
+                        orgNm:result.response.body[0].item[0].orgNm[0],
+                        sexNm: result.response.body[0].item[0].sexNm[0]
+                    }))
+                    console.log(dog)
+                    sendDogInfo([{
+                        dogNm:result.response.body[0].item[0].dogNm[0],
+                        kindNm:result.response.body[0].item[0].kindNm[0],
+                        neuterYn:result.response.body[0].item[0].neuterYn[0],
+                        orgNm:result.response.body[0].item[0].orgNm[0],
+                        sexNm: result.response.body[0].item[0].sexNm[0]
+                    }])
+                });
+                // console.log(response.data)
+                // // var XMLparser = require('react-xml-parser');
+                // // setXml(new require('react-xml-parser')().parseFromString(response.data))
+                // // console.log(xml)
+                // // console.log(xml.getElementsByTagName('*'))
+                // sendDogInfo(response.data.response.body.item)
+                // console.log(response.data.response.body.item);
+    
+                //showCheckBox(dogInfo)
+    
+            })
+            .catch(function (error) {
+                //handle error
+                //console.log("** Error:", urls);
+                //showCheckBox(dogInfo)
+                dogInfo = null
                 console.log(error);
             });
+            // Promise.all([animalGET(url)]) 
+            // .then(dogInfo => {
+            //     console.log("dogInfo:",dogInfo)
+            //     sendDogInfo(dogInfo)
+            // }).catch(function (error) {
+            //     console.log(error);
+            // });
         }
     }
 
@@ -162,40 +212,7 @@ const AnimalNumberAPI = (props) => {
                             underlineColorAndroid="#f000"
                             blurOnSubmit={false}
                         />
-                        {/*<TextInput
-                            style={[styles.textFrom, styles.textFormMiddle]}
-                            onChangeText={(UserEmail) =>
-                                setUserEmail(UserEmail)
-                            }
-                            placeholder="RFID 번호" //dummy@abc.com
-                            placeholderTextColor="#8b9cb5"
-                            autoCapitalize="none"
-                            keyboardType="email-address"
-                            returnKeyType="next"
-                            onSubmitEditing={() =>
-                                passwordInputRef.current &&
-                                passwordInputRef.current.focus()
-                            }
-                            underlineColorAndroid="#f000"
-                            blurOnSubmit={false}
-                        />
-                        <TextInput
-                            style={[styles.textFrom, styles.textFormMiddle]}
-                            onChangeText={(UserEmail) =>
-                                setUserEmail(UserEmail)
-                            }
-                            placeholder="소유자 생년월일"
-                            placeholderTextColor="#8b9cb5"
-                            autoCapitalize="none"
-                            keyboardType="email-address"
-                            returnKeyType="next"
-                            onSubmitEditing={() =>
-                                passwordInputRef.current &&
-                                passwordInputRef.current.focus()
-                            }
-                            underlineColorAndroid="#f000"
-                            blurOnSubmit={false}
-                        />*/}
+                       
                         <TextInput
                             style={[styles.textFormBottom, styles.textFrom]}
                             onChangeText={(OwnerName) =>
@@ -289,7 +306,7 @@ function EnrollStep1({navigation}) {
                     <Text style={styles.title}>Step 1. 반려견 정보 작성하기{'\n'}</Text>
                     <Text style={[styles.subtitle]}>반려견 분양을 위해 동물등록 조회가 필요해요. </Text>
                     
-                    <AnimalNumberAPI onChangeDogInfo={onChangeDogInfo} >  </AnimalNumberAPI>
+                    <AnimalNumberAPI setAnimalNumber={setAnimalNumber} setDogInfo={setDogInfo} onChangeDogInfo={onChangeDogInfo} />
 
                     <Text>{dogInfo === null ? null : 
                     
@@ -400,134 +417,6 @@ function EnrollStep1({navigation}) {
         </KeyboardAwareScrollView>
     );
 }
-
-/*
-
-board 안에 있는 것
-
-{data.map((x) => (
-                    <Choice
-                        text={x.title}
-                        btnTxtStyles={styles.btnTxtStyles}
-                        btnstyles={styles.btnstyles}
-                        btnstylesSelect={styles.btnstylesSelect}
-                        onValueChange={handleValueChange}
-                        choicesCount={choicesName[x.filterNumber].length}
-                        choicesName={choicesName[x.filterNumber]}
-                    />
-                    ))}
-                      
-                    <View style={[styles.formArea, {width: width > height ? '40%': '75%'}]}>
-                        <TextInput
-                            style={[styles.textFormTop, {height: width >height ? '35%' : '25%'}]}
-                            onChangeText={(UserEmail) =>
-                                setUserEmail(UserEmail)
-                            }
-                            placeholder="동물등록번호" //dummy@abc.com
-                            placeholderTextColor="#8b9cb5"
-                            autoCapitalize="none"
-                            keyboardType="email-address"
-                            returnKeyType="next"
-                            onSubmitEditing={() =>
-                                passwordInputRef.current &&
-                                passwordInputRef.current.focus()
-                            }
-                            underlineColorAndroid="#f000"
-                            blurOnSubmit={false}
-                        />
-                        <TextInput
-                            style={[styles.textFormBottom,{height: width >height ? '35%' : '25%'}]}
-                            onChangeText={(UserPassword) =>
-                                setUserPassword(UserPassword)
-                            }
-                            placeholder="소유자 성명" //12345
-                            placeholderTextColor="#8b9cb5"
-                            keyboardType="default"
-                            ref={passwordInputRef}
-                            onSubmitEditing={Keyboard.dismiss}
-                            blurOnSubmit={false}
-                            secureTextEntry={false}
-                            underlineColorAndroid="#f000"
-                            returnKeyType="next"
-                        />
-                        </View>
-
-
-     <View style={{flex:0.5, justifyContent:'center', marginLeft:"3%"}}>
-
-                        <ScrollView ref = {ref} style={styles.scrollView}> 
-                    
-                        </ScrollView>
-                    
-                    </View>
-
-
-            <View style={{flex:1,flexDirection:'column', padding:'3%',backgroundColor:'#fff'}}>
-                <View style={{flex:0.5}}/>
-
-                <View style={[styles.board,{backgroundColor:'#E1BEE7',borderRadius:20}]}>
-                    
-                    <View style={{flex:0.5, justifyContent:'center', marginLeft:"3%"}}>
-                    </View>
-                    {data.map((x) => (
-                    <Choice
-                        text={x.title}
-                        btnTxtStyles={styles.btnTxtStyles}
-                        btnstyles={styles.btnstyles}
-                        btnstylesSelect={styles.btnstylesSelect}
-                        onValueChange={handleValueChange}
-                        choicesCount={choicesName[x.filterNumber].length}
-                        choicesName={choicesName[x.filterNumber]}
-                    />
-                    ))}
-                      
-            <View style={[styles.formArea, {width: width > height ? '40%': '75%'}]}>
-                  <TextInput
-                      style={[styles.textFormTop, {height: width >height ? '35%' : '25%'}]}
-                      onChangeText={(UserEmail) =>
-                        setUserEmail(UserEmail)
-                      }
-                      placeholder="동물등록번호" //dummy@abc.com
-                      placeholderTextColor="#8b9cb5"
-                      autoCapitalize="none"
-                      keyboardType="email-address"
-                      returnKeyType="next"
-                      onSubmitEditing={() =>
-                          passwordInputRef.current &&
-                          passwordInputRef.current.focus()
-                      }
-                      underlineColorAndroid="#f000"
-                      blurOnSubmit={false}
-                  />
-                  <TextInput
-                      style={[styles.textFormBottom,{height: width >height ? '35%' : '25%'}]}
-                      onChangeText={(UserPassword) =>
-                        setUserPassword(UserPassword)
-                      }
-                      placeholder="소유자 성명" //12345
-                      placeholderTextColor="#8b9cb5"
-                      keyboardType="default"
-                      ref={passwordInputRef}
-                      onSubmitEditing={Keyboard.dismiss}
-                      blurOnSubmit={false}
-                      secureTextEntry={false}
-                      underlineColorAndroid="#f000"
-                      returnKeyType="next"
-                  />
-                {/* <Text style={{...styles.TextValidation}}>유효하지 않은 ID입니다.</Text> }
-                </View>
-                </View>
-            
-            <TouchableOpacity 
-                onPress={gotoNextScreen}
-                style={styles.nextBtn} 
-            >
-                <Text style={[styles.botText, {color: 'white'}]}>다음</Text>
-            </TouchableOpacity>
-                <View style={{flex:0.2}}/>
-            </View>
-
-*/ 
 
 const checkBoxBaseStyles = {
     height: 40,

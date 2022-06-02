@@ -47,7 +47,9 @@
     "react-native-tab-view": "^3.1.1",
     "react-native-vector-icons": "^9.1.0",
     "react-native-vision-camera": "^2.13.2",
-    "react-native-webview": "^11.17.2"
+    "react-native-webview": "^11.17.2",
+    "react-native-xml2js": "^1.0.3",
+    "react-xml-parser": "^1.1.8"
   },
   "devDependencies": {
     "@babel/core": "7.17.8",
@@ -62,5 +64,4 @@
   "jest": {
     "preset": "react-native"
   }
-  
 }
