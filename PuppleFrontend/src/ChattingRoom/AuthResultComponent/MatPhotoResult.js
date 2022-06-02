@@ -28,7 +28,7 @@ import { HS_API_END_POINT, USER_INFO } from '../../Shared/env';
 import { set } from 'react-native-reanimated';
 
 const MatPhotoResult=(props)=> {
-    const [photoArr,setPhotoArr] = useState([])
+    const [photoArr,setPhotoArr] = useState(null)
     const [photoStr, setPhotoStr] = useState("")
     const [photodict, setPhotodict] = useState({"id":0,"img":""})
     
@@ -52,7 +52,7 @@ const MatPhotoResult=(props)=> {
 
     React.useEffect(()=>{
         console.log(props.userId,props.dogId)
-        axios.post(`${HS_API_END_POINT}/api/mat_detector/`,{
+        axios.post(`${HS_API_END_POINT}/api/mat_detector/getimage/`,{
             user_id:props.userId,
             dog_id:props.dogId,
         })
@@ -61,7 +61,7 @@ const MatPhotoResult=(props)=> {
             // res.data.map((oneRequest)=>{
             //     setAllRequest(allRequest=>([...allRequest,oneRequest]))
             // })
-            setPhotoArr(res.data[0].photo.slice(1,-1).split(','))
+            setPhotoArr(res.data[0].photo)
             // for (var i = 0; i < photoStr.length; i++) { // 배열 arr의 모든 요소의 인덱스(index)를 출력함.
             //     var arr=[]
             //     setPhotodict({"id":i,"img":photoStr[i].trim().slice(1,-1)})
@@ -89,11 +89,11 @@ const MatPhotoResult=(props)=> {
                 </Text>
             </View>
             <View  style={{flex:8}}>
-                <FlatList
-                data={photoArr}
-                renderItem={renderImage}
-                listKey={new Date().getTime().toString()}
-                />
+            <View
+        style={{alignSelf:'center',marginVertical:10,borderColor:'black',borderWidth:3}}>
+            <Image style={{width:responsiveScreenWidth(70),height:responsiveScreenWidth(40)}} 
+                    source={{uri:`data:image/jpeg;base64,${photoArr}`}}/>
+        </View>
 
             </View>
         </View>

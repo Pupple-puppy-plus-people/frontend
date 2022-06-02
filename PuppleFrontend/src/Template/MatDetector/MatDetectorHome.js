@@ -118,12 +118,9 @@ const MatDetectorHome=({navigation, route, dog_id, setModalVisible})=> {
                     <View style={{flex:0.1,borderBottomColor:'black',borderBottomWidth:2}}></View>
                     <View style={{flex:5,alignItems:'center'}}>
                         
-                        <FlatList
-                        numColumns={3}
-                        // refreshing={true}
-                        data={photoData}
-                        renderItem={renderItem}
-                        />
+                    <View style={{justifyContent:'center',margin:3}}>
+                        <Image style={{marginHorizontal:5,width:responsiveScreenWidth(24),height:responsiveScreenWidth(24)}} source={{uri:`data:image/jpeg;base64,${photoData}`}}/>
+                    </View>   
                     </View>
                     <View style={{flex:1,justifyContent:'center',margin:3,alignItems:'center'}}>
                         <TouchableOpacity 
