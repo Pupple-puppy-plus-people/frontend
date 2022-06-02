@@ -1,4 +1,4 @@
-export const HS_API_END_POINT = 'http://52.79.229.200:8000';
+// export const HS_API_END_POINT = 'http://52.79.229.200:8000';
 
 export const HS_API_END_POINT = 'https://9f7c-221-138-33-207.jp.ngrok.io';
 // export const HS_API_END_POINT = 'https://d4cb-219-255-207-96.jp.ngrok.io'
