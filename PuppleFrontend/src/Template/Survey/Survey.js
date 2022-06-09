@@ -12,7 +12,7 @@ import {
     TouchableWithoutFeedback,
     ScrollView,
     Modal,
-    Alert
+    Alert,
 
 } from 'react-native';
 import RNCamera from 'react-native-camera'
