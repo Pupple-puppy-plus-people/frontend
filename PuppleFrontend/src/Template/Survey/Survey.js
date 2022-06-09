@@ -11,7 +11,8 @@ import {
     TouchableOpacity,
     TouchableWithoutFeedback,
     ScrollView,
-    Modal
+    Modal,
+    Alert
 
 } from 'react-native';
 import RNCamera from 'react-native-camera'

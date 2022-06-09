@@ -462,8 +462,12 @@ class TimeStampRes extends Component{
             prev_timelist : [],
             parentState: this.props.parentState,
             dueTime: ``,
+
+            ts_check_time:0,
+            ts_total_count:0,
         };
         this.getlist = this.getlist.bind(this)
+        
     }
     
     getlist=(data)=> {
@@ -488,13 +492,34 @@ class TimeStampRes extends Component{
             dueTime: message,
         })
     }
-    
+    async getTS(){
+        await axios.get(`${HS_API_END_POINT}/api/passcondition/${this.state.parentState.dog_id}/`)
+            .then(function (response) {
+                
+                console.log(response.data[0]['ts_check_time'])
+                
+                this.ts_total_count = response.data[0]['ts_total_count']
+                this.ts_check_time = response.data[0]['ts_check_time']
+                // this.setState({
+                // ts_total_count : response.data[0]['ts_total_count'],
+                // ts_check_time : response.data[0]['ts_check_time'],
+                // return (ts_total_count,ts_check_time);
+                // })
+                // setPassCondition({ts_check_time:response.data[0]['ts_check_time'], ts_total_count:response.data[0]['ts_total_count']})
+                // setTschecktime(tschecktime=>(response.data[0]['ts_check_time']))
+                // setTstotalcount(tstotalcount=>(response.data[0]['ts_total_count']))
+                // console.log("pass condition: ",ts_total_count,ts_check_time);
+            })
+            .catch(error => {console.log('error dddd: ',error.response)});
+
+    }
     render(){
         const getHeader = () => {
+            this.getTS()
             return (
             <View>
             <Text style={styles.title}>타임스탬프 검증</Text>
-            <Text style={styles.subtitle}>* 통과 기준: 검사 주기 {this.state.parentState.ts_check_time}시간  | 횟수 {this.state.parentState.ts_total_count}일/7일</Text>
+            <Text style={styles.subtitle}>* 통과 기준: 검사 주기 {this.state.ts_check_time}시간  | 횟수 {this.state.ts_total_count}일/7일</Text>
             <Text style={styles.subtitle}>* 사용자 설정 시작 시간: 오전 {this.state.parentState.start_time}시 </Text>
             </View>
             );

@@ -25,7 +25,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import axios from 'axios';
 import { HS_API_END_POINT, USER_INFO } from '../../Shared/env';
 
-const RoomCheckHome=({navigation, route, dog_id})=> {
+const RoomCheckHome=({navigation, route, dog_id ,setModalVisible})=> {
     const [photoUri,setPhotoUri] = useState([]);
     const [photoData,setPhotoData] = useState([]);
 

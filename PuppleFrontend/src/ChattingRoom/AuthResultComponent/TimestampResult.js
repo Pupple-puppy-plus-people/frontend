@@ -24,8 +24,8 @@ class TimestampResult extends Component{
         this.state = { 
             start_time : this.props.startTime,
             dog_id: this.props.dog_id,
-            ts_check_time: this.props.ts_check_time,
-            ts_total_count: this.props.ts_total_count,
+            // ts_check_time: this.props.ts_check_time,
+            // ts_total_count: this.props.ts_total_count,
         };
 
       
